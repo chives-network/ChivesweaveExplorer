@@ -242,7 +242,7 @@ const BlockView = () => {
                               Miner Reward:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatXWE(blockViewInfo.block.reward, 1)} XWE</TableCell>
+                            <TableCell>{formatXWE(blockViewInfo.block.reward, 2)} XWE</TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>
