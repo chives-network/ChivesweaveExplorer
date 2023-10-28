@@ -31,12 +31,12 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Staticstics',
       icon: 'mdi:chart-areaspline',
-      path: '/overview'
+      path: '/statics'
     },
     {
       title: 'Top Stats',
       icon: 'mdi:poll',
-      path: '/overview'
+      path: '/topstats'
     },
     {
       title: 'Nodes',
@@ -46,7 +46,7 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Ecosystem',
       icon: 'icon-park-outline:system',
-      path: '/overview'
+      path: '/ecosystem'
     }
   ]
 }
