@@ -1,5 +1,9 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
+
+// ** Axios Imports
+import axios from 'axios'
+import authConfig from 'src/configs/auth'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -14,6 +18,13 @@ import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
+import Table from '@mui/material/Table'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
+import TableBody from '@mui/material/TableBody'
+import CardContent from '@mui/material/CardContent'
+import TableContainer from '@mui/material/TableContainer'
+
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -24,7 +35,7 @@ import { fetchData } from 'src/store/apps/blocks'
 import { RootState, AppDispatch } from 'src/store'
 import { BlockType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatSecondToMinute, formatTimestampMemo, formatStorageSize } from 'src/configs/functions';
+import { formatHash, formatXWE, formatSecondToMinute, formatTimestampMemo, formatStorageSize, formatTimestamp } from 'src/configs/functions';
 
 interface BlockCellType {
   row: BlockType
@@ -41,6 +52,20 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   }
 }))
 
+interface ChainInfoType {
+  network: string
+  version: number
+  release: number
+  height: number
+  current: string
+  blocks: number
+  peers: number
+  time: number
+  miningtime: number
+  weave_size: number
+  denomination: number
+  diff: string
+}
 
 const columns: GridColDef[] = [
   {
@@ -115,7 +140,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: BlockCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatHash(row.reward_addr, 7)}
+          <LinkStyled href={`/addresses/view/${row.reward_addr}`}>{formatHash(row.reward_addr, 7)}</LinkStyled>
         </Typography>
       )
     }
@@ -171,7 +196,19 @@ const BlockList = () => {
   // ** State
   const [isLoading, setIsLoading] = useState(false);
 
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 20 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
+
+  const [chainInfo, setChainInfo] = useState<ChainInfoType>()
+  
+  useEffect(() => {
+    axios.get(authConfig.backEndApi + '/info', { headers: { }, params: { } })
+        .then(res => {
+          setChainInfo(res.data);
+        })
+        .catch(() => {
+          console.log("axios.get editUrl return")
+        })
+  }, [])
 
   console.log("paginationModel", paginationModel)
   
@@ -194,6 +231,86 @@ const BlockList = () => {
 
   return (
     <Grid container spacing={6}>
+
+    {chainInfo != undefined ?
+      <Grid item xs={12}>
+        <Card>
+          <CardHeader title={`Chivesweave Blockchain`} />
+          <CardContent>
+            <Grid container spacing={6}>
+
+              <Grid item xs={12} lg={12}>
+                <TableContainer>
+                  <Table size='small' sx={{ width: '95%' }}>
+                    <TableBody
+                      sx={{
+                        '& .MuiTableCell-root': {
+                          border: 0,
+                          pt: 2,
+                          pb: 2.5,
+                          pl: '0 !important',
+                          pr: '0 !important',
+                          '&:first-of-type': {
+                            width: 148
+                          }
+                        }
+                      }}
+                    >
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                            Network:
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{chainInfo.network}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                            Height:
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{chainInfo.height}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                            Time:
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{formatTimestamp(chainInfo.time)}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                            Peers:
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{chainInfo.peers}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                            Weave Size:
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{formatStorageSize(chainInfo.weave_size)}</TableCell>
+                      </TableRow>
+
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+
+            </Grid>
+          </CardContent>
+
+        </Card>
+      </Grid>
+    :
+      <Fragment></Fragment>
+    }
+    
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Blocks' />
@@ -208,7 +325,7 @@ const BlockList = () => {
             filterMode="server"
             loading={isLoading}
             disableRowSelectionOnClick
-            pageSizeOptions={[10, 20, 30, 50, 100]}
+            pageSizeOptions={[10, 15, 20, 30, 50, 100]}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
             disableColumnMenu={true}

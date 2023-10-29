@@ -188,7 +188,7 @@ const BlockView = () => {
                               Miner:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatHash(blockViewInfo.block.reward_addr, 7)}</TableCell>
+                            <TableCell><LinkStyled href={`/addresses/view/${blockViewInfo.block.reward_addr}`}>{formatHash(blockViewInfo.block.reward_addr, 7)}</LinkStyled></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
@@ -196,7 +196,7 @@ const BlockView = () => {
                               Tx Reward Pool:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatXWE(blockViewInfo.block.reward_pool, 6)} XWE</TableCell>
+                            <TableCell>{formatXWE(blockViewInfo.block.reward_pool, 2)} XWE</TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>
@@ -279,7 +279,7 @@ const BlockView = () => {
                       {blockViewInfo.txs.map((item: TxRecordType, index: number) => (
                         <TableRow hover key={index} sx={{ '&:last-of-type td': { border: 0 } }}>
                           <TableCell><LinkStyled href={`/txs/view/${item.id}`}>{formatHash(item.id, 7)}</LinkStyled></TableCell>
-                          <TableCell>{formatHash(item.owner.address, 7)}</TableCell>
+                          <TableCell><LinkStyled href={`/addresses/view/${item.owner.address}`}>{formatHash(item.owner.address, 7)}</LinkStyled></TableCell>
                           <TableCell>{formatStorageSize(item.data.size)}</TableCell>
                           <TableCell>
                             {getContentTypeAbbreviation(item.data.type)}

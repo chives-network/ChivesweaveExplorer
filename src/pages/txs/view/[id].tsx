@@ -141,7 +141,7 @@ const BlockView = () => {
                               Value:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatXWE(txViewInfo.tx.quantity.winston, 6)} XWE</TableCell>
+                            <TableCell>{formatXWE(txViewInfo.tx.quantity.winston, 8)} XWE</TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
@@ -149,7 +149,7 @@ const BlockView = () => {
                               From:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatHash(txViewInfo.tx.owner.address, 7)}</TableCell>
+                            <TableCell><LinkStyled href={`/addresses/view/${txViewInfo.tx.owner.address}`}>{formatHash(txViewInfo.tx.owner.address, 7)}</LinkStyled></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
@@ -157,7 +157,7 @@ const BlockView = () => {
                               To:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatHash(txViewInfo.tx.recipient, 7)}</TableCell>
+                            <TableCell><LinkStyled href={`/addresses/view/${txViewInfo.tx.recipient}`}>{formatHash(txViewInfo.tx.recipient, 7)}</LinkStyled></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
@@ -195,7 +195,7 @@ const BlockView = () => {
                                 Block Height:
                               </Typography>
                             </TableCell>
-                            <TableCell>{txViewInfo.tx.block.height}</TableCell>
+                            <TableCell><LinkStyled href={`/blocks/view/${txViewInfo.tx.block.height}`}>{txViewInfo.tx.block.height}</LinkStyled></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>

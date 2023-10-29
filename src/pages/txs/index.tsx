@@ -23,7 +23,7 @@ import { fetchData } from 'src/store/apps/transactions'
 import { RootState, AppDispatch } from 'src/store'
 import { TransactionType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatTimestampAge } from 'src/configs/functions';
+import { formatHash, formatXWE, formatTimestampAge, formatStorageSize } from 'src/configs/functions';
 
 interface TransactionCellType {
   row: TransactionType
@@ -84,7 +84,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {row.data_size}
+          {formatStorageSize(row.data_size)}
         </Typography>
       )
     }
@@ -129,7 +129,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {row.block_height}
+          <LinkStyled href={`/blocks/view/${row.block_height}`}>{row.block_height}</LinkStyled>
         </Typography>
       )
     }
@@ -155,7 +155,7 @@ const TransactionList = () => {
   // ** State
   const [isLoading, setIsLoading] = useState(false);
 
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 20 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
 
   console.log("paginationModel", paginationModel)
   
@@ -192,7 +192,7 @@ const TransactionList = () => {
             filterMode="server"
             loading={isLoading}
             disableRowSelectionOnClick
-            pageSizeOptions={[10, 20, 30, 50, 100]}
+            pageSizeOptions={[10, 15, 20, 30, 50, 100]}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
             disableColumnMenu={true}

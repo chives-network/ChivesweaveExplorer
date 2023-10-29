@@ -46,4 +46,5 @@ export type TxRecordType = {
   recentActivity: string
   tags: any
   recipient: string
+  block: {[key: string]: any}
 }

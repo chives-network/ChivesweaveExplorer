@@ -24,6 +24,13 @@ export function formatXWE(dividend: number, precision: number) {
   return result;
 }
 
+export function formatXWEAddress(dividend: number, precision: number) {
+  const divisor = 10000;
+  const result = (dividend / divisor).toFixed(precision);
+  
+  return result;
+}
+
 export function formatSecondToMinute(miningTime: number): string {
   let timeMemo = '';
   if (miningTime < 60) {

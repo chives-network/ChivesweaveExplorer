@@ -5,21 +5,22 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
-interface DataParams {
-  pageId: number
-  pageSize: number
+interface DataParams1 {
+    address: string
+    pageId: number
+    pageSize: number
 }
 
 // ** Fetch Data
-export const fetchData = createAsyncThunk('appBlocks/fetchData', async (params: DataParams) => {
-  const response = await axios.get(authConfig.backEndApi + '/blockpage/'+ `${params.pageId+1}` + '/'+params.pageSize)
-  console.log("appBlocks/fetchData", params)
+export const fetchData = createAsyncThunk('appAddressTransactions/fetchData', async (params: DataParams1) => {
+  const response = await axios.get(authConfig.backEndApi + '/wallet/'+ `${params.address}` + '/txsrecord/'+ `${params.pageId}` + '/'+params.pageSize)
+  console.log("appAddressTransactions/fetchData", params)
   
   return response.data
 })
 
-export const appBlocksSlice = createSlice({
-  name: 'appBlocks',
+export const appAddressTransactionsSlice = createSlice({
+  name: 'appAddressTransactions',
   initialState: {
     data: [],
     total: 1,
@@ -37,4 +38,4 @@ export const appBlocksSlice = createSlice({
   }
 })
 
-export default appBlocksSlice.reducer
+export default appAddressTransactionsSlice.reducer

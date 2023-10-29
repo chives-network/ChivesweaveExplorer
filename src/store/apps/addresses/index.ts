@@ -13,7 +13,7 @@ interface DataParams {
 // ** Fetch Data
 export const fetchData = createAsyncThunk('appAddresses/fetchData', async (params: DataParams) => {
   const response = await axios.get(authConfig.backEndApi + '/address/'+ `${params.pageId}` + '/'+params.pageSize)
-  console.log("params", params)
+  console.log("appAddresses/fetchData", params)
   
   return response.data
 })

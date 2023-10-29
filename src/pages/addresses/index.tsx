@@ -23,7 +23,7 @@ import { fetchData } from 'src/store/apps/addresses'
 import { RootState, AppDispatch } from 'src/store'
 import { AddressType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatTimestampMemo } from 'src/configs/functions';
+import { formatHash, formatXWEAddress, formatTimestampMemo } from 'src/configs/functions';
 
 interface AddressCellType {
   row: AddressType
@@ -68,7 +68,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: AddressCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatXWE(row.balance, 4)} XWE
+          {formatXWEAddress(row.balance, 4)} XWE
         </Typography>
       )
     }
@@ -124,7 +124,7 @@ const AddressesList = () => {
   // ** State
   const [isLoading, setIsLoading] = useState(false);
 
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 20 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
 
   console.log("paginationModel", paginationModel)
   
@@ -161,7 +161,7 @@ const AddressesList = () => {
             filterMode="server"
             loading={isLoading}
             disableRowSelectionOnClick
-            pageSizeOptions={[10, 20, 30, 50, 100]}
+            pageSizeOptions={[10, 15, 20, 30, 50, 100]}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
             disableColumnMenu={true}
