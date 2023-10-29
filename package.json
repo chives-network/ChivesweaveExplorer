@@ -67,7 +67,6 @@
     "react-hot-toast": "2.4.1",
     "react-i18next": "12.2.2",
     "react-json-view": "^1.21.3",
-    "react-json-viewer": "^3.0.1",
     "react-pdf": "^7.5.1",
     "react-perfect-scrollbar": "1.5.8",
     "react-popper": "2.3.0",
@@ -104,6 +103,7 @@
     "eslint-import-resolver-typescript": "3.5.3",
     "eslint-plugin-import": "2.27.5",
     "prettier": "2.8.4",
+    "react-json-viewer": "^3.0.1",
     "typescript": "5.0.4"
   },
   "resolutions": {

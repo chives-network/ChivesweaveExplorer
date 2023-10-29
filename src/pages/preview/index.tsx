@@ -1,7 +1,6 @@
 // ** React Imports
-import { forwardRef, ReactElement, Ref, Fragment, useState, useEffect, SetStateAction } from 'react'
+import { Fragment, useState, useEffect, SetStateAction } from 'react'
 
-import ReactJson from 'react-json-view';
 import JSONViewer from 'react-json-viewer';
 
 // ** MUI Imports
@@ -122,6 +121,8 @@ const ImagesPreview = (props: ImagesPreviewType) => {
   const handleClose = () => {
     toggleImagesPreviewDrawer()
   }
+  console.log("open", open)
+  console.log("handleClose", handleClose)
 
   const [numPages, setNumPages] = useState<number>(0)    
   function onDocumentLoadSuccess({ numPages }: { numPages: number; } ) {

@@ -4,7 +4,6 @@ import { useState, useEffect, Fragment } from 'react'
 // ** Next Imports
 import Link from 'next/link'
 
-import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
 // ** MUI Imports
@@ -37,7 +36,6 @@ import { formatHash, formatXWE, formatTimestampAge, formatStorageSize, getConten
 
 // ** Next Import
 import { useRouter } from 'next/router'
-import { string } from 'yup'
 
 
 interface TransactionCellType {
@@ -52,7 +50,7 @@ const Img = styled('img')(({ theme }) => ({
   marginRight: theme.spacing(3)
 }))
 
-const ImgOriginal = styled('img')(({ theme }) => ({
+const ImgOriginal = styled('img')(({  }) => ({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
@@ -119,6 +117,7 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     FileMap[Item.name] = Item.value;
   });
   const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
+  console.log("FileType", FileType)
   switch(FileType) {
     case 'PNG':
     case 'GIF':
@@ -127,6 +126,15 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     case 'WEBM':
       return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`);
     case 'PDF':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'XLS':
+    case 'XLSX':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'DOC':
+    case 'DOCX':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'PPT':
+    case 'PPTX':
       return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
   }
 

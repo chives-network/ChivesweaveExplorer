@@ -71,7 +71,8 @@ interface txViewInfoType {
   txs: any
 }
 
-const ImgOriginal = styled('img')(({ theme }) => ({
+const ImgOriginal = styled('img')(({  }) => ({
+  maxWidth: '100%',
   objectFit: 'cover',
   borderRadius: '5px',
   style: { zIndex: 1 }
@@ -89,7 +90,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }))
 
 const toggleImagesPreviewDrawer = () => {
-  
+  console.log("toggleImagesPreviewDrawer")
 }
 
 function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
@@ -98,6 +99,7 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     FileMap[Item.name] = Item.value;
   });
   const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
+  console.log("FileType", `${authConfig.backEndApi}/${TxRecord.id}`)
   switch(FileType) {
     case 'PNG':
     case 'GIF':
@@ -109,6 +111,9 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
       return <ImagesPreview open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['pdf']} />;
     case 'JSON':
       return <ImagesPreview open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['json']} />;
+    case 'XLS':
+    case 'XLSX':
+      return <ImagesPreview open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['Excel']} />;
     default:
       return <Fragment></Fragment>
   }
@@ -124,18 +129,19 @@ const BlockView = () => {
 
   useEffect(() => {
     if(id != undefined) {
-      const OriginalFile = fileName;
       axios
         .get(authConfig.backEndApi + '/tx/' + id + '/unbundle', { headers: { }, params: { } })
         .then(res => {
           settxViewInfo(res.data);
+          let TempFileName = '';
           res.data && res.data.tx && res.data.tx.tags && res.data.tx.tags.map((Item: { [key: string]: string }) => {
             if(Item.name=="File-Name") {
               console.log("Item.value", Item.value)
+              TempFileName = Item.value;
               setFileName(Item.value)
             }
           });
-          if(OriginalFile==fileName) {
+          if(TempFileName == '') {
             setFileName("Data")
           }
         })

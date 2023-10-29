@@ -5,7 +5,7 @@ export function formatHash(inputString: string, spliceSize: number): string {
     return '';
   }
   if(inputString == "") {
-    return '-';
+    return '';
   }
   if (inputString.length <= 12) {
 
@@ -20,7 +20,7 @@ export function formatHash(inputString: string, spliceSize: number): string {
 export function formatXWE(dividend: number, precision: number) {
   if(dividend == 0) {
 
-    return '-';
+    return '0';
   }
   const divisor = 1000000000000;
   const result = (dividend / divisor).toFixed(precision);
@@ -177,6 +177,7 @@ export function parseTxAndGetMemoFileType(TxRecord: TxRecordType): string {
     FileMap[Item.name] = Item.value;
   });
   const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
+  
   return FileType
 }
 
