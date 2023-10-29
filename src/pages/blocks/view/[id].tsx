@@ -196,7 +196,7 @@ const BlockView = () => {
                               Tx Reward Pool:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatXWE(blockViewInfo.block.reward_pool, 2)} XWE</TableCell>
+                            <TableCell>{formatXWE(blockViewInfo.block.reward_pool, 2)}</TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>
@@ -242,7 +242,7 @@ const BlockView = () => {
                               Miner Reward:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatXWE(blockViewInfo.block.reward, 2)} XWE</TableCell>
+                            <TableCell>{formatXWE(blockViewInfo.block.reward, 2)}</TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>

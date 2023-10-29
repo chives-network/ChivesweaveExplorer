@@ -75,7 +75,7 @@ const columns: GridColDef[] = [
     }
   },
   {
-    flex: 0.1,
+    flex: 0.15,
     minWidth: 60,
     headerName: 'Size',
     field: 'Size',
@@ -99,7 +99,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatXWE(row.reward, 8)} XWE
+          {formatXWE(row.reward, 6)}
         </Typography>
       )
     }

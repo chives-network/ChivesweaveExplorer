@@ -68,7 +68,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: AddressCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatXWEAddress(row.balance, 4)} XWE
+          {formatXWEAddress(row.balance, 4)}
         </Typography>
       )
     }

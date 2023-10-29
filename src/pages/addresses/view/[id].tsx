@@ -111,10 +111,8 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     case 'JPG':
     case 'WEBM':
       return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`)
-    case 'PNG':
-      return <Img src={TxRecord.owner.address} />
-    case 'PNG':
-      return <Img src={TxRecord.owner.address} />
+    default:
+      return <Fragment></Fragment>
   }
 }
 
@@ -152,7 +150,7 @@ const columns: GridColDef[] = [
     }
   },
   {
-    flex: 0.1,
+    flex: 0.15,
     minWidth: 60,
     headerName: 'Size',
     field: 'Size',

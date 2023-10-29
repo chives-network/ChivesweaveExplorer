@@ -125,15 +125,15 @@ export function formatStorageSize(size: number): string {
 
     return `${size} B`;
   } else if (size < 1024 * 1024) {
-    const sizeKB = (size / 1024).toFixed(2);
+    const sizeKB = (size / 1024).toFixed(1);
 
     return `${sizeKB} KB`;
   } else if (size < 1024 * 1024 * 1024) {
-    const sizeMB = (size / (1024 * 1024)).toFixed(2);
+    const sizeMB = (size / (1024 * 1024)).toFixed(1);
 
     return `${sizeMB} MB`;
   } else {
-    const sizeGB = (size / (1024 * 1024 * 1024)).toFixed(2);
+    const sizeGB = (size / (1024 * 1024 * 1024)).toFixed(1);
 
     return `${sizeGB} GB`;
   }

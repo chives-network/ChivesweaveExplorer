@@ -155,7 +155,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: BlockCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatXWE(row.reward, 2)} XWE
+          {formatXWE(row.reward, 2)}
         </Typography>
       )
     }

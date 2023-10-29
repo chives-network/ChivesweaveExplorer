@@ -165,7 +165,7 @@ const BlockView = () => {
                               Fee:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatXWE(txViewInfo.tx.fee.winston, 7)} XWE</TableCell>
+                            <TableCell>{formatXWE(txViewInfo.tx.fee.winston, 7)}</TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>
