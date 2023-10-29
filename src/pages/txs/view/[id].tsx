@@ -69,6 +69,14 @@ interface txViewInfoType {
   txs: any
 }
 
+const ImgOriginal = styled('img')(({ theme }) => ({
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  borderRadius: '5px',
+  style: { zIndex: 1 }
+}))
+
 const LinkStyled = styled(Link)(({ theme }) => ({
   fontWeight: 600,
   fontSize: '1rem',
@@ -79,6 +87,27 @@ const LinkStyled = styled(Link)(({ theme }) => ({
     color: theme.palette.primary.main
   }
 }))
+
+
+function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
+  const FileMap: { [key: string]: string } = {}
+  TxRecord.tags.map((Item: { [key: string]: string }) => {
+    FileMap[Item.name] = Item.value;
+  });
+  const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
+  switch(FileType) {
+    case 'PNG':
+    case 'GIF':
+    case 'JPEG':
+    case 'JPG':
+    case 'WEBM':
+      return <ImgOriginal src={`${authConfig.backEndApi}/${TxRecord.id}`}/>
+    case 'JSON':
+      return <Fragment>JSON</Fragment>;
+    default:
+      return <Fragment></Fragment>
+  }
+}
 
 const BlockView = () => {
   
@@ -327,7 +356,7 @@ const BlockView = () => {
                             <TableRow>
                               <TableCell>
                                 <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                  Data Content Json Word Excel PPT
+                                  { parseTxAndGetMemoFileInfo(txViewInfo.tx) }                                  
                                 </Typography>
                               </TableCell>
                             </TableRow>
