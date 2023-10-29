@@ -56,7 +56,7 @@ const ImgOriginal = styled('img')(({ theme }) => ({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
-  style: { zIndex: 99999999999 }
+  style: { zIndex: 1 }
 }))
 
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -72,6 +72,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 function ImagePreview(ImageSource: string) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -81,17 +82,31 @@ function ImagePreview(ImageSource: string) {
     setIsHovered(false);
   };
 
+  useEffect(() => {
+    const img = new Image();
+    img.src = ImageSource;
+
+    img.onload = () => {
+      setImageError(false);
+    };
+
+    img.onerror = () => {
+      setImageError(true);
+    };
+  }, [ImageSource]);
+
   return (
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {!isHovered && (
+      {!imageError && !isHovered && (
         <Img src={ImageSource} />
       )}
-      {isHovered && (
+      {!imageError && isHovered && (
         <div className="preview">
-          <ImgOriginal src={ImageSource}/>
+          <ImgOriginal src={ImageSource} 
+          />
         </div>
       )}
     </div>
@@ -110,10 +125,21 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     case 'JPEG':
     case 'JPG':
     case 'WEBM':
-      return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`)
-    default:
-      return <Fragment></Fragment>
+      return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`);
+    case 'PDF':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
   }
+
+  //Bundle Support
+  const BundleFormat = getContentTypeAbbreviation(FileMap['Bundle-Format']);
+  const BundleVersion = getContentTypeAbbreviation(FileMap['Bundle-Version']);
+  if(BundleFormat == "binary") {
+    return "Bundle " + BundleVersion;
+  }
+  
+  //Video Format
+  return "Unknown";
+
 }
 
 const columns: GridColDef[] = [
@@ -180,8 +206,8 @@ const columns: GridColDef[] = [
     }
   },
   {
-    flex: 0.2,
-    minWidth: 110,
+    flex: 0.3,
+    minWidth: 200,
     field: 'Info',
     headerName: 'Info',
     sortable: false,

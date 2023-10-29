@@ -18,6 +18,10 @@ export function formatHash(inputString: string, spliceSize: number): string {
 }
 
 export function formatXWE(dividend: number, precision: number) {
+  if(dividend == 0) {
+
+    return '-';
+  }
   const divisor = 1000000000000;
   const result = (dividend / divisor).toFixed(precision);
   

@@ -27,6 +27,8 @@ import { styled } from '@mui/material/styles'
 
 import { formatHash, formatXWE, formatTimestamp, formatStorageSize, getContentTypeAbbreviation, parseTxAndGetMemoInfo } from 'src/configs/functions';
 
+import ImagesPreview from 'src/pages/preview'
+
 import { ThemeColor } from 'src/@core/layouts/types'
 
 interface FileTypeObj {
@@ -70,8 +72,6 @@ interface txViewInfoType {
 }
 
 const ImgOriginal = styled('img')(({ theme }) => ({
-  width: '100%',
-  height: '100%',
   objectFit: 'cover',
   borderRadius: '5px',
   style: { zIndex: 1 }
@@ -88,6 +88,9 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   }
 }))
 
+const toggleImagesPreviewDrawer = () => {
+  
+}
 
 function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
   const FileMap: { [key: string]: string } = {}
@@ -102,8 +105,10 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     case 'JPG':
     case 'WEBM':
       return <ImgOriginal src={`${authConfig.backEndApi}/${TxRecord.id}`}/>
+    case 'PDF':
+      return <ImagesPreview open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['pdf']} />;
     case 'JSON':
-      return <Fragment>JSON</Fragment>;
+      return <ImagesPreview open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['json']} />;
     default:
       return <Fragment></Fragment>
   }
@@ -115,13 +120,24 @@ const BlockView = () => {
   const { id } = router.query;
 
   const [txViewInfo, settxViewInfo] = useState<txViewInfoType>()
+  const [fileName, setFileName] = useState("Data")
 
   useEffect(() => {
     if(id != undefined) {
+      const OriginalFile = fileName;
       axios
         .get(authConfig.backEndApi + '/tx/' + id + '/unbundle', { headers: { }, params: { } })
         .then(res => {
           settxViewInfo(res.data);
+          res.data && res.data.tx && res.data.tx.tags && res.data.tx.tags.map((Item: { [key: string]: string }) => {
+            if(Item.name=="File-Name") {
+              console.log("Item.value", Item.value)
+              setFileName(Item.value)
+            }
+          });
+          if(OriginalFile==fileName) {
+            setFileName("Data")
+          }
         })
         .catch(() => {
           console.log("axios.get editUrl return")
@@ -332,7 +348,7 @@ const BlockView = () => {
           {txViewInfo.tx && txViewInfo.tx.tags && txViewInfo.tx.tags.length > 0 && (txViewInfo.txs && txViewInfo.txs.length == 0) ?
             <Grid item xs={12}>
               <Card>
-                <CardHeader title={`Data`} />
+                <CardHeader title={fileName} />
                 <CardContent>
                   <Grid container spacing={6}>
 
