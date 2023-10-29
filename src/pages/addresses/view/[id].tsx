@@ -4,6 +4,9 @@ import { useState, useEffect, Fragment } from 'react'
 // ** Next Imports
 import Link from 'next/link'
 
+import axios from 'axios'
+import authConfig from 'src/configs/auth'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -30,15 +33,31 @@ import { fetchData } from 'src/store/apps/addresstransactions'
 import { RootState, AppDispatch } from 'src/store'
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatTimestampAge, formatStorageSize } from 'src/configs/functions';
+import { formatHash, formatXWE, formatTimestampAge, formatStorageSize, getContentTypeAbbreviation } from 'src/configs/functions';
 
 // ** Next Import
 import { useRouter } from 'next/router'
 import { string } from 'yup'
 
+
 interface TransactionCellType {
   row: TxRecordType
 }
+
+const Img = styled('img')(({ theme }) => ({
+  width: 34,
+  height: 34,
+  borderRadius: '50%',
+  objectFit: 'cover',
+  marginRight: theme.spacing(3)
+}))
+
+const ImgOriginal = styled('img')(({ theme }) => ({
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  style: { zIndex: 99999999999 }
+}))
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   fontWeight: 600,
@@ -51,6 +70,53 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   }
 }))
 
+function ImagePreview(ImageSource: string) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  return (
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {!isHovered && (
+        <Img src={ImageSource} />
+      )}
+      {isHovered && (
+        <div className="preview">
+          <ImgOriginal src={ImageSource}/>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
+  const FileMap: { [key: string]: string } = {}
+  TxRecord.tags.map((Item: { [key: string]: string }) => {
+    FileMap[Item.name] = Item.value;
+  });
+  const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
+  switch(FileType) {
+    case 'PNG':
+    case 'GIF':
+    case 'JPEG':
+    case 'JPG':
+    case 'WEBM':
+      return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`)
+    case 'PNG':
+      return <Img src={TxRecord.owner.address} />
+    case 'PNG':
+      return <Img src={TxRecord.owner.address} />
+  }
+}
 
 const columns: GridColDef[] = [
   {
@@ -110,7 +176,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatXWE(row.fee.winston, 8)} XWE
+          {formatXWE(row.fee.winston, 6)}
         </Typography>
       )
     }
@@ -125,7 +191,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatHash(row.recipient, 7)}
+          {parseTxAndGetMemoFileInfo(row)}
         </Typography>
       )
     }

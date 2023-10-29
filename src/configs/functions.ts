@@ -167,6 +167,15 @@ export function getContentTypeAbbreviation(contentType: string): string {
   return contentTypeMap[contentType] || contentType; // 未知类型
 }
 
+export function parseTxAndGetMemoFileType(TxRecord: TxRecordType): string {
+  const FileMap: { [key: string]: string } = {}
+  TxRecord.tags.map((Item: { [key: string]: string }) => {
+    FileMap[Item.name] = Item.value;
+  });
+  const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
+  return FileType
+}
+
 export function parseTxAndGetMemoInfo(TxRecord: TxRecordType): string {
   if(TxRecord.recipient!="" && TxRecord.fee.xwe > 0) {
     

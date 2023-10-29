@@ -141,7 +141,7 @@ const BlockView = () => {
                               Value:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatXWE(txViewInfo.tx.quantity.winston, 8)} XWE</TableCell>
+                            <TableCell>{formatXWE(txViewInfo.tx.quantity.winston, 6)}</TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
@@ -370,8 +370,8 @@ const BlockView = () => {
                     <TableBody>
                       {txViewInfo.txs.map((item: TxRecordType, index: number) => (
                         <TableRow hover key={index} sx={{ '&:last-of-type td': { border: 0 } }}>
-                          <TableCell><LinkStyled href={`/tx/${item.id}`}>{formatHash(item.id, 7)}</LinkStyled></TableCell>
-                          <TableCell>{formatHash(item.owner.address, 7)}</TableCell>
+                          <TableCell><LinkStyled href={`/txs/view/${item.id}`}>{formatHash(item.id, 7)}</LinkStyled></TableCell>
+                          <TableCell><LinkStyled href={`/addresses/view/${item.owner.address}`}>{formatHash(item.owner.address, 7)}</LinkStyled></TableCell>
                           <TableCell>{formatStorageSize(item.data.size)}</TableCell>
                           <TableCell>
                             {getContentTypeAbbreviation(item.data.type)}
@@ -379,7 +379,7 @@ const BlockView = () => {
                               <Icon icon={FileTypeObj[getContentTypeAbbreviation(item.data.type)]?.icon} fontSize='1rem' />
                             </CustomAvatar>
                           </TableCell>
-                          <TableCell>{formatXWE(item.fee.winston, 6)} XWE</TableCell>
+                          <TableCell>{formatXWE(item.fee.winston, 6)}</TableCell>
                           <TableCell>{parseTxAndGetMemoInfo(item)}</TableCell>
                         </TableRow>
                       ))}

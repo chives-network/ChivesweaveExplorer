@@ -287,7 +287,7 @@ const BlockView = () => {
                               <Icon icon={FileTypeObj[getContentTypeAbbreviation(item.data.type)].icon} fontSize='1rem' />
                             </CustomAvatar>
                           </TableCell>
-                          <TableCell>{formatXWE(item.fee.winston, 6)} XWE</TableCell>
+                          <TableCell>{formatXWE(item.fee.winston, 6)}</TableCell>
                           <TableCell>{parseTxAndGetMemoInfo(item)}</TableCell>
                         </TableRow>
                       ))}
