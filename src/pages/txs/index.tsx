@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 // ** Next Imports
 import Link from 'next/link'
 
+// ** Axios Imports
+import authConfig from 'src/configs/auth'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -21,17 +24,32 @@ import { fetchData } from 'src/store/apps/transactions'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
-import { TransactionType } from 'src/types/apps/Chivesweave'
+import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatTimestampAge, formatStorageSize } from 'src/configs/functions';
+import { formatHash, formatXWE, formatTimestampAge, formatStorageSize, getContentTypeAbbreviation } from 'src/configs/functions';
 
 interface TransactionCellType {
-  row: TransactionType
+  row: TxRecordType
 }
 
+
+const Img = styled('img')(({ theme }) => ({
+  width: 34,
+  height: 34,
+  borderRadius: '50%',
+  objectFit: 'cover',
+  marginRight: theme.spacing(3)
+}))
+
+const ImgOriginal = styled('img')(({  }) => ({
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  style: { zIndex: 1 }
+}))
+
 const LinkStyled = styled(Link)(({ theme }) => ({
-  fontWeight: 600,
-  fontSize: '1rem',
+  fontWeight: 550,
   cursor: 'pointer',
   textDecoration: 'none',
   color: theme.palette.text.secondary,
@@ -40,6 +58,125 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   }
 }))
 
+const LinkStyledNormal = styled(Link)(({ theme }) => ({
+  cursor: 'pointer',
+  textDecoration: 'none',
+  color: theme.palette.text.secondary,
+  '&:hover': {
+    color: theme.palette.primary.main
+  }
+}))
+
+function ImagePreview(ImageSource: string) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = ImageSource;
+
+    img.onload = () => {
+      setImageError(false);
+    };
+
+    img.onerror = () => {
+      setImageError(true);
+    };
+  }, [ImageSource]);
+
+  return (
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {!imageError && !isHovered && (
+        <Img src={ImageSource} />
+      )}
+      {!imageError && isHovered && (
+        <div className="preview">
+          <ImgOriginal src={ImageSource} 
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function parseTxFeeAndBundleId(TxRecord: TxRecordType) {
+  if(TxRecord.bundleid && TxRecord.bundleid!="") {
+  
+    return <LinkStyledNormal href={`/txs/view/${TxRecord.bundleid}`}>{formatHash(TxRecord.bundleid, 5)}</LinkStyledNormal>
+  }
+
+  return formatXWE(TxRecord.fee.winston, 6);
+}
+
+function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
+  const FileMap: { [key: string]: string } = {}
+  TxRecord.tags.map((Item: { [key: string]: string }) => {
+    FileMap[Item.name] = Item.value;
+  });
+  const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
+  console.log("FileType", FileType)
+  switch(FileType) {
+    case 'PNG':
+    case 'GIF':
+    case 'JPEG':
+    case 'JPG':
+    case 'WEBM':
+      return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`)
+    case 'PDF':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'XLS':
+    case 'XLSX':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'DOC':
+    case 'DOCX':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'PPT':
+    case 'PPTX':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'MP4':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'MP3':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'WAV':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'JSON':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']?FileMap['File-Name']:FileType}</LinkStyled>
+  }
+
+  //Bundle Support
+  const BundleFormat = getContentTypeAbbreviation(FileMap['Bundle-Format']);
+  const BundleVersion = getContentTypeAbbreviation(FileMap['Bundle-Version']);
+  if(BundleFormat == "binary") {
+    return "Bundle " + BundleVersion;
+  }
+
+  //Video Format
+
+  if(TxRecord.recipient != "") {
+        
+    return (
+        <Typography noWrap variant='body2'>
+          {formatXWE(TxRecord.quantity.winston, 4) + " -> "}
+          <LinkStyled href={`/addresses/view/${TxRecord.id}`}>{formatHash(TxRecord.recipient, 5)}</LinkStyled>
+        </Typography>
+
+    )
+  }
+
+  return "Unknown";
+
+}
 
 const columns: GridColDef[] = [
   {
@@ -69,7 +206,7 @@ const columns: GridColDef[] = [
       
       return (
         <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/view/${row.from_address}`}>{formatHash(row.from_address, 7)}</LinkStyled>
+          <LinkStyled href={`/addresses/view/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
         </Typography>
       )
     }
@@ -84,7 +221,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatStorageSize(row.data_size)}
+          {formatStorageSize(row.data.size)}
         </Typography>
       )
     }
@@ -99,14 +236,14 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatXWE(row.reward, 6)}
+          {parseTxFeeAndBundleId(row)}
         </Typography>
       )
     }
   },
   {
-    flex: 0.2,
-    minWidth: 110,
+    flex: 0.3,
+    minWidth: 200,
     field: 'Info',
     headerName: 'Info',
     sortable: false,
@@ -114,7 +251,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatHash(row.target, 7)}
+          {parseTxAndGetMemoFileInfo(row)}
         </Typography>
       )
     }
@@ -129,7 +266,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          <LinkStyled href={`/blocks/view/${row.block_height}`}>{row.block_height}</LinkStyled>
+          <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
         </Typography>
       )
     }
@@ -144,7 +281,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {formatTimestampAge(row.timestamp)}
+          {formatTimestampAge(row.block.timestamp)}
         </Typography>
       )
     }

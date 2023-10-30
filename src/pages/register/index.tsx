@@ -77,7 +77,7 @@ const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 const TypographyStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
-  fontWeight: 600,
+  fontWeight: 550,
   marginBottom: theme.spacing(1.5),
   [theme.breakpoints.down('md')]: { mt: theme.spacing(8) }
 }))
@@ -200,7 +200,7 @@ const Register = () => {
                 sx={{
                   ml: 3,
                   lineHeight: 1,
-                  fontWeight: 600,
+                  fontWeight: 550,
                   textTransform: 'uppercase',
                   fontSize: '1.5rem !important'
                 }}
@@ -242,9 +242,6 @@ const Register = () => {
                     <Typography variant='body2' component='span'>
                       I agree to{' '}
                     </Typography>
-                    <LinkStyled href='/' onClick={e => e.preventDefault()}>
-                      privacy policy & terms
-                    </LinkStyled>
                   </>
                 }
               />

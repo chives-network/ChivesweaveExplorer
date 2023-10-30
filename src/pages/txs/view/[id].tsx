@@ -79,7 +79,7 @@ const ImgOriginal = styled('img')(({  }) => ({
 }))
 
 const LinkStyled = styled(Link)(({ theme }) => ({
-  fontWeight: 600,
+  fontWeight: 550,
   fontSize: '1rem',
   cursor: 'pointer',
   textDecoration: 'none',

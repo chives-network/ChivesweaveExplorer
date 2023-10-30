@@ -48,4 +48,5 @@ export type TxRecordType = {
   tags: any
   recipient: string
   block: {[key: string]: any}
+  bundleid: string
 }
