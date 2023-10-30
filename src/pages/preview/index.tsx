@@ -205,6 +205,18 @@ const ImagesPreview = (props: ImagesPreviewType) => {
                     case 'Excel':
                       
                       return <ExcelViewer fileUrl={Url} />
+                    
+                    case 'Mp4':
+
+                      return (
+                        <div style={{ width: '100%', color:'black'}} key={UrlIndex}>
+                          <video controls width="640" height="360">
+                            <source src={Url} type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                        </div>
+                      )
+
                     default:
                       
                       return (

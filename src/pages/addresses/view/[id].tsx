@@ -4,6 +4,8 @@ import { useState, useEffect, Fragment } from 'react'
 // ** Next Imports
 import Link from 'next/link'
 
+// ** Axios Imports
+import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
 // ** MUI Imports
@@ -124,7 +126,7 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     case 'JPEG':
     case 'JPG':
     case 'WEBM':
-      return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`);
+      return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`)
     case 'PDF':
       return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
     case 'XLS':
@@ -136,6 +138,12 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     case 'PPT':
     case 'PPTX':
       return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'MP4':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'MP3':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
+    case 'WAV':
+      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
   }
 
   //Bundle Support
@@ -144,8 +152,20 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
   if(BundleFormat == "binary") {
     return "Bundle " + BundleVersion;
   }
-  
+
   //Video Format
+
+  if(TxRecord.recipient != "") {
+        
+    return (
+        <Typography noWrap variant='body2'>
+          {formatXWE(TxRecord.quantity.winston, 4) + " -> "}
+          <LinkStyled href={`/addresses/view/${TxRecord.id}`}>{formatHash(TxRecord.recipient, 5)}</LinkStyled>
+        </Typography>
+
+    )
+  }
+
   return "Unknown";
 
 }
@@ -273,6 +293,21 @@ const AddressTransactionList = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.addresstransactions)
 
+  const [addressBalance, setAddressBalance] = useState<number>(0)
+
+  useEffect(() => {
+    if(id != undefined) {
+      axios
+        .get(authConfig.backEndApi + '/wallet/' + id + "/balance", { headers: { }, params: { } })
+        .then(res => {
+          setAddressBalance(res.data);
+        })
+        .catch(() => {
+          console.log("axios.get editUrl return")
+        })
+    }
+  }, [id])
+
   useEffect(() => {
     if(id!=undefined) {
       dispatch(
@@ -331,7 +366,7 @@ const AddressTransactionList = () => {
                             Balance:
                           </Typography>
                         </TableCell>
-                        <TableCell>Come Soon</TableCell>
+                        <TableCell>{formatXWE(addressBalance, 8)} XWE</TableCell>
                       </TableRow>
 
                       <TableRow>

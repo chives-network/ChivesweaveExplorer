@@ -114,6 +114,8 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     case 'XLS':
     case 'XLSX':
       return <ImagesPreview open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['Excel']} />;
+    case 'MP4':
+      return <ImagesPreview open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['Mp4']} />;
     default:
       return <Fragment></Fragment>
   }

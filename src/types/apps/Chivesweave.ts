@@ -42,6 +42,7 @@ export type TxRecordType = {
   owner: {[key: string]: string}
   data: {[key: string]: any}
   fee: {[key: string]: number}
+  quantity: {[key: string]: number}
   location: string
   recentActivity: string
   tags: any
