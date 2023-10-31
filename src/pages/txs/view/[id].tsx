@@ -93,6 +93,11 @@ const ImgOriginal = styled('img')(({  }) => ({
   style: { zIndex: 1 }
 }))
 
+const ImgPreview = styled('img')(({  }) => ({
+  objectFit: 'cover',
+  style: { zIndex: 1 }
+}))
+
 const LinkStyled = styled(Link)(({ theme }) => ({
   fontWeight: 550,
   fontSize: '1rem',
@@ -162,7 +167,7 @@ function parseTxAndGetMemoFileInfoInTags(TxRecord: TxRecordType) {
     case 'JPEG':
     case 'JPG':
     case 'WEBM':
-      return <ImgOriginal src={`${authConfig.backEndApi}/${TxRecord.id}`}/>
+      return <ImgPreview src={`${authConfig.backEndApi}/${TxRecord.id}`}/>
     case 'PDF':
       return <ImagesPreview open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['pdf']} />;
     case 'JSON':
@@ -379,23 +384,23 @@ const BlockView = () => {
         .then(res => {
           setTxViewInfo(res.data);
           let TempFileName = '';
+          setIsBundleTx(false);
           res.data && res.data.tags && res.data.tags.map((Item: { [key: string]: string }) => {
-            if(Item.name=="File-Name") {
-              console.log("Item.value", Item.value)
+            if(Item.name=="File-Name")      {
               TempFileName = Item.value;
-              setFileName(Item.value)
+              setFileName(Item.value);
             }
-            if(Item.name=="Bundle-Format") {
-              setIsBundleTx(true)
+            if(Item.name == "Bundle-Format")  {
+              setIsBundleTx(true);
             }
           });
           if(TempFileName == '') {
-            setFileName("Data")
+            setFileName("Data");
           }
           setIsLoading(false);
         })
         .catch(() => {
-          console.log("axios.get editUrl return")
+          console.log("axios.get editUrl return");
         })
     }
   }, [id])
