@@ -6,6 +6,7 @@ import blocks from 'src/store/apps/blocks'
 import transactions from 'src/store/apps/transactions'
 import addresstransactions from 'src/store/apps/addresstransactions'
 import blocktransactions from 'src/store/apps/blocktransactions'
+import transactionbundles from 'src/store/apps/transactionbundles'
 import addresses from 'src/store/apps/addresses'
 
 export const store = configureStore({
@@ -14,6 +15,7 @@ export const store = configureStore({
     transactions,
     addresstransactions,
     blocktransactions,
+    transactionbundles,
     addresses
   },
   middleware: getDefaultMiddleware =>
