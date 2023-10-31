@@ -125,7 +125,8 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
     FileMap[Item.name] = Item.value;
   });
   const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
-  console.log("FileType", FileType)
+  
+  //console.log("FileType", FileType)
   switch(FileType) {
     case 'PNG':
     case 'GIF':

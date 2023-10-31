@@ -91,7 +91,7 @@ const BlockView = () => {
   useEffect(() => {
     if(id != undefined) {
       axios
-        .get(authConfig.backEndApi + '/block/txsrecord/' + id, { headers: { }, params: { } })
+        .get(authConfig.backEndApi + '/block/txsrecord/' + id + "/0/2", { headers: { }, params: { } })
         .then(res => {
           setBlockViewInfo(res.data);
         })

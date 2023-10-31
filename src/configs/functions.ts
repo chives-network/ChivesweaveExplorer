@@ -201,7 +201,8 @@ export function parseTxAndGetMemoInfo(TxRecord: TxRecordType): string {
       FileInfo['type'] = "Bundle"
     }
   });
-  console.log("FileInfo", FileInfo)
+  
+  //console.log("FileInfo", FileInfo)
   let result = '';
   switch(FileInfo['type']) {
     case 'File':
