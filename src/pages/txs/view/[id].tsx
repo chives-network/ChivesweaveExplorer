@@ -94,6 +94,8 @@ const ImgOriginal = styled('img')(({  }) => ({
 }))
 
 const ImgPreview = styled('img')(({  }) => ({
+  maxWidth: '100%',
+  maxHeight: '100%',
   objectFit: 'cover',
   style: { zIndex: 1 }
 }))
@@ -125,21 +127,16 @@ function ImagePreview(ImageSource: string) {
   useEffect(() => {
     const img = new Image();
     img.src = ImageSource;
-
     img.onload = () => {
       setImageError(false);
     };
-
     img.onerror = () => {
       setImageError(true);
     };
   }, [ImageSource]);
 
   return (
-    <div
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} >
       {!imageError && !isHovered && (
         <Img src={ImageSource} />
       )}
@@ -350,7 +347,7 @@ const columns: GridColDef[] = [
   }
 ]
 
-const BlockView = () => {
+const TxView = () => {
   
   const router = useRouter();
   const { id } = router.query;
@@ -689,4 +686,4 @@ const BlockView = () => {
 
 
 
-export default BlockView
+export default TxView

@@ -44,7 +44,12 @@ const navigation = (): VerticalNavItemsType => {
       path: '/nodes'
     },
     {
-      title: 'Ecosystem',
+      title: 'Memory Pool',
+      icon: 'mdi:pool',
+      path: '/mempool'
+    },
+    {
+      title: 'Eco System',
       icon: 'icon-park-outline:system',
       path: '/ecosystem'
     }
