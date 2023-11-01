@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -16,7 +16,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatSecondToMinute, formatTimestamp, formatStorageSize, formatTimestampAge, getContentTypeAbbreviation } from 'src/configs/functions';
+import { formatHash, formatXWE, getContentTypeAbbreviation } from 'src/configs/functions';
 
 interface TransactionCellType {
   row: TxRecordType

@@ -17,21 +17,6 @@ interface BlockCellType {
   row: BlockType
 }
 
-const Img = styled('img')(({ theme }) => ({
-  width: 34,
-  height: 34,
-  borderRadius: '50%',
-  objectFit: 'cover',
-  marginRight: theme.spacing(3)
-}))
-
-const ImgOriginal = styled('img')(({  }) => ({
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  style: { zIndex: 1 }
-}))
-
 const LinkStyled = styled(Link)(({ theme }) => ({
   fontWeight: 550,
   fontSize: '1rem',

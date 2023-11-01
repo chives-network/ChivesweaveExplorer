@@ -8,7 +8,6 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 import AnalyticsBlockList from 'src/views/dashboards/analytics/AnalyticsBlockList'
 import AnalyticsTrophy from 'src/views/dashboards/analytics/AnalyticsTrophy'
 import AnalyticsLine from 'src/views/dashboards/analytics/AnalyticsLine'
-import AnalyticsBar from 'src/views/dashboards/analytics/AnalyticsBar'
 import AnalyticsTransactionList from 'src/views/dashboards/analytics/AnalyticsTransactionList'
 import AnalyticsTransactionsCard from 'src/views/dashboards/analytics/AnalyticsTransactionsCard'
 
@@ -41,7 +40,6 @@ const AnalyticsDashboard = () => {
   const [dataX, setDataX] = useState<string[]>([])
   const [dataWeaveSize, setDataWeaveSize] = useState<number[]>([])
   const [difficulty, setDifficulty] = useState<number[]>([])
-  const [endowment, setEndowment] = useState<number[]>([])
   
   const [blocksnumber, setblocksnumber] = useState<number[]>([])
   const [Block_Rewards, setBlock_Rewards] = useState<number[]>([])
@@ -66,7 +64,9 @@ const AnalyticsDashboard = () => {
       setDataX(dataX.slice(1).slice().reverse().slice(1).slice(-21))
       setDataWeaveSize(dataWeaveSize.slice(1).slice().reverse().slice(1).slice(-21))
       setDifficulty(difficulty.slice(1).slice().reverse().slice(1).slice(-21))
-      setEndowment(endowment.slice(1).slice().reverse().slice(1).slice(-21))
+      console.log("isLoading", isLoading)
+
+      //setEndowment(endowment.slice(1).slice().reverse().slice(1).slice(-21))
     })
 
     axios.get(authConfig.backEndApi + '/statistics_block', { headers: { }, params: { } })
@@ -109,10 +109,18 @@ const AnalyticsDashboard = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={4}>
-          <AnalyticsTrophy data={chainInfo}/>
+          {chainInfo ?
+            <AnalyticsTrophy data={chainInfo}/>
+          :
+            <Fragment></Fragment>
+          }          
         </Grid>
-        <Grid item xs={12} md={8}>
-          <AnalyticsTransactionsCard data={chainInfo}/>
+        <Grid item xs={12} md={8}>          
+          {chainInfo ?
+            <AnalyticsTransactionsCard data={chainInfo}/>
+          :
+            <Fragment></Fragment>
+          }
         </Grid>
         <Grid item xs={12} md={4}>
           <AnalyticsTransactionList data={transactionList}/>
@@ -131,16 +139,10 @@ const AnalyticsDashboard = () => {
           <AnalyticsLine dataX={dataX} dataY={Block_Rewards} title={"Block Rewards Per Day"} bottomText={""}/>
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
-          <AnalyticsBar dataX={dataX} dataY={dataWeaveSize} title={"Weave Size"} bottomText={""}/>
-        </Grid>
-        <Grid item xs={12} md={6} lg={6}>
           <AnalyticsLine dataX={dataX} dataY={dataWeaveSize} title={"Weave Size"} bottomText={""}/>
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
           <AnalyticsLine dataX={dataX} dataY={difficulty} title={"Difficulty"} bottomText={""}/>
-        </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <AnalyticsLine dataX={dataX} dataY={endowment} title={"Endowment"} bottomText={""}/>
         </Grid>
       </Grid>
     </ApexChartWrapper>
