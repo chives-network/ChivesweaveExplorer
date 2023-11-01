@@ -37,6 +37,7 @@ const AuthProvider = ({ children }: Props) => {
   // ** Hooks
   const router = useRouter()
 
+  /*
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
@@ -70,6 +71,7 @@ const AuthProvider = ({ children }: Props) => {
     initAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  */
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     axios
@@ -99,6 +101,11 @@ const AuthProvider = ({ children }: Props) => {
     window.localStorage.removeItem(authConfig.storageTokenKeyName)
     router.push('/login')
   }
+
+  useEffect(() => {
+    const user = {id: 1, role: 'admin', fullName: 'John Doe', username: 'johndoe', email: 'chivesweave@gmail.com'}
+    setUser(user as UserDataType)
+  }, [])
 
   const values = {
     user,

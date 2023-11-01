@@ -51,6 +51,8 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
     settings.layout = 'vertical'
   }
 
+  console.log("HorizontalNavItems()", HorizontalNavItems())
+
   return (
     <Layout
       hidden={hidden}

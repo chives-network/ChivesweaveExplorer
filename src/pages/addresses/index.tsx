@@ -172,6 +172,5 @@ const AddressesList = () => {
   )
 }
 
-AddressesList.guestGuard = true
 
 export default AddressesList
