@@ -17,10 +17,6 @@ import authConfig from 'src/configs/auth'
 // ** React Imports
 import { useState, useEffect, Fragment, ReactNode } from 'react'
 
-// ** Layout Import
-import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-
 interface ChainInfoType {
   network: string
   version: number

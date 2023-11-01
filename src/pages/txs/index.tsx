@@ -341,5 +341,6 @@ const TransactionList = () => {
   )
 }
 
+TransactionList.guestGuard = true
 
 export default TransactionList

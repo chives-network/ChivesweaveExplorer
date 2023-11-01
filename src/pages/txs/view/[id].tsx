@@ -681,8 +681,6 @@ const TxView = () => {
   )
 }
 
-
-
-
+TxView.guestGuard = true
 
 export default TxView

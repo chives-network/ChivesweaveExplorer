@@ -110,7 +110,7 @@ const App = (props: ExtendedAppProps) => {
 
   const setConfig = Component.setConfig ?? undefined
 
-  const authGuard = Component.authGuard ?? true
+  const authGuard = Component.authGuard ?? false
 
   const guestGuard = Component.guestGuard ?? false
 
