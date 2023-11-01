@@ -15,7 +15,10 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
 // ** React Imports
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, Fragment, ReactNode } from 'react'
+
+// ** Layout Import
+import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 
 interface ChainInfoType {
@@ -148,5 +151,7 @@ const AnalyticsDashboard = () => {
     </ApexChartWrapper>
   )
 }
+
+AnalyticsDashboard.guestGuard = true
 
 export default AnalyticsDashboard

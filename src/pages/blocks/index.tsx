@@ -336,5 +336,6 @@ const BlockList = () => {
   )
 }
 
+BlockList.guestGuard = true
 
 export default BlockList

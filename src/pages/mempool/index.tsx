@@ -59,7 +59,7 @@ const FileTypeObj: FileTypeObj = {
   WAV: { color: 'primary', icon: 'teenyicons:wav-outline' }
 }
 
-const PeersInfo = () => {
+const Mempool = () => {
   
   const [txViewInfo, setTxViewInfo] = useState<TxRecordType[]>()
 
@@ -122,8 +122,6 @@ const PeersInfo = () => {
   )
 }
 
+Mempool.guestGuard = true
 
-
-
-
-export default PeersInfo
+export default Mempool

@@ -106,8 +106,7 @@ const App = (props: ExtendedAppProps) => {
 
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false
-  const getLayout =
-    Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
+  const getLayout = Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
 
   const setConfig = Component.setConfig ?? undefined
 
