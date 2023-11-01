@@ -44,7 +44,7 @@ const renderStats = (data: ChainInfoType) => {
   const salesData: DataType[] = [
     {
       stats: String(data.height),
-      title: 'Sales',
+      title: 'Height',
       color: 'primary',
       icon: <Icon icon='mdi:trending-up' />
     },
