@@ -528,6 +528,7 @@ const BlockTransactionList = () => {
   )
 }
 
+BlockTransactionList.guestGuard = true
 
 export default BlockTransactionList
 
