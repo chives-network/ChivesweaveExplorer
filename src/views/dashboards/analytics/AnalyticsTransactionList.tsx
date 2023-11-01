@@ -151,8 +151,8 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
 
 const columns: GridColDef[] = [
   {
-    flex: 0.2,
-    minWidth: 200,
+    flex: 0.12,
+    minWidth: 150,
     field: 'TxId',
     headerName: 'TxId',
     sortable: false,
@@ -161,7 +161,7 @@ const columns: GridColDef[] = [
       
       return (
         <Typography noWrap variant='body2'>
-          <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
+          <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 4)}</LinkStyled>
         </Typography>
       )
     }
