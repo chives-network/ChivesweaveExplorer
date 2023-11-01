@@ -142,8 +142,7 @@ function ImagePreview(ImageSource: string) {
       )}
       {!imageError && isHovered && (
         <div className="preview">
-          <ImgOriginal src={ImageSource} 
-          />
+          <ImgOriginal src={ImageSource} />
         </div>
       )}
     </div>

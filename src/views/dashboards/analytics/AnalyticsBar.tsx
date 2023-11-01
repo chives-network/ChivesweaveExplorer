@@ -7,14 +7,26 @@ import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
+// ** React Imports
+import { Fragment } from 'react'
+
 // ** Third Party Imports
 import { ApexOptions } from 'apexcharts'
 
 // ** Custom Components Imports
-import OptionsMenu from 'src/@core/components/option-menu'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
-const AnalyticsWeeklyOverview = () => {
+export type propsType = {
+  dataX: string[]
+  dataY: number[]
+  title: string
+  bottomText:string
+}
+
+const AnalyticsBar = (props: propsType) => {
+  // ** Props
+  const { dataX, dataY, title, bottomText } = props
+
   // ** Hook
   const theme = useTheme()
 
@@ -65,10 +77,10 @@ const AnalyticsWeeklyOverview = () => {
       }
     },
     xaxis: {
-      categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      categories: dataX,
       tickPlacement: 'on',
-      labels: { show: false },
-      axisTicks: { show: false },
+      labels: { show: true },
+      axisTicks: { show: true },
       axisBorder: { show: false }
     },
     yaxis: {
@@ -78,7 +90,7 @@ const AnalyticsWeeklyOverview = () => {
         offsetY: 2,
         offsetX: -17,
         style: { colors: theme.palette.text.disabled },
-        formatter: value => `${value > 999 ? `${(value / 1000).toFixed(0)}` : value}k`
+        formatter: value => `${value}Gb`
       }
     }
   }
@@ -86,31 +98,23 @@ const AnalyticsWeeklyOverview = () => {
   return (
     <Card>
       <CardHeader
-        title='Weekly Overview'
+        title={title}
         titleTypographyProps={{
           sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
         }}
-        action={
-          <OptionsMenu
-            options={['Refresh', 'Update', 'Delete']}
-            iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
-          />
-        }
       />
       <CardContent sx={{ '& .apexcharts-xcrosshairs.apexcharts-active': { opacity: 0 } }}>
-        <ReactApexcharts type='bar' height={205} options={options} series={[{ data: [37, 57, 45, 75, 57, 40, 65] }]} />
-        <Box sx={{ mb: 7, display: 'flex', alignItems: 'center' }}>
-          <Typography variant='h5' sx={{ mr: 4 }}>
-            45%
+        <ReactApexcharts type='bar' height={200} options={options} series={[{ data: dataY }]} />
+        {bottomText && bottomText!="" ?
+          <Typography variant='body2' sx={{ fontWeight: 600, textAlign: 'center', color: 'text.primary' }}>
+            {bottomText}
           </Typography>
-          <Typography variant='body2'>Your sales performance is 45% 😎 better compared to last month</Typography>
-        </Box>
-        <Button fullWidth variant='contained'>
-          Details
-        </Button>
+        :
+          <Fragment></Fragment>
+        }
       </CardContent>
     </Card>
   )
 }
 
-export default AnalyticsWeeklyOverview
+export default AnalyticsBar

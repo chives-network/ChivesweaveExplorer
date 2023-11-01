@@ -16,7 +16,6 @@ import Icon from 'src/@core/components/icon'
 import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Components Imports
-import OptionsMenu from 'src/@core/components/option-menu'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 
 interface DataType {
@@ -26,34 +25,49 @@ interface DataType {
   icon: ReactElement
 }
 
-const salesData: DataType[] = [
-  {
-    stats: '245k',
-    title: 'Sales',
-    color: 'primary',
-    icon: <Icon icon='mdi:trending-up' />
-  },
-  {
-    stats: '12.5k',
-    title: 'Customers',
-    color: 'success',
-    icon: <Icon icon='mdi:account-outline' />
-  },
-  {
-    stats: '1.54k',
-    color: 'warning',
-    title: 'Products',
-    icon: <Icon icon='mdi:cellphone-link' />
-  },
-  {
-    stats: '$88k',
-    color: 'info',
-    title: 'Revenue',
-    icon: <Icon icon='mdi:currency-usd' />
-  }
-]
+interface ChainInfoType {
+  network: string
+  version: number
+  release: number
+  height: number
+  current: string
+  blocks: number
+  peers: number
+  time: number
+  miningtime: number
+  weave_size: number
+  denomination: number
+  diff: string
+}
 
-const renderStats = () => {
+const renderStats = (data: ChainInfoType) => {
+  const salesData: DataType[] = [
+    {
+      stats: String(data.height),
+      title: 'Sales',
+      color: 'primary',
+      icon: <Icon icon='mdi:trending-up' />
+    },
+    {
+      stats: String(data.peers),
+      title: 'Peers',
+      color: 'success',
+      icon: <Icon icon='mdi:account-outline' />
+    },
+    {
+      stats: String((data.weave_size/(1024*1024*1024)).toFixed(1)) + "Gb",
+      title: 'Weave Size',
+      color: 'warning',
+      icon: <Icon icon='mdi:cellphone-link' />
+    },
+    {
+      stats: String(data.release),
+      title: 'Release',
+      color: 'info',
+      icon: <Icon icon='mdi:currency-usd' />
+    }
+  ]
+  
   return salesData.map((item: DataType, index: number) => (
     <Grid item xs={12} sm={3} key={index}>
       <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -73,23 +87,23 @@ const renderStats = () => {
   ))
 }
 
-const AnalyticsTransactionsCard = () => {
+export type propsType = {
+  data: ChainInfoType
+}
+
+const AnalyticsTransactionsCard = (props: propsType) => {
+  
+  // ** Props
+  const { data } = props
+
   return (
     <Card>
       <CardHeader
-        title='Transactions'
-        action={
-          <OptionsMenu
-            options={['Last 28 Days', 'Last Month', 'Last Year']}
-            iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
-          />
-        }
+        title='Network Info'
         subheader={
           <Typography variant='body2'>
             <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
-              Total 48.5% growth
-            </Box>{' '}
-            😎 this month
+            </Box>
           </Typography>
         }
         titleTypographyProps={{
@@ -102,7 +116,7 @@ const AnalyticsTransactionsCard = () => {
       />
       <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
         <Grid container spacing={[5, 0]}>
-          {renderStats()}
+          {renderStats(data)}
         </Grid>
       </CardContent>
     </Card>

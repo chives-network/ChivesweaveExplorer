@@ -22,7 +22,31 @@ const TrophyImg = styled('img')({
   position: 'absolute'
 })
 
-const AnalyticsTrophy = () => {
+
+interface ChainInfoType {
+  network: string
+  version: number
+  release: number
+  height: number
+  current: string
+  blocks: number
+  peers: number
+  time: number
+  miningtime: number
+  weave_size: number
+  denomination: number
+  diff: string
+}
+
+export type propsType = {
+  data: ChainInfoType
+}
+
+const AnalyticsTrophy = (props: propsType) => {
+  
+  // ** Props
+  const { data } = props
+
   // ** Hook
   const theme = useTheme()
 
@@ -31,16 +55,13 @@ const AnalyticsTrophy = () => {
   return (
     <Card sx={{ position: 'relative' }}>
       <CardContent>
-        <Typography variant='h6'>Congratulations John! 🥳</Typography>
+        <Typography variant='h6'>Welcome to Chivesweave! 🥳</Typography>
         <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-          Best seller of the month
+        A PERMANENT STORAGE PUBLIC CHAIN!
         </Typography>
         <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
-          $42.8k
+          {data.height}
         </Typography>
-        <Button size='small' variant='contained'>
-          View Sales
-        </Button>
         <TriangleImg alt='triangle background' src={`/images/misc/${imageSrc}`} />
         <TrophyImg alt='trophy' src='/images/misc/trophy.png' />
       </CardContent>

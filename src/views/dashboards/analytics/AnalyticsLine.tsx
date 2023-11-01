@@ -9,10 +9,23 @@ import { ApexOptions } from 'apexcharts'
 
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import { Fragment } from 'react'
 
-const series = [{ data: [0, 20, 5, 30, 15, 45] }]
+export type propsType = {
+  dataX: string[]
+  dataY: number[]
+  title: string
+  bottomText: string
+}
 
-const CardStatsLineChart = () => {
+
+
+const AnalyticsLine = (props: propsType) => {
+  // ** Props
+  const { dataX, dataY, title, bottomText } = props
+
+  const series = [{ data: dataY }]
+
   // ** Hook
   const theme = useTheme()
 
@@ -21,7 +34,7 @@ const CardStatsLineChart = () => {
       parentHeightOffset: 0,
       toolbar: { show: false }
     },
-    tooltip: { enabled: false },
+    tooltip: { enabled: true },
     grid: {
       strokeDashArray: 6,
       borderColor: theme.palette.divider,
@@ -29,7 +42,7 @@ const CardStatsLineChart = () => {
         lines: { show: true }
       },
       yaxis: {
-        lines: { show: false }
+        lines: { show: true }
       },
       padding: {
         top: -10,
@@ -63,26 +76,36 @@ const CardStatsLineChart = () => {
       hover: { size: 7 }
     },
     xaxis: {
-      labels: { show: false },
-      axisTicks: { show: false },
-      axisBorder: { show: false }
+      axisBorder: { show: true },      
+      axisTicks: { color: theme.palette.divider },
+      crosshairs: {
+        stroke: { color: theme.palette.divider }
+      },
+      labels: {
+        style: { colors: theme.palette.text.disabled }
+      },
+      categories: dataX      
     },
     yaxis: {
-      labels: { show: false }
+      labels: { show: true }
     }
   }
 
   return (
     <Card>
       <CardContent>
-        <Typography variant='h6'>$86.4k</Typography>
-        <ReactApexcharts type='line' height={98} options={options} series={series} />
-        <Typography variant='body2' sx={{ fontWeight: 600, textAlign: 'center', color: 'text.primary' }}>
-          Total Profit
-        </Typography>
+        <Typography variant='h6'>{title}</Typography>
+        <ReactApexcharts type='line' height={220} options={options} series={series} />
+        {bottomText && bottomText!="" ?
+          <Typography variant='body2' sx={{ fontWeight: 600, textAlign: 'center', color: 'text.primary' }}>
+            {bottomText}
+          </Typography>
+        :
+          <Fragment></Fragment>
+        }
       </CardContent>
     </Card>
   )
 }
 
-export default CardStatsLineChart
+export default AnalyticsLine

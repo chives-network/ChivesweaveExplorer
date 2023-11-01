@@ -11,13 +11,13 @@ import CardStatisticsVerticalComponent from 'src/@core/components/card-statistic
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Demo Components Imports
-import AnalyticsTable from 'src/views/dashboards/analytics/AnalyticsTable'
+import AnalyticsTable from 'src/views/dashboards/analytics/AnalyticsBlockList'
 import AnalyticsTrophy from 'src/views/dashboards/analytics/AnalyticsTrophy'
 import AnalyticsSessions from 'src/views/dashboards/analytics/AnalyticsSessions'
-import AnalyticsTotalProfit from 'src/views/dashboards/analytics/AnalyticsTotalProfit'
+import AnalyticsTotalProfit from 'src/views/dashboards/analytics/AnalyticsLine'
 import AnalyticsPerformance from 'src/views/dashboards/analytics/AnalyticsPerformance'
 import AnalyticsTotalEarning from 'src/views/dashboards/analytics/AnalyticsTotalEarning'
-import AnalyticsWeeklyOverview from 'src/views/dashboards/analytics/AnalyticsWeeklyOverview'
+import AnalyticsWeeklyOverview from 'src/views/dashboards/analytics/AnalyticsBar'
 import AnalyticsDepositWithdraw from 'src/views/dashboards/analytics/AnalyticsDepositWithdraw'
 import AnalyticsSalesByCountries from 'src/views/dashboards/analytics/AnalyticsSalesByCountries'
 import AnalyticsTransactionsCard from 'src/views/dashboards/analytics/AnalyticsTransactionsCard'
