@@ -422,6 +422,4 @@ const AddressTransactionList = () => {
   )
 }
 
-AddressTransactionList.guestGuard = true
-
 export default AddressTransactionList

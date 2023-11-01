@@ -149,6 +149,5 @@ const home = () => {
   )
 }
 
-home.guestGuard = true
 
 export default home

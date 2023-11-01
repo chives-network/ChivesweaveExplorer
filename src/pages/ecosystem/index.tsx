@@ -149,6 +149,5 @@ const AnalyticsDashboard = () => {
   )
 }
 
-AnalyticsDashboard.guestGuard = true
 
 export default AnalyticsDashboard

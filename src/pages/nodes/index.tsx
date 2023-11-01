@@ -230,6 +230,4 @@ const PeersInfo = () => {
   )
 }
 
-PeersInfo.guestGuard = true
-
 export default PeersInfo

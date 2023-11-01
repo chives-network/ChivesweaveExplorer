@@ -122,6 +122,4 @@ const Mempool = () => {
   )
 }
 
-Mempool.guestGuard = true
-
 export default Mempool
