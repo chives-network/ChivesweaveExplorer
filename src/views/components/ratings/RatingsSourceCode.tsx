@@ -16,7 +16,7 @@ const RatingsBasic = () => {
     <div>
       <Box sx={{ mb: 3 }}>
         <Typography sx={{ fontWeight: 500 }}>Controlled</Typography>
-        <Rating value={value} name='simple-controlled' onChange={(event, newValue) => setValue(newValue)} />
+        <Rating value={value} name='simple-controlled' onChange={(event: any, newValue) => setValue(newValue)} />
       </Box>
       <Box sx={{ mb: 3 }}>
         <Typography sx={{ fontWeight: 500 }}>Read only</Typography>
@@ -101,8 +101,8 @@ const RatingsHoverFeedback = () => {
         sx={{ mr: 4 }}
         precision={0.5}
         name='hover-feedback'
-        onChange={(event, newValue) => setValue(newValue)}
-        onChangeActive={(event, newHover) => setHover(newHover)}
+        onChange={(event: any, newValue) => setValue(newValue)}
+        onChangeActive={(event: any, newHover) => setHover(newHover)}
       />
       {value !== null && <Typography>{labels[hover !== -1 ? hover : value]}</Typography>}
     </Box>
@@ -227,7 +227,7 @@ const RatingsBasic = () => {
     <div>
       <Box sx={{ mb: 3 }}>
         <Typography sx={{ fontWeight: 500 }}>Controlled</Typography>
-        <Rating value={value} name='simple-controlled' onChange={(event, newValue) => setValue(newValue)} />
+        <Rating value={value} name='simple-controlled' onChange={(event: any, newValue) => setValue(newValue)} />
       </Box>
       <Box sx={{ mb: 3 }}>
         <Typography sx={{ fontWeight: 500 }}>Read only</Typography>
@@ -285,8 +285,8 @@ const RatingsHoverFeedback = () => {
         sx={{ mr: 4 }}
         precision={0.5}
         name='hover-feedback'
-        onChange={(event, newValue) => setValue(newValue)}
-        onChangeActive={(event, newHover) => setHover(newHover)}
+        onChange={(event: any, newValue) => setValue(newValue)}
+        onChangeActive={(event: any, newHover) => setHover(newHover)}
       />
       {value !== null && <Typography>{labels[hover !== -1 ? hover : value]}</Typography>}
     </Box>

@@ -14,7 +14,7 @@ const RatingsBasic = () => {
     <div>
       <Box sx={{ mb: 3 }}>
         <Typography sx={{ fontWeight: 500 }}>Controlled</Typography>
-        <Rating value={value} name='simple-controlled' onChange={(event, newValue) => setValue(newValue)} />
+        <Rating value={value} name='simple-controlled' onChange={(event: any, newValue) => setValue(newValue)} />
       </Box>
       <Box sx={{ mb: 3 }}>
         <Typography sx={{ fontWeight: 500 }}>Read only</Typography>

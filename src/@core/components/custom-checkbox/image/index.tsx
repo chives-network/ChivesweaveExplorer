@@ -27,7 +27,7 @@ const CustomCheckboxImg = (props: CustomCheckboxImgProps) => {
             alignItems: 'center',
             flexDirection: 'column',
             justifyContent: 'center',
-            border: theme => `2px solid ${theme.palette.divider}`,
+            border: (theme: any) => `2px solid ${theme.palette.divider}`,
             '& img': {
               width: '100%',
               height: '100%',
@@ -36,7 +36,7 @@ const CustomCheckboxImg = (props: CustomCheckboxImgProps) => {
             ...(selected.includes(value)
               ? { borderColor: `${color}.main` }
               : {
-                  '&:hover': { borderColor: theme => `rgba(${theme.palette.customColors.main}, 0.25)` },
+                  '&:hover': { borderColor: (theme: any) => `rgba(${theme.palette.customColors.main}, 0.25)` },
                   '&:not(:hover)': {
                     '& .MuiCheckbox-root': { display: 'none' }
                   }

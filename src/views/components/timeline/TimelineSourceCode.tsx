@@ -99,7 +99,7 @@ const TimelineCenter = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus quos, voluptates voluptas rem.
           </Typography>
-          <Divider sx={{ my: theme => {theme.spacing(3)} !important }} />
+          <Divider sx={{ my: (theme: any) => {theme.spacing(3)} !important }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex' }}>
               <Avatar src='/images/avatars/2.png' sx={{ width: '2rem', height: '2rem', mr: 2 }} />
@@ -279,7 +279,7 @@ const TimelineCenter = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas, quidem?
           </Typography>
-          <Divider sx={{ my: theme => {theme.spacing(3)} !important }} />
+          <Divider sx={{ my: (theme: any) => {theme.spacing(3)} !important }} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
               <IconButton sx={{ color: 'text.primary' }}>
@@ -387,7 +387,7 @@ const TimelineFilled = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus quos, voluptates voluptas rem.
           </Typography>
-          <Divider sx={{ my: theme => {theme.spacing(3)} !important }} />
+          <Divider sx={{ my: (theme: any) => {theme.spacing(3)} !important }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex' }}>
               <Avatar src='/images/avatars/2.png' sx={{ width: '2rem', height: '2rem', mr: 2 }} />
@@ -581,7 +581,7 @@ const TimelineOutlined = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus quos, voluptates voluptas rem.
           </Typography>
-          <Divider sx={{ my: theme => {theme.spacing(3)} !important }} />
+          <Divider sx={{ my: (theme: any) => {theme.spacing(3)} !important }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex' }}>
               <Avatar src='/images/avatars/2.png' sx={{ width: '2rem', height: '2rem', mr: 2 }} />
@@ -767,7 +767,7 @@ const TimelineOutlined = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus quos, voluptates voluptas rem.
           </Typography>
-          <Divider sx={{ my: theme => {theme.spacing(3)} !important }} />
+          <Divider sx={{ my: (theme: any) => {theme.spacing(3)} !important }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex' }}>
               <Avatar src='/images/avatars/2.png' sx={{ width: '2rem', height: '2rem', mr: 2 }} />
@@ -953,7 +953,7 @@ const TimelineFilled = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus quos, voluptates voluptas rem.
           </Typography>
-          <Divider sx={{ my: theme => {theme.spacing(3)} !important }} />
+          <Divider sx={{ my: (theme: any) => {theme.spacing(3)} !important }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex' }}>
               <Avatar src='/images/avatars/2.png' sx={{ width: '2rem', height: '2rem', mr: 2 }} />
@@ -1168,7 +1168,7 @@ const TimelineCenter = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus quos, voluptates voluptas rem.
           </Typography>
-          <Divider sx={{ my: theme => {theme.spacing(3)} !important }} />
+          <Divider sx={{ my: (theme: any) => {theme.spacing(3)} !important }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex' }}>
               <Avatar src='/images/avatars/2.png' sx={{ width: '2rem', height: '2rem', mr: 2 }} />
@@ -1348,7 +1348,7 @@ const TimelineCenter = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas, quidem?
           </Typography>
-          <Divider sx={{ my: theme => {theme.spacing(3)} !important }} />
+          <Divider sx={{ my: (theme: any) => {theme.spacing(3)} !important }} />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
               <IconButton sx={{ color: 'text.primary' }}>

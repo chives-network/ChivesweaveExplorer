@@ -78,7 +78,7 @@ const DialogConfirmation = () => {
         disableEscapeKeyDown
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
-        onClose={(event, reason) => {
+        onClose={(event: any, reason) => {
           if (reason !== 'backdropClick') {
             handleClose()
           }
@@ -569,7 +569,7 @@ const DialogCustomized = () => {
             chocolate bar chocolate marzipan candy fruitcake jujubes.
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ p: theme => {theme.spacing(3)} !important }}>
+        <DialogActions sx={{ p: (theme: any) => {theme.spacing(3)} !important }}>
           <Button onClick={handleClose}>Save changes</Button>
         </DialogActions>
       </Dialog>
@@ -642,7 +642,7 @@ const DialogsScroll = () => {
             )}
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ p: theme => {theme.spacing(2.5)} !important }}>
+        <DialogActions sx={{ p: (theme: any) => {theme.spacing(2.5)} !important }}>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleClose}>Subscribe</Button>
         </DialogActions>
@@ -740,7 +740,7 @@ const DialogConfirmation = () => {
         disableEscapeKeyDown
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
-        onClose={(event, reason) => {
+        onClose={(event: any, reason) => {
           if (reason !== 'backdropClick') {
             handleClose()
           }
@@ -1248,7 +1248,7 @@ const DialogCustomized = () => {
             chocolate bar chocolate marzipan candy fruitcake jujubes.
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ p: theme => {theme.spacing(3)} !important }}>
+        <DialogActions sx={{ p: (theme: any) => {theme.spacing(3)} !important }}>
           <Button onClick={handleClose}>Save changes</Button>
         </DialogActions>
       </Dialog>
@@ -1324,7 +1324,7 @@ const DialogsScroll = () => {
             )}
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ p: theme => {theme.spacing(2.5)} !important }}>
+        <DialogActions sx={{ p: (theme: any) => {theme.spacing(2.5)} !important }}>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleClose}>Subscribe</Button>
         </DialogActions>

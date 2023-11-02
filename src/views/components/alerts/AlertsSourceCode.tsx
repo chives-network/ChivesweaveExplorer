@@ -8,7 +8,7 @@ const AlertsBasic = () => {
   return (
     <div className='demo-space-y'>
       <Alert
-        onClose={e => {
+        onClose={(e: any) => {
           e.preventDefault()
         }}
       >
@@ -298,7 +298,7 @@ const AlertsBasic = () => {
   return (
     <div className='demo-space-y'>
       <Alert
-        onClose={e => {
+        onClose={(e: any) => {
           e.preventDefault()
         }}
       >

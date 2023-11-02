@@ -109,7 +109,7 @@ const ApexDonutChart = () => {
       <CardHeader
         title='Expense Ratio'
         subheader='Spending on various categories'
-        subheaderTypographyProps={{ sx: { color: theme => `${theme.palette.text.disabled} !important` } }}
+        subheaderTypographyProps={{ sx: { color: (theme: any) => `${theme.palette.text.disabled} !important` } }}
       />
       <CardContent>
         <ReactApexcharts type='donut' height={400} options={options} series={[85, 16, 50, 50]} />

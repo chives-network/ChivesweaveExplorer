@@ -467,8 +467,8 @@ const AutocompleteComponent = ({ hidden, settings }: Props) => {
                 options={options}
                 id='appBar-search'
                 isOptionEqualToValue={() => true}
-                onInputChange={(event, value: string) => setSearchValue(value)}
-                onChange={(event, obj) => handleOptionClick(obj as AppBarSearchType)}
+                onInputChange={(event: any, value: string) => setSearchValue(value)}
+                onChange={(event: any, obj: any) => handleOptionClick(obj as AppBarSearchType)}
                 noOptionsText={<NoResult value={searchValue} setOpenDialog={setOpenDialog} />}
                 getOptionLabel={(option: AppBarSearchType | unknown) => (option as AppBarSearchType).title || ''}
                 groupBy={(option: AppBarSearchType | unknown) =>
@@ -528,7 +528,7 @@ const AutocompleteComponent = ({ hidden, settings }: Props) => {
                     />
                   )
                 }}
-                renderOption={(props, option: AppBarSearchType | unknown) => {
+                renderOption={(props: any, option: AppBarSearchType | unknown) => {
                   return searchValue.length ? (
                     <ListItem
                       {...props}

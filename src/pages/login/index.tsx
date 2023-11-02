@@ -343,7 +343,7 @@ const LoginPage = () => {
                   <LinkStyled href='/register'>Create an account</LinkStyled>
                 </Typography>
               </Box>
-              <Divider sx={{ my: theme => `${theme.spacing(5)} !important` }}>or</Divider>
+              <Divider sx={{ my: (theme: any) => `${theme.spacing(5)} !important` }}>or</Divider>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <IconButton
                   href='/'
@@ -365,7 +365,7 @@ const LoginPage = () => {
                   href='/'
                   component={Link}
                   onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
-                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
+                  sx={{ color: (theme: any) => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
                 >
                   <Icon icon='mdi:github' />
                 </IconButton>

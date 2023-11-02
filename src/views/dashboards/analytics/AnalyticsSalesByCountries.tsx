@@ -86,7 +86,7 @@ const AnalyticsSalesByCountries = () => {
           />
         }
       />
-      <CardContent sx={{ pt: theme => `${theme.spacing(2)} !important` }}>
+      <CardContent sx={{ pt: (theme: any) => `${theme.spacing(2)} !important` }}>
         {data.map((item: DataType, index: number) => {
           return (
             <Box

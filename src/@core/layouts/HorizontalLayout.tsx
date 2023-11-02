@@ -102,12 +102,12 @@ const HorizontalLayout = (props: LayoutProps) => {
             justifyContent: 'center',
             backgroundColor: 'background.paper',
             ...(appBar === 'static' && { zIndex: 13 }),
-            ...(skin === 'bordered' && { borderBottom: theme => `1px solid ${theme.palette.divider}` }),
+            ...(skin === 'bordered' && { borderBottom: (theme: any) => `1px solid ${theme.palette.divider}` }),
             transition: 'border-bottom 0.2s ease-in-out, backdrop-filter .25s ease-in-out, box-shadow .25s ease-in-out',
             ...(appBar === 'fixed'
               ? appBarBlur && {
                   backdropFilter: 'blur(8px)',
-                  backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.85)
+                  backgroundColor: (theme: any) => hexToRGBA(theme.palette.background.paper, 0.85)
                 }
               : {}),
             ...userAppBarStyle
@@ -119,7 +119,7 @@ const HorizontalLayout = (props: LayoutProps) => {
             className='layout-navbar'
             sx={{
               width: '100%',
-              ...(navHidden ? {} : { borderBottom: theme => `1px solid ${theme.palette.divider}` })
+              ...(navHidden ? {} : { borderBottom: (theme: any) => `1px solid ${theme.palette.divider}` })
             }}
           >
             <Toolbar
@@ -127,7 +127,7 @@ const HorizontalLayout = (props: LayoutProps) => {
               sx={{
                 mx: 'auto',
                 ...(contentWidth === 'boxed' && { '@media (min-width:1440px)': { maxWidth: 1440 } }),
-                minHeight: theme => `${(theme.mixins.toolbar.minHeight as number) - 1}px !important`
+                minHeight: (theme: any) => `${(theme.mixins.toolbar.minHeight as number) - 1}px !important`
               }}
             >
               <AppBarContent
@@ -149,7 +149,7 @@ const HorizontalLayout = (props: LayoutProps) => {
                 sx={{
                   mx: 'auto',
                   ...(contentWidth === 'boxed' && { '@media (min-width:1440px)': { maxWidth: 1440 } }),
-                  minHeight: theme =>
+                  minHeight: (theme: any) =>
                     `${(theme.mixins.toolbar.minHeight as number) - (skin === 'bordered' ? 1 : 0)}px !important`
                 }}
               >

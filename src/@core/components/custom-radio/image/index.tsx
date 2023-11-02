@@ -27,10 +27,10 @@ const CustomRadioImg = (props: CustomRadioImgProps) => {
             alignItems: 'center',
             flexDirection: 'column',
             justifyContent: 'center',
-            border: theme => `2px solid ${theme.palette.divider}`,
+            border: (theme: any) => `2px solid ${theme.palette.divider}`,
             ...(selected === value
               ? { borderColor: `${color}.main` }
-              : { '&:hover': { borderColor: theme => `rgba(${theme.palette.customColors.main}, 0.25)` } }),
+              : { '&:hover': { borderColor: (theme: any) => `rgba(${theme.palette.customColors.main}, 0.25)` } }),
             '& img': {
               width: '100%',
               height: '100%',

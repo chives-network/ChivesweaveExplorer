@@ -126,7 +126,7 @@ const AnalyticsDepositWithdraw = () => {
             sx: { lineHeight: '1.6 !important', letterSpacing: '0.15px !important' }
           }}
         />
-        <CardContent sx={{ pb: theme => `${theme.spacing(5.5)} !important` }}>
+        <CardContent sx={{ pb: (theme: any) => `${theme.spacing(5.5)} !important` }}>
           {depositData.map((item: DataType, index: number) => {
             return (
               <Box
@@ -172,7 +172,7 @@ const AnalyticsDepositWithdraw = () => {
             sx: { lineHeight: '1.6 !important', letterSpacing: '0.15px !important' }
           }}
         />
-        <CardContent sx={{ pb: theme => `${theme.spacing(5.5)} !important` }}>
+        <CardContent sx={{ pb: (theme: any) => `${theme.spacing(5.5)} !important` }}>
           {withdrawData.map((item: DataType, index: number) => {
             return (
               <Box

@@ -27,7 +27,7 @@ const DialogConfirmation = () => {
         disableEscapeKeyDown
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
-        onClose={(event, reason) => {
+        onClose={(event: any, reason) => {
           if (reason !== 'backdropClick') {
             handleClose()
           }

@@ -69,7 +69,7 @@ const VerticalNavSectionTitle = (props: Props) => {
             ...(navCollapsed && !navHover
               ? {
                   width: 22,
-                  borderColor: theme => `rgba(${theme.palette.customColors.main}, 0.3)`
+                  borderColor: (theme: any) => `rgba(${theme.palette.customColors.main}, 0.3)`
                 }
               : {
                   width: '100%',

@@ -114,7 +114,7 @@ const AnalyticsTransactionsCard = (props: propsType) => {
           }
         }}
       />
-      <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
+      <CardContent sx={{ pt: (theme: any) => `${theme.spacing(3)} !important` }}>
         <Grid container spacing={[5, 0]}>
           {renderStats(data)}
         </Grid>

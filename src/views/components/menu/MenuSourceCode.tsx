@@ -106,7 +106,7 @@ const MenuComposition = () => {
         id='composition-button'
         aria-expanded={open ? 'true' : undefined}
         aria-controls={open ? 'composition-menu' : undefined}
-        sx={{ '& + div': { zIndex: theme => theme.zIndex.modal } }}
+        sx={{ '& + div': { zIndex: (theme: any) => theme.zIndex.modal } }}
       >
         Open Menu
       </Button>
@@ -136,7 +136,7 @@ const MenuComposition = () => {
           >
             <Paper
               elevation={skin === 'bordered' ? 0 : 6}
-              sx={skin === 'bordered' ? { border: theme => 1px solid {theme.palette.divider} } : {}}
+              sx={skin === 'bordered' ? { border: (theme: any) => 1px solid {theme.palette.divider} } : {}}
             >
               <ClickAwayListener onClickAway={() => setOpen(false)}>
                 <MenuList autoFocusItem={open} id='composition-menu' onKeyDown={handleListKeyDown}>
@@ -585,7 +585,7 @@ const MenuComposition = () => {
         id='composition-button'
         aria-expanded={open ? 'true' : undefined}
         aria-controls={open ? 'composition-menu' : undefined}
-        sx={{ '& + div': { zIndex: theme => theme.zIndex.modal } }}
+        sx={{ '& + div': { zIndex: (theme: any) => theme.zIndex.modal } }}
       >
         Open Menu
       </Button>
@@ -615,7 +615,7 @@ const MenuComposition = () => {
           >
             <Paper
               elevation={skin === 'bordered' ? 0 : 6}
-              sx={skin === 'bordered' ? { border: theme => 1px solid {theme.palette.divider} } : {}}
+              sx={skin === 'bordered' ? { border: (theme: any) => 1px solid {theme.palette.divider} } : {}}
             >
               <ClickAwayListener onClickAway={() => setOpen(false)}>
                 <MenuList autoFocusItem={open} id='composition-menu' onKeyDown={handleListKeyDown}>

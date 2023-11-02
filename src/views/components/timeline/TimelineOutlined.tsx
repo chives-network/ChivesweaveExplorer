@@ -76,7 +76,7 @@ const TimelineOutlined = () => {
           <Typography variant='body2' sx={{ color: 'text.primary' }}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus quos, voluptates voluptas rem.
           </Typography>
-          <Divider sx={{ my: theme => `${theme.spacing(3)} !important` }} />
+          <Divider sx={{ my: (theme: any) => `${theme.spacing(3)} !important` }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex' }}>
               <Avatar src='/images/avatars/2.png' sx={{ width: '2rem', height: '2rem', mr: 2 }} />

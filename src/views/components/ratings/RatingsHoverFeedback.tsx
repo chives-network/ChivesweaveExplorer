@@ -31,8 +31,8 @@ const RatingsHoverFeedback = () => {
         sx={{ mr: 4 }}
         precision={0.5}
         name='hover-feedback'
-        onChange={(event, newValue) => setValue(newValue)}
-        onChangeActive={(event, newHover) => setHover(newHover)}
+        onChange={(event: any, newValue) => setValue(newValue)}
+        onChangeActive={(event: any, newHover) => setHover(newHover)}
       />
       {value !== null && <Typography>{labels[hover !== -1 ? hover : value]}</Typography>}
     </Box>

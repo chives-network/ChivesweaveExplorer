@@ -36,7 +36,7 @@ const AvatarsWithBadge = () => {
           <Avatar
             alt='Marie Garza'
             src='/images/avatars/2.png'
-            sx={{ width: 22, height: 22, border: theme => `2px solid ${theme.palette.background.paper}` }}
+            sx={{ width: 22, height: 22, border: (theme: any) => `2px solid ${theme.palette.background.paper}` }}
           />
         }
       >

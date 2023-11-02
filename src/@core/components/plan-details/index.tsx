@@ -50,7 +50,7 @@ const PlanDetails = (props: PricingPlanProps) => {
   return (
     <BoxWrapper
       sx={{
-        border: theme =>
+        border: (theme: any) =>
           !data?.popularPlan
             ? `1px solid ${theme.palette.divider}`
             : `1px solid ${hexToRGBA(theme.palette.primary.main, 0.5)}`
