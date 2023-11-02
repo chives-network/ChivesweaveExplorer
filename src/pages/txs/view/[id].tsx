@@ -437,7 +437,7 @@ const TxView = () => {
                                 ID:
                               </Typography>
                             </TableCell>
-                            <TableCell><StringDisplay inputString={id} /></TableCell>
+                            <TableCell><StringDisplay InputString={id} /></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>

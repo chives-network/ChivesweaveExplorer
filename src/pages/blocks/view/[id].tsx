@@ -39,6 +39,8 @@ import { formatHash, formatXWE, formatSecondToMinute, formatTimestamp, formatSto
 // ** Next Import
 import { useRouter } from 'next/router'
 
+import StringDisplay from 'src/pages/preview/StringDisplay';
+
 interface BlockViewInfoType {
   timestamp: number
   mining_time: number
@@ -347,8 +349,41 @@ const BlockTransactionList = () => {
     {blockViewInfo && blockViewInfo != undefined  && "timestamp" in blockViewInfo ?
       <Grid item xs={12}>
         <Card>
-          <CardHeader title={`Block ${id} ${blockViewInfo.indep_hash}`} />
+          <CardHeader title={`Block ${id}`} />
           <CardContent>
+
+            <Grid container spacing={6}>
+              <Grid item xs={12} lg={12}>
+                <TableContainer>
+                  <Table size='small' sx={{ width: '95%' }}>
+                    <TableBody
+                      sx={{
+                        '& .MuiTableCell-root': {
+                          border: 0,
+                          pt: 2,
+                          pb: 2.5,
+                          pl: '0 !important',
+                          pr: '0 !important',
+                          '&:first-of-type': {
+                            width: 148
+                          }
+                        }
+                      }}
+                    >
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                            Block Hash:
+                          </Typography>
+                        </TableCell>
+                        <TableCell><StringDisplay InputString={`${blockViewInfo.indep_hash}`} StringSize={20} /></TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </Grid>
+
             <Grid container spacing={6}>
 
               <Grid item xs={12} lg={5}>

@@ -6,13 +6,14 @@ import ToggleButton from '@mui/material/ToggleButton'
 import Icon from 'src/@core/components/icon'
 
 
-function StringDisplay({ inputString, StringSize } : any) {
-  let truncatedString = inputString;
+function StringDisplay({ InputString, StringSize } : any) {
+  let truncatedString = InputString;
   if(StringSize > 0) {
-    truncatedString = inputString.slice(0, StringSize) + '...' + inputString.slice(0-StringSize);
+    truncatedString = InputString.slice(0, StringSize) + '...' + InputString.slice(0-StringSize);
   }
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(inputString);
+    navigator.clipboard.writeText(InputString);
+    navigator.clipboard.writeText(InputString);
   }
 
   return (

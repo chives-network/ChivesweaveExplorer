@@ -39,6 +39,7 @@ import { formatHash, formatXWE, formatTimestampAge, formatStorageSize, getConten
 // ** Next Import
 import { useRouter } from 'next/router'
 
+import StringDisplay from 'src/pages/preview/StringDisplay';
 
 interface TransactionCellType {
   row: TxRecordType
@@ -358,7 +359,7 @@ const AddressTransactionList = () => {
                             Address:
                           </Typography>
                         </TableCell>
-                        <TableCell>{id}</TableCell>
+                        <TableCell><StringDisplay InputString={id} /></TableCell>
                       </TableRow>
 
                       <TableRow>

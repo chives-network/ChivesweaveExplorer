@@ -54,7 +54,7 @@ const AutocompleteComponent = ({ hidden, settings }: Props) => {
         router.push("/blocks/view/" + searchValueTrim)
         break;
     }
-    if(!isNaN(Number(searchValue))) {
+    if(!isNaN(Number(searchValue)) && Number(searchValue) > 0) {
       router.push("/blocks/view/" + Number(searchValue))
     }
   }, [searchValue])
