@@ -33,7 +33,7 @@ interface ChainInfoType {
   diff: string
 }
 
-const home = () => {
+const Home = () => {
 
   const [chainInfo, setChainInfo] = useState<ChainInfoType>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -149,4 +149,4 @@ const home = () => {
   )
 }
 
-export default home
+export default Home

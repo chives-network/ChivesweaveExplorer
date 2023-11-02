@@ -15,7 +15,7 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
 // ** React Imports
-import { useState, useEffect, Fragment, ReactNode } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 
 interface ChainInfoType {
   network: string
