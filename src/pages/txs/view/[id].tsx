@@ -40,6 +40,8 @@ import { TxRecordType } from 'src/types/apps/Chivesweave'
 
 import { ThemeColor } from 'src/@core/layouts/types'
 
+import StringDisplay from 'src/pages/preview/StringDisplay';
+
 interface TransactionCellType {
   row: TxRecordType
 }
@@ -346,6 +348,7 @@ const columns: GridColDef[] = [
   }
 ]
 
+
 const TxView = () => {
   
   const router = useRouter();
@@ -434,7 +437,7 @@ const TxView = () => {
                                 ID:
                               </Typography>
                             </TableCell>
-                            <TableCell>{id}</TableCell>
+                            <TableCell><StringDisplay inputString={id} /></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
