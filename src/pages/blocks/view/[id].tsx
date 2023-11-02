@@ -49,6 +49,7 @@ interface BlockViewInfoType {
   currentheight: number
   height: number
   reward: number
+  indep_hash: string
 }
 
 interface TransactionCellType {
@@ -340,15 +341,13 @@ const BlockTransactionList = () => {
     setIsLoading(false)
   }, [])
 
-  console.log("store.params",store.params)
-  
   return (
     <Grid container spacing={6}>
     
     {blockViewInfo && blockViewInfo != undefined  && "timestamp" in blockViewInfo ?
       <Grid item xs={12}>
         <Card>
-          <CardHeader title={`Block ${id}`} />
+          <CardHeader title={`Block ${id} ${blockViewInfo.indep_hash}`} />
           <CardContent>
             <Grid container spacing={6}>
 

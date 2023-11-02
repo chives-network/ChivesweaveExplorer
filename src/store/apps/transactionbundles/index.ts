@@ -14,7 +14,6 @@ interface DataParams1 {
 // ** Fetch Data
 export const fetchData = createAsyncThunk('appTransactionBundles/fetchData', async (params: DataParams1) => {
   const response = await axios.get(authConfig.backEndApi + '/tx/'+ `${params.tx}` + '/unbundle/'+ `${params.pageId}` + '/'+params.pageSize)
-  console.log("appTransactionBundles/fetchData", params)
   
   return response.data
 })

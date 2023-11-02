@@ -60,7 +60,6 @@ function ExcelViewer({ fileUrl }: { fileUrl: string; } ) {
             if (err) {
               console.error(err);
             } else {
-              console.log("resp.cols", resp.cols)
               const tempCols: SetStateAction<any[]> = []
               tempCols.push({name: '', key: 0})
               
@@ -116,14 +115,8 @@ interface ImagesPreviewType {
 
 const ImagesPreview = (props: ImagesPreviewType) => {
   // ** Props
-  const { open, imagesList, imagesType, toggleImagesPreviewDrawer } = props
+  const { imagesList, imagesType } = props
   
-  const handleClose = () => {
-    toggleImagesPreviewDrawer()
-  }
-  console.log("open", open)
-  console.log("handleClose", handleClose)
-
   const [numPages, setNumPages] = useState<number>(0)    
   function onDocumentLoadSuccess({ numPages }: { numPages: number; } ) {
       setNumPages(numPages);
@@ -177,7 +170,6 @@ const ImagesPreview = (props: ImagesPreviewType) => {
                           <Fragment key={UrlIndex}>
                               <Document file={Url} onLoadSuccess={onDocumentLoadSuccess} >
                                   {Array.from(new Array(numPages), (element, index) => {
-                                      console.log("onDocumentLoadSuccess: ", element)
                                       
                                       return (<Page key={`page_${index + 1}`} pageNumber={index + 1} width={820}/>)
                                   })}

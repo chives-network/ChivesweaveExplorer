@@ -295,7 +295,6 @@ const TransactionList = () => {
 
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
 
-  console.log("paginationModel", paginationModel)
   
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()

@@ -126,8 +126,6 @@ const AddressesList = () => {
 
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
 
-  console.log("paginationModel", paginationModel)
-  
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.addresses)

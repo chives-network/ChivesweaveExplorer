@@ -14,8 +14,7 @@ interface DataParams1 {
 // ** Fetch Data
 export const fetchData = createAsyncThunk('appAddressTransactions/fetchData', async (params: DataParams1) => {
   const response = await axios.get(authConfig.backEndApi + '/wallet/'+ `${params.address}` + '/txsrecord/'+ `${params.pageId}` + '/'+params.pageSize)
-  console.log("appAddressTransactions/fetchData", params)
-  
+
   return response.data
 })
 
