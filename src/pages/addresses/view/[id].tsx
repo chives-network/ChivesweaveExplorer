@@ -34,7 +34,9 @@ import { fetchData } from 'src/store/apps/addresstransactions'
 import { RootState, AppDispatch } from 'src/store'
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatTimestampAge, formatStorageSize, getContentTypeAbbreviation } from 'src/configs/functions';
+import { formatHash, formatXWE, formatTimestampAge, formatStorageSize } from 'src/configs/functions';
+
+import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -44,21 +46,6 @@ import StringDisplay from 'src/pages/preview/StringDisplay';
 interface TransactionCellType {
   row: TxRecordType
 }
-
-const Img = styled('img')(({ theme }) => ({
-  width: 34,
-  height: 34,
-  borderRadius: '50%',
-  objectFit: 'cover',
-  marginRight: theme.spacing(3)
-}))
-
-const ImgOriginal = styled('img')(({  }) => ({
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  style: { zIndex: 1 }
-}))
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   fontWeight: 550,
@@ -70,107 +57,6 @@ const LinkStyled = styled(Link)(({ theme }) => ({
     color: theme.palette.primary.main
   }
 }))
-
-function ImagePreview(ImageSource: string) {
-  const [isHovered, setIsHovered] = useState(false);
-  const [imageError, setImageError] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = ImageSource;
-
-    img.onload = () => {
-      setImageError(false);
-    };
-
-    img.onerror = () => {
-      setImageError(true);
-    };
-  }, [ImageSource]);
-
-  return (
-    <div
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {!imageError && !isHovered && (
-        <Img src={ImageSource} />
-      )}
-      {!imageError && isHovered && (
-        <div className="preview">
-          <ImgOriginal src={ImageSource} 
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
-  const FileMap: { [key: string]: string } = {}
-  TxRecord.tags.map((Item: { [key: string]: string }) => {
-    FileMap[Item.name] = Item.value;
-  });
-  const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
-  
-  //console.log("FileType", FileType)
-  switch(FileType) {
-    case 'PNG':
-    case 'GIF':
-    case 'JPEG':
-    case 'JPG':
-    case 'WEBM':
-      return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`)
-    case 'PDF':
-      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
-    case 'XLS':
-    case 'XLSX':
-      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
-    case 'DOC':
-    case 'DOCX':
-      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
-    case 'PPT':
-    case 'PPTX':
-      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
-    case 'MP4':
-      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
-    case 'MP3':
-      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
-    case 'WAV':
-      return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
-  }
-
-  //Bundle Support
-  const BundleFormat = getContentTypeAbbreviation(FileMap['Bundle-Format']);
-  const BundleVersion = getContentTypeAbbreviation(FileMap['Bundle-Version']);
-  if(BundleFormat == "binary") {
-    return "Bundle " + BundleVersion;
-  }
-
-  //Video Format
-
-  if(TxRecord.recipient != "") {
-        
-    return (
-        <Typography noWrap variant='body2'>
-          {formatXWE(TxRecord.quantity.winston, 4) + " -> "}
-          <LinkStyled href={`/addresses/view/${TxRecord.id}`}>{formatHash(TxRecord.recipient, 5)}</LinkStyled>
-        </Typography>
-
-    )
-  }
-
-  return "Unknown";
-
-}
 
 const columns: GridColDef[] = [
   {
@@ -245,7 +131,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: TransactionCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          {parseTxAndGetMemoFileInfo(row)}
+          <FormatTxInfoInRow TxRecord={row}/>
         </Typography>
       )
     }

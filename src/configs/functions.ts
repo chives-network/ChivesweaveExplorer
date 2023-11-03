@@ -166,6 +166,8 @@ export function getContentTypeAbbreviation(contentType: string): string {
     'audio/mpeg': 'MP3',
     'audio/wav': 'WAV',
     'application/x.chivesweave-manifest+json': 'JSON',
+    'application/x-msdownload': 'EXE',
+    'text/csv':'CSV',
   };
 
   return contentTypeMap[contentType] || contentType; // 未知类型
@@ -182,9 +184,9 @@ export function parseTxAndGetMemoFileType(TxRecord: TxRecordType): string {
 }
 
 export function parseTxAndGetMemoInfo(TxRecord: TxRecordType): string {
-  if(TxRecord.recipient!="" && TxRecord.fee.xwe > 0) {
+  if(TxRecord.recipient!="" && TxRecord.quantity.winston > 0) {
     
-    return formatXWE(TxRecord.fee.xwe, 6) + " XWE -> " + formatHash(TxRecord.recipient, 6);
+    return formatXWE(TxRecord.quantity.winston, 6) + " XWE -> " + formatHash(TxRecord.recipient, 6);
   }
   const FileInfo: { [key: string]: string } = {}
   TxRecord.tags.map((Item: { [key: string]: string }) => {
