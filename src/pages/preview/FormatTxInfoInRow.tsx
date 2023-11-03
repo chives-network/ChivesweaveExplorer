@@ -83,8 +83,7 @@ function ImagePreview(ImageSource: string) {
     );
   }
 
-function FormatTxInfoInRow({ TxRecordItem }: any) {
-    const TxRecord = TxRecordItem as TxRecordType;
+function FormatTxInfoInRow({ TxRecord }: any) {
     const FileMap: { [key: string]: string } = {}
     TxRecord?.tags.map((Item: { [key: string]: string }) => {
       FileMap[Item.name] = Item.value;
