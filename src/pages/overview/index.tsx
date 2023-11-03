@@ -122,7 +122,11 @@ const AnalyticsDashboard = () => {
           }
         </Grid>
         <Grid item xs={12} md={4}>
-          <AnalyticsTransactionList data={transactionList}/>
+          {transactionList && transactionList.length > 0 ?
+            <AnalyticsTransactionList data={transactionList}/>
+          :
+            <Fragment></Fragment>
+          }
         </Grid>
         <Grid item xs={12} md={12} lg={8}>
           {blockList && blockList.length > 0 ?
