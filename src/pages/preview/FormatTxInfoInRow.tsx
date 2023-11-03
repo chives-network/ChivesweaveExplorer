@@ -11,8 +11,6 @@ import authConfig from 'src/configs/auth'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 
-import { TxRecordType } from 'src/types/apps/Chivesweave'
-
 import { formatHash, formatXWE, getContentTypeAbbreviation } from 'src/configs/functions';
 
 const Img = styled('img')(({ theme }) => ({
