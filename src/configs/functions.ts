@@ -11,10 +11,21 @@ export function formatHash(inputString: string, spliceSize: number): string {
 
     return inputString; 
   }
-  const firstPart = inputString.substring(0, spliceSize);
-  const lastPart = inputString.substring(inputString.length - spliceSize);
 
-  return `${firstPart} ... ${lastPart}`;
+  const IsMobile = isMobile();
+  if(IsMobile == true) {
+    const firstPart = inputString.substring(0, 6);
+    const lastPart = inputString.substring(inputString.length - 6);
+    
+    return `${firstPart} ... ${lastPart}`;
+  }
+  else {
+    const firstPart = inputString.substring(0, spliceSize);
+    const lastPart = inputString.substring(inputString.length - spliceSize);
+    
+    return `${firstPart} ... ${lastPart}`;
+  }
+
 }
 
 export function formatXWE(dividend: number, precision: number) {
@@ -218,5 +229,18 @@ export function parseTxAndGetMemoInfo(TxRecord: TxRecordType): string {
       break;
   }
   
-  return result; // 未知类型
+  return result;
+}
+
+export function isMobile(): boolean {
+  if (typeof window !== 'undefined') {
+    const screenWidth = window.innerWidth;
+    const userAgent = window.navigator.userAgent;
+    if (screenWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
+      
+      return true;
+    }
+  }
+  
+  return false;
 }

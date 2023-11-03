@@ -245,7 +245,7 @@ const AddressTransactionList = () => {
                             Address:
                           </Typography>
                         </TableCell>
-                        <TableCell><StringDisplay InputString={id} /></TableCell>
+                        <TableCell><StringDisplay InputString={id} StringSize={20}/></TableCell>
                       </TableRow>
 
                       <TableRow>

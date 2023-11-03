@@ -437,7 +437,7 @@ const TxView = () => {
                                 ID:
                               </Typography>
                             </TableCell>
-                            <TableCell><StringDisplay InputString={id} /></TableCell>
+                            <TableCell><StringDisplay InputString={id} StringSize={20}/></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
@@ -584,7 +584,7 @@ const TxView = () => {
                                           {Item.name}
                                         </Typography>
                                       </TableCell>
-                                      <TableCell>{Item.value}</TableCell>
+                                      <TableCell>{formatHash(Item.value, 20)}</TableCell>
                                     </TableRow>
                                     )
                             } )}

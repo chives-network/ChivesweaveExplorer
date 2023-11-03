@@ -94,13 +94,23 @@ const PeersInfo = () => {
   }, [])
 
   useEffect(() => {
+    
+    //Frist Time Api Fetch
     axios.get(authConfig.backEndApi + '/peersinfo', { headers: { }, params: { } })
         .then(res => {
           setPeers(res.data);
         })
-        .catch(() => {
-          console.log("axios.get editUrl return")
+
+    const intervalId = setInterval(() => {
+      //Interval Time Api Fetch
+      axios.get(authConfig.backEndApi + '/peersinfo', { headers: { }, params: { } })
+        .then(res => {
+          setPeers(res.data);
         })
+    }, 120000);
+
+    return () => clearInterval(intervalId);
+
   }, [])
 
   return (

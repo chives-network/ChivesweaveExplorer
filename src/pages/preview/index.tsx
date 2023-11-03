@@ -156,6 +156,7 @@ const ImagesPreview = (props: ImagesPreviewType) => {
             <Box className='navigation-wrapper'>
                 <Box ref={sliderRef} className='keen-slider' style={{'width':'820px'}}>
                 {imagesList && imagesList.length>0 && imagesList.map((Url: string, UrlIndex: number)=>{
+                  console.log("Url", Url)
                   switch(imagesType[UrlIndex]) {
                     case 'image':
                       

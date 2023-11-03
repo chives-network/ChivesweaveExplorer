@@ -5,16 +5,24 @@ import ToggleButton from '@mui/material/ToggleButton'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
+import { isMobile } from 'src/configs/functions';
+
 
 function StringDisplay({ InputString, StringSize } : any) {
   let truncatedString = InputString;
-  if(StringSize > 0) {
+  const IsMobile = isMobile();
+  if(StringSize > 0 && IsMobile == true) {
+    truncatedString = InputString.slice(0, 4) + '...' + InputString.slice(0-4);
+  }
+  if(StringSize > 0 && IsMobile == false) {
     truncatedString = InputString.slice(0, StringSize) + '...' + InputString.slice(0-StringSize);
   }
   const copyToClipboard = () => {
     navigator.clipboard.writeText(InputString);
     navigator.clipboard.writeText(InputString);
   }
+
+  console.log("isMobile", isMobile())
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>

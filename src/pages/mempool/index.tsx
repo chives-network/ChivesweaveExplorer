@@ -17,17 +17,13 @@ import TableBody from '@mui/material/TableBody'
 import CardHeader from '@mui/material/CardHeader'
 import TableContainer from '@mui/material/TableContainer'
 
-import { formatHash, formatXWE, formatStorageSize, getContentTypeAbbreviation, parseTxAndGetMemoInfo } from 'src/configs/functions';
+import { formatHash, formatXWE, formatStorageSize } from 'src/configs/functions';
 
 import { ThemeColor } from 'src/@core/layouts/types'
 
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-// ** Custom Components Imports
-import CustomAvatar from 'src/@core/components/mui/avatar'
-
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
 
 interface FileTypeObj {
   [key: string]: {
@@ -64,13 +60,23 @@ const Mempool = () => {
   const [txViewInfo, setTxViewInfo] = useState<TxRecordType[]>()
 
   useEffect(() => {
+    
+    //Frist Time Api Fetch
     axios.get(authConfig.backEndApi + '/tx/pending/record', { headers: { }, params: { } })
         .then(res => {
           setTxViewInfo(res.data);
         })
-        .catch(() => {
-          console.log("axios.get editUrl return")
+
+    const intervalId = setInterval(() => {
+      //Interval Time Api Fetch
+      axios.get(authConfig.backEndApi + '/tx/pending/record', { headers: { }, params: { } })
+        .then(res => {
+          setTxViewInfo(res.data);
         })
+
+    }, 120000);
+
+    return () => clearInterval(intervalId);
   }, [])
 
   return (
@@ -89,7 +95,6 @@ const Mempool = () => {
                 <TableCell>Hash</TableCell>
                 <TableCell>From</TableCell>
                 <TableCell>Size</TableCell>
-                <TableCell>Type</TableCell>
                 <TableCell>Fee</TableCell>
                 <TableCell>Info</TableCell>
                 </TableRow>
@@ -101,14 +106,8 @@ const Mempool = () => {
                     <TableCell>{formatHash(item.id, 7)}</TableCell>
                     <TableCell>{formatHash(item.owner.address, 7)}</TableCell>
                     <TableCell>{formatStorageSize(item.data.size)}</TableCell>
-                    <TableCell>
-                    {getContentTypeAbbreviation(item.data.type)}
-                    <CustomAvatar skin='light' color={(FileTypeObj[getContentTypeAbbreviation(item.data.type)]?.color as ThemeColor) || ('primary' as ThemeColor)} sx={{ width: '1.875rem', height: '1.875rem' }}>
-                        <Icon icon={FileTypeObj[getContentTypeAbbreviation(item.data.type)]?.icon} fontSize='1rem' />
-                    </CustomAvatar>
-                    </TableCell>
                     <TableCell>{formatXWE(item.fee.winston, 6)} XWE</TableCell>
-                    <TableCell>{parseTxAndGetMemoInfo(item)}</TableCell>
+                    <TableCell><FormatTxInfoInRow TxRecord={item}/></TableCell>
                 </TableRow>
                 ))}
             </TableBody>
