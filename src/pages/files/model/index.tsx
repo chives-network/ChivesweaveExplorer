@@ -4,22 +4,12 @@ import { useState, useEffect, Fragment, SyntheticEvent } from 'react'
 // ** Next Imports
 import Link from 'next/link'
 
-// ** Axios Imports
-import axios from 'axios'
-import authConfig from 'src/configs/auth'
-
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import Table from '@mui/material/Table'
-import TableRow from '@mui/material/TableRow'
-import TableCell from '@mui/material/TableCell'
-import TableBody from '@mui/material/TableBody'
-import TableContainer from '@mui/material/TableContainer'
 
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
@@ -27,7 +17,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { fetchData } from 'src/store/apps/addresstransactions'
+import { fetchData } from 'src/store/apps/files'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
@@ -39,8 +29,6 @@ import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
 
 // ** Next Import
 import { useRouter } from 'next/router'
-
-import StringDisplay from 'src/pages/preview/StringDisplay';
 
 import Box from '@mui/material/Box'
 import Tab from '@mui/material/Tab'
@@ -198,9 +186,10 @@ const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
 }))
 
 
-const AddressTransactionListModel = ({ activeTab } : any) => {
+const FileResourceModel = ({ activeTab } : any) => {
 
   const router = useRouter();
+
   const { id } = router.query;
 
   // ** State
@@ -209,25 +198,10 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.addresstransactions)
-
-  const [addressBalance, setAddressBalance] = useState<number>(0)
+  const store = useSelector((state: RootState) => state.files)
 
   useEffect(() => {
-    if(id != undefined) {
-      axios
-        .get(authConfig.backEndApi + '/wallet/' + id + "/balance", { headers: { }, params: { } })
-        .then(res => {
-          setAddressBalance(res.data);
-        })
-        .catch(() => {
-          console.log("axios.get editUrl return")
-        })
-    }
-  }, [id])
-
-  useEffect(() => {
-    if(id!=undefined) {
+    if(true) {
       dispatch(
         fetchData({
           address: String(id),
@@ -237,12 +211,12 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
         })
       )
     }
-  }, [dispatch, paginationModel, id, activeTab])
+  }, [dispatch, paginationModel, activeTab])
 
   const handleChange = (event: SyntheticEvent, value: string) => {
     router
       .push({
-        pathname: `/addresses/${value.toLowerCase()}/${id}`
+        pathname: `/files/${value.toLowerCase()}`
       })
       .then(() => setIsLoading(false))
       console.log("handleChangeEvent", event)
@@ -255,72 +229,6 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
   return (
     <Grid container spacing={6}>
 
-    {id != undefined ?
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title={`Address`} />
-          <CardContent>
-            <Grid container spacing={6}>
-
-              <Grid item xs={12} lg={12}>
-                <TableContainer>
-                  <Table size='small' sx={{ width: '95%' }}>
-                    <TableBody
-                      sx={{
-                        '& .MuiTableCell-root': {
-                          border: 0,
-                          pt: 2,
-                          pb: 2.5,
-                          pl: '0 !important',
-                          pr: '0 !important',
-                          '&:first-of-type': {
-                            width: 148
-                          }
-                        }
-                      }}
-                    >
-                      <TableRow>
-                        <TableCell>
-                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Address:
-                          </Typography>
-                        </TableCell>
-                        <TableCell><StringDisplay InputString={id} StringSize={20}/></TableCell>
-                      </TableRow>
-
-                      <TableRow>
-                        <TableCell>
-                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Balance:
-                          </Typography>
-                        </TableCell>
-                        <TableCell>{formatXWE(addressBalance, 8)} XWE</TableCell>
-                      </TableRow>
-
-                      <TableRow>
-                        <TableCell>
-                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Total transactions:
-                          </Typography>
-                        </TableCell>
-                        <TableCell>{store.total}</TableCell>
-                      </TableRow>
-
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Grid>
-
-            </Grid>
-          </CardContent>
-
-        </Card>
-      </Grid>
-    :
-      <Fragment></Fragment>
-    }
-
-    
       <Grid item xs={12}>
         <TabContext value={activeTab}>
           <TabList
@@ -330,45 +238,63 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
             aria-label='forced scroll tabs example'
           >
             <Tab
-              value='all'
+              value='png'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:account-outline' />
-                  All
+                  Png
                 </Box>
               }
             />
             <Tab
-              value='sent'
+              value='jpeg'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:lock-outline' />
-                  Sent
+                  Jpeg
                 </Box>
               }
             />
             <Tab
-              value='received'
+              value='mp4'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:bookmark-outline' />
-                  Received
+                  Mp4
                 </Box>
               }
             />
             <Tab
-              value='files'
+              value='pdf'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:bell-outline' />
-                  Files
+                  Pdf
+                </Box>
+              }
+            />
+            <Tab
+              value='office'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:bell-outline' />
+                  Office
+                </Box>
+              }
+            />
+            <Tab
+              value='stl'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:bell-outline' />
+                  Stl
                 </Box>
               }
             />
           </TabList>
         </TabContext>
         <Card>
-          <CardHeader title='Transactions' />
+          <CardHeader title='File Resources' />
           {store && store.data != undefined ?
             <DataGrid
               autoHeight
@@ -395,4 +321,4 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
 }
 
 
-export default AddressTransactionListModel
+export default FileResourceModel

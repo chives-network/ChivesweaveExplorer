@@ -1,0 +1,42 @@
+// ** Redux Imports
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+
+// ** Axios Imports
+import axios from 'axios'
+import authConfig from 'src/configs/auth'
+
+interface DataParams1 {
+    address: string
+    pageId: number
+    pageSize: number
+    type: string
+}
+
+// ** Fetch Data
+export const fetchData = createAsyncThunk('appFiles/fetchData', async (params: DataParams1) => {
+  
+  const response = await axios.get(authConfig.backEndApi + '/file/'+ `${params.type}` + '/'+ `${params.pageId}` + '/'+params.pageSize)
+
+  return response.data
+})
+
+export const appFilesSlice = createSlice({
+  name: 'appFiles',
+  initialState: {
+    data: [],
+    total: 1,
+    params: {},
+    allData: []
+  },
+  reducers: {},
+  extraReducers: builder => {
+    builder.addCase(fetchData.fulfilled, (state, action) => {
+      state.data = action.payload.data
+      state.total = action.payload.total
+      state.params = action.payload.params
+      state.allData = action.payload.data
+    })
+  }
+})
+
+export default appFilesSlice.reducer

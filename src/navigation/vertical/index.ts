@@ -29,6 +29,11 @@ const navigation = (): VerticalNavItemsType => {
       path: '/addresses'
     },
     {
+      title: 'Resoures',
+      icon: 'mdi:file-multiple',
+      path: '/file/png'
+    },
+    {
       title: 'Staticstics',
       icon: 'mdi:chart-areaspline',
       path: '/statics'

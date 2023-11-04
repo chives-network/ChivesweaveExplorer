@@ -273,7 +273,7 @@ const columns: GridColDef[] = [
   },
   {
     flex: 0.15,
-    minWidth: 60,
+    minWidth: 100,
     headerName: 'Size',
     field: 'Size',
     sortable: false,
@@ -288,7 +288,7 @@ const columns: GridColDef[] = [
   },
   {
     flex: 0.15,
-    minWidth: 110,
+    minWidth: 100,
     field: 'Fee',
     headerName: 'Fee',
     sortable: false,

@@ -8,6 +8,7 @@ import addresstransactions from 'src/store/apps/addresstransactions'
 import blocktransactions from 'src/store/apps/blocktransactions'
 import transactionbundles from 'src/store/apps/transactionbundles'
 import addresses from 'src/store/apps/addresses'
+import files from 'src/store/apps/files'
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +17,8 @@ export const store = configureStore({
     addresstransactions,
     blocktransactions,
     transactionbundles,
-    addresses
+    addresses,
+    files
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
