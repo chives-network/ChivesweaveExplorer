@@ -53,7 +53,7 @@ const columns: GridColDef[] = [
       
       return (
         <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/view/${row.id}`}>{formatHash(row.id, 10)}</LinkStyled>
+          <LinkStyled href={`/addresses/all/${row.id}`}>{formatHash(row.id, 10)}</LinkStyled>
         </Typography>
       )
     }

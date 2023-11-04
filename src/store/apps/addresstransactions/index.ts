@@ -9,11 +9,27 @@ interface DataParams1 {
     address: string
     pageId: number
     pageSize: number
+    type: string
 }
 
 // ** Fetch Data
 export const fetchData = createAsyncThunk('appAddressTransactions/fetchData', async (params: DataParams1) => {
-  const response = await axios.get(authConfig.backEndApi + '/wallet/'+ `${params.address}` + '/txsrecord/'+ `${params.pageId}` + '/'+params.pageSize)
+  let addressApiType = "txsrecord";
+  switch(params.type) {
+    case 'all':
+      addressApiType = "txsrecord";
+      break;
+    case 'sent':
+      addressApiType = "send";
+      break;
+    case 'received':
+      addressApiType = "deposits";
+      break;
+    case 'files':
+      addressApiType = "datarecord";
+      break;
+  }
+  const response = await axios.get(authConfig.backEndApi + '/wallet/'+ `${params.address}` + '/'+ `${addressApiType}` + '/'+ `${params.pageId}` + '/'+params.pageSize)
 
   return response.data
 })

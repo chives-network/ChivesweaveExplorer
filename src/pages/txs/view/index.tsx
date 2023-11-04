@@ -353,6 +353,9 @@ const TxView = () => {
   
   const router = useRouter();
   const { id } = router.query;
+  const _GET = router.query;
+  
+  console.log("_GET", _GET)
 
   const [txViewInfo, setTxViewInfo] = useState<TxRecordType>()
   const [fileName, setFileName] = useState("Data")

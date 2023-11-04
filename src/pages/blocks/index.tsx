@@ -140,7 +140,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: BlockCellType) => {
       return (
         <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/view/${row.reward_addr}`}>{formatHash(row.reward_addr, 7)}</LinkStyled>
+          <LinkStyled href={`/addresses/all/${row.reward_addr}`}>{formatHash(row.reward_addr, 7)}</LinkStyled>
         </Typography>
       )
     }

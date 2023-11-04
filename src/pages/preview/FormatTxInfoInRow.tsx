@@ -140,7 +140,7 @@ function FormatTxInfoInRow({ TxRecord }: any) {
       return (
           <Typography noWrap variant='body2'>
             {formatXWE(TxRecord?.quantity.winston, 4) + " -> "}
-            <LinkStyled href={`/addresses/view/${TxRecord?.id}`}>{formatHash(TxRecord?.recipient, 5)}</LinkStyled>
+            <LinkStyled href={`/addresses/all/${TxRecord?.id}`}>{formatHash(TxRecord?.recipient, 5)}</LinkStyled>
           </Typography>  
       )
     }

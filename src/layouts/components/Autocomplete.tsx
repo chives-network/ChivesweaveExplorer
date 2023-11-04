@@ -46,7 +46,7 @@ const AutocompleteComponent = ({ hidden, settings }: Props) => {
             router.push("/txs/view/" + searchValueTrim)
           }
           else {
-            router.push("/addresses/view/" + searchValueTrim)
+            router.push("/addresses/all/" + searchValueTrim)
           }
         })
         break;

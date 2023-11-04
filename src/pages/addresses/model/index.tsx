@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, Fragment, SyntheticEvent } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -42,6 +42,14 @@ import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
 import { useRouter } from 'next/router'
 
 import StringDisplay from 'src/pages/preview/StringDisplay';
+
+import Box from '@mui/material/Box'
+import Tab from '@mui/material/Tab'
+import TabContext from '@mui/lab/TabContext'
+import MuiTabList, { TabListProps } from '@mui/lab/TabList'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
 
 interface TransactionCellType {
   row: TxRecordType
@@ -86,7 +94,7 @@ const columns: GridColDef[] = [
       
       return (
         <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/view/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
+          <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
         </Typography>
       )
     }
@@ -168,11 +176,34 @@ const columns: GridColDef[] = [
   }
 ]
 
-const AddressTransactionList = () => {
+
+// ** Styled Tab component
+const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
+  '& .MuiTabs-indicator': {
+    display: 'none'
+  },
+  '& .Mui-selected': {
+    backgroundColor: theme.palette.primary.main,
+    color: `${theme.palette.common.white} !important`
+  },
+  '& .MuiTab-root': {
+    minWidth: 65,
+    minHeight: 40,
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+    [theme.breakpoints.up('md')]: {
+      minWidth: 130
+    }
+  }
+}))
+
+
+const AddressTransactionListModel = ({ activeTab } : any) => {
 
   const router = useRouter();
   const { id } = router.query;
-  
+
   // ** State
   const [isLoading, setIsLoading] = useState(false);
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
@@ -202,11 +233,21 @@ const AddressTransactionList = () => {
         fetchData({
           address: String(id),
           pageId: paginationModel.page,
-          pageSize: paginationModel.pageSize
+          pageSize: paginationModel.pageSize,
+          type: activeTab
         })
       )
     }
-  }, [dispatch, paginationModel, id])
+  }, [dispatch, paginationModel, id, activeTab])
+
+  const handleChange = (event: SyntheticEvent, value: string) => {
+    router
+      .push({
+        pathname: `/addresses/${value.toLowerCase()}/${id}`
+      })
+      .then(() => setIsLoading(false))
+      console.log("handleChangeEvent", event)
+  }
 
   useEffect(() => {
     setIsLoading(false)
@@ -280,34 +321,79 @@ const AddressTransactionList = () => {
       <Fragment></Fragment>
     }
 
-    {store && store.data != undefined ?
+    
       <Grid item xs={12}>
+        <TabContext value={activeTab}>
+          <TabList
+            variant='scrollable'
+            scrollButtons='auto'
+            onChange={handleChange}
+            aria-label='forced scroll tabs example'
+          >
+            <Tab
+              value='all'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:account-outline' />
+                  All
+                </Box>
+              }
+            />
+            <Tab
+              value='sent'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:lock-outline' />
+                  Sent
+                </Box>
+              }
+            />
+            <Tab
+              value='received'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:bookmark-outline' />
+                  Received
+                </Box>
+              }
+            />
+            <Tab
+              value='files'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:bell-outline' />
+                  Files
+                </Box>
+              }
+            />
+          </TabList>
+        </TabContext>
         <Card>
           <CardHeader title='Transactions' />
-          <Divider />
-          <DataGrid
-            autoHeight
-            rows={store.data}
-            rowCount={store.total}
-            columns={columns}
-            sortingMode='server'
-            paginationMode='server'
-            filterMode="server"
-            loading={isLoading}
-            disableRowSelectionOnClick
-            pageSizeOptions={[10, 15, 20, 30, 50, 100]}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            disableColumnMenu={true}
-          />
+          {store && store.data != undefined ?
+            <DataGrid
+              autoHeight
+              rows={store.data}
+              rowCount={store.total}
+              columns={columns}
+              sortingMode='server'
+              paginationMode='server'
+              filterMode="server"
+              loading={isLoading}
+              disableRowSelectionOnClick
+              pageSizeOptions={[10, 15, 20, 30, 50, 100]}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              disableColumnMenu={true}
+            />
+          :
+            <Fragment></Fragment>
+          }
         </Card>
       </Grid>
-      :
-      <Fragment></Fragment>
-    }
     </Grid>
   )
 }
 
 
-export default AddressTransactionList
+export default AddressTransactionListModel

@@ -99,7 +99,7 @@ const columns: GridColDef[] = [
       
       return (
         <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/view/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
+          <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
         </Typography>
       )
     }
@@ -349,7 +349,7 @@ const BlockTransactionList = () => {
                           Miner:
                           </Typography>
                         </TableCell>
-                        <TableCell><LinkStyled href={`/addresses/view/${blockViewInfo.reward_addr}`}>{formatHash(blockViewInfo.reward_addr, 7)}</LinkStyled></TableCell>
+                        <TableCell><LinkStyled href={`/addresses/all/${blockViewInfo.reward_addr}`}>{formatHash(blockViewInfo.reward_addr, 7)}</LinkStyled></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
