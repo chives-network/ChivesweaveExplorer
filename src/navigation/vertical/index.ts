@@ -31,7 +31,7 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Resoures',
       icon: 'mdi:file-multiple',
-      path: '/file/png'
+      path: '/files/png'
     },
     {
       title: 'Staticstics',
