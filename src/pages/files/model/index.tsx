@@ -1,17 +1,11 @@
 // ** React Imports
 import { useState, useEffect, Fragment, SyntheticEvent } from 'react'
 
-// ** Next Imports
-import Link from 'next/link'
-
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,9 +17,10 @@ import { fetchData } from 'src/store/apps/files'
 import { RootState, AppDispatch } from 'src/store'
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatTimestampAge, formatStorageSize } from 'src/configs/functions';
+import Pagination from '@mui/material/Pagination'
 
-import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
+import ImageRectangle from 'src/views/portal/ImageRectangle';
+
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -37,132 +32,7 @@ import MuiTabList, { TabListProps } from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-
-interface TransactionCellType {
-  row: TxRecordType
-}
-
-const LinkStyled = styled(Link)(({ theme }) => ({
-  fontWeight: 550,
-  fontSize: '1rem',
-  cursor: 'pointer',
-  textDecoration: 'none',
-  color: theme.palette.text.secondary,
-  '&:hover': {
-    color: theme.palette.primary.main
-  }
-}))
-
-const columns: GridColDef[] = [
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'TxId',
-    headerName: 'TxId',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'From',
-    headerName: 'From',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    headerName: 'Size',
-    field: 'Size',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatStorageSize(row.data.size)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    field: 'Fee',
-    headerName: 'Fee',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatXWE(row.fee.winston, 6)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.3,
-    minWidth: 200,
-    field: 'Info',
-    headerName: 'Info',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <FormatTxInfoInRow TxRecord={row}/>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 110,
-    field: 'Height',
-    headerName: 'Height',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    field: 'Time',
-    minWidth: 220,
-    headerName: 'Time',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatTimestampAge(row.block.timestamp)}
-        </Typography>
-      )
-    }
-  }
-]
-
+import authConfig from 'src/configs/auth'
 
 // ** Styled Tab component
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
@@ -194,8 +64,8 @@ const FileResourceModel = ({ activeTab } : any) => {
 
   // ** State
   const [isLoading, setIsLoading] = useState(false);
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
-
+  const [paginationModel, setPaginationModel] = useState({ page: 1, pageSize: 8 })
+  
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.files)
@@ -205,7 +75,7 @@ const FileResourceModel = ({ activeTab } : any) => {
       dispatch(
         fetchData({
           address: String(id),
-          pageId: paginationModel.page,
+          pageId: paginationModel.page - 1,
           pageSize: paginationModel.pageSize,
           type: activeTab
         })
@@ -219,7 +89,12 @@ const FileResourceModel = ({ activeTab } : any) => {
         pathname: `/files/${value.toLowerCase()}`
       })
       .then(() => setIsLoading(false))
-      console.log("handleChangeEvent", event)
+      console.log("handleChange", event, isLoading)
+  }
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPaginationModel({ ...paginationModel, page });
+    console.log("handlePageChange", event)
   }
 
   useEffect(() => {
@@ -227,9 +102,9 @@ const FileResourceModel = ({ activeTab } : any) => {
   }, [])
 
   return (
-    <Grid container spacing={6}>
-
+    <Grid container spacing={2}>
       <Grid item xs={12}>
+        
         <TabContext value={activeTab}>
           <TabList
             variant='scrollable'
@@ -293,31 +168,28 @@ const FileResourceModel = ({ activeTab } : any) => {
             />
           </TabList>
         </TabContext>
-        <Card>
-          <CardHeader title='File Resources' />
-          {store && store.data != undefined ?
-            <DataGrid
-              autoHeight
-              rows={store.data}
-              rowCount={store.total}
-              columns={columns}
-              sortingMode='server'
-              paginationMode='server'
-              filterMode="server"
-              loading={isLoading}
-              disableRowSelectionOnClick
-              pageSizeOptions={[10, 15, 20, 30, 50, 100]}
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              disableColumnMenu={true}
-            />
-          :
+
+        <Card sx={{ padding: '0 8px' }}>
+          <CardHeader title={`${activeTab?.toUpperCase()} Resources`} />
+          {store && store.data !== undefined ? (
+            <Grid container spacing={2}>
+              {store.data.map((item: TxRecordType, index: number) => (
+                <Grid item key={index} xs={12} sm={6} md={3} lg={3}>
+                  <ImageRectangle item={item} backEndApi={authConfig.backEndApi} FileType={activeTab}/>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
             <Fragment></Fragment>
-          }
+          )}
+          <Grid item key={"Pagination"} xs={12} sm={12} md={12} lg={12} sx={{ padding: '10px 0 10px 0' }}>
+            <Pagination  count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} />
+          </Grid>
         </Card>
       </Grid>
     </Grid>
-  )
+  );
+  
 }
 
 

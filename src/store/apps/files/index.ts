@@ -26,7 +26,8 @@ export const appFilesSlice = createSlice({
     data: [],
     total: 1,
     params: {},
-    allData: []
+    allData: [],
+    allPages: 1,
   },
   reducers: {},
   extraReducers: builder => {
@@ -35,6 +36,7 @@ export const appFilesSlice = createSlice({
       state.total = action.payload.total
       state.params = action.payload.params
       state.allData = action.payload.data
+      state.allPages = action.payload.allpages
     })
   }
 })

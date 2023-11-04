@@ -88,7 +88,7 @@ function FormatTxInfoInRow({ TxRecord }: any) {
     });
     const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
     
-    console.log("FileMap", FileMap)
+    //console.log("FileMap", FileMap)
     switch(FileType) {
         case 'PNG':
         case 'GIF':

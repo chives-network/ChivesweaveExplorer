@@ -110,9 +110,11 @@ const AutocompleteComponent = ({ hidden, settings }: Props) => {
       <Box >
         {!hidden && layout === 'vertical' ? (
           <TextField
+            size="small"
             value={searchValue}
             onChange={(event: ChangeEvent<HTMLInputElement>) => setSearchValue(event.target.value)}
             InputProps={{
+              style: { border: 0 }, 
               startAdornment: (
                 <InputAdornment position='start' sx={{ color: 'text.primary' }}>
                   <Icon icon='mdi:magnify' />
