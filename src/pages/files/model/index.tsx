@@ -172,19 +172,21 @@ const FileResourceModel = ({ activeTab } : any) => {
         <Card sx={{ padding: '0 8px' }}>
           <CardHeader title={`${activeTab?.toUpperCase()} Resources`} />
           {store && store.data !== undefined ? (
-            <Grid container spacing={2}>
-              {store.data.map((item: TxRecordType, index: number) => (
-                <Grid item key={index} xs={12} sm={6} md={3} lg={3}>
-                  <ImageRectangle item={item} backEndApi={authConfig.backEndApi} FileType={activeTab}/>
-                </Grid>
-              ))}
-            </Grid>
+            <Fragment>
+              <Grid container spacing={2}>
+                {store.data.map((item: TxRecordType, index: number) => (
+                  <Grid item key={index} xs={12} sm={6} md={3} lg={3}>
+                    <ImageRectangle item={item} backEndApi={authConfig.backEndApi} FileType={activeTab}/>
+                  </Grid>
+                ))}
+              </Grid>
+              <Grid item key={"Pagination"} xs={12} sm={12} md={12} lg={12} sx={{ padding: '10px 0 10px 0' }}>
+                <Pagination  count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} />
+              </Grid>
+            </Fragment>
           ) : (
             <Fragment></Fragment>
           )}
-          <Grid item key={"Pagination"} xs={12} sm={12} md={12} lg={12} sx={{ padding: '10px 0 10px 0' }}>
-            <Pagination  count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} />
-          </Grid>
         </Card>
       </Grid>
     </Grid>

@@ -6,6 +6,7 @@ import JSONViewer from 'react-json-viewer';
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Badge from '@mui/material/Badge'
+import CardMedia from '@mui/material/CardMedia'
 
 //PDF
 import { pdfjs, Document, Page } from 'react-pdf';
@@ -202,12 +203,7 @@ const ImagesPreview = (props: ImagesPreviewType) => {
                     case 'Mp4':
 
                       return (
-                        <div style={{ width: '100%', color:'black'}} key={UrlIndex}>
-                          <video controls width="640" height="360">
-                            <source src={Url} type="video/mp4" />
-                            Your browser does not support the video tag.
-                          </video>
-                        </div>
+                        <CardMedia component="video" controls src={`${Url}`} sx={{ width:'100%', height:'100%', objectFit: 'contain' }}/>
                       )
 
                     default:

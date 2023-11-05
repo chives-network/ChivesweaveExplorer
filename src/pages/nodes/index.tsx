@@ -19,8 +19,6 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import TableContainer from '@mui/material/TableContainer'
 
-import Pagination from '@mui/material/Pagination'
-
 import { formatTimestamp, formatStorageSize } from 'src/configs/functions';
 
 import { ThemeColor } from 'src/@core/layouts/types'
@@ -57,11 +55,7 @@ const FileTypeObj: FileTypeObj = {
 
 interface NodeInfoType {
   ip: string
-  location: string
-  isp: string
-  country: string
-  region: string
-  city: string
+  result: any
 }
 
 interface ChainInfoType {
@@ -222,16 +216,13 @@ const PeersInfo = () => {
                     {peers.map((item: NodeInfoType, index: number) => (
                       <TableRow hover key={index} sx={{ '&:last-of-type td': { border: 0 } }}>
                         <TableCell>{item.ip}</TableCell>
-                        <TableCell>{item.location}</TableCell>
-                        <TableCell>{item.isp}</TableCell>
-                        <TableCell>{item.country}</TableCell>
-                        <TableCell>{item.region}</TableCell>
-                        <TableCell>{item.city}</TableCell>
+                        <TableCell>{item.result.location}</TableCell>
+                        <TableCell>{item.result.isp}</TableCell>
+                        <TableCell>{item.result.country}</TableCell>
+                        <TableCell>{item.result.region}</TableCell>
+                        <TableCell>{item.result.city}</TableCell>
                       </TableRow>
                     ))}
-                      <TableRow hover key={"Pagination"} sx={{ '&:last-of-type td': { border: 0 } }}>
-                        <TableCell colSpan={6}><Pagination  count={10} variant='outlined' color='primary'/></TableCell>
-                      </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
