@@ -7,6 +7,9 @@ import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
+// ** Next Imports
+import Link from 'next/link'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -34,27 +37,37 @@ const ImageRectangle = ( {item, backEndApi, FileType} : any) => {
   return (
     <Card>
       {FileType && (FileType=="png" || FileType=="jpeg" || FileType=="gif") ?
-        <CardMedia image={`${backEndApi}/${item.id}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        <Link href={`/txs/view/${item.id}`}>
+          <CardMedia image={`${backEndApi}/${item.id}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        </Link>
         :
         <Fragment></Fragment>
       }
       {FileType && FileType=="mp4" ?
-        <CardMedia component="video" controls src={`${backEndApi}/${item.id}`} sx={{ height: '11.25rem', objectFit: 'contain' }} preload="none"/>
+        <Link href={`/txs/view/${item.id}`}>
+          <CardMedia component="video" controls src={`${backEndApi}/${item.id}`} sx={{ height: '11.25rem', objectFit: 'contain' }} preload="none"/>
+        </Link>
         :
         <Fragment></Fragment>
       }
       {FileType && FileType=="pdf" ?
-        <CardMedia image={`${backEndApi}/${item.id}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        <Link href={`/txs/view/${item.id}`}>
+          <CardMedia image={`${backEndApi}/${item.id}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        </Link>
         :
         <Fragment></Fragment>
       }
       {FileType && FileType=="office" ?
-        <CardMedia image={`${backEndApi}/${item.id}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        <Link href={`/txs/view/${item.id}`}>
+          <CardMedia image={`${backEndApi}/${item.id}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        </Link>
         :
         <Fragment></Fragment>
       }
       {FileType && FileType=="stl" ?
-        <CardMedia image={`${backEndApi}/${item.id}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        <Link href={`/txs/view/${item.id}`}>
+          <CardMedia image={`${backEndApi}/${item.id}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        </Link>
         :
         <Fragment></Fragment>
       }
