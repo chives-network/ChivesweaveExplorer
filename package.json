@@ -37,6 +37,7 @@
     "apexcharts-clevision": "3.28.5",
     "axios": "1.4.0",
     "axios-mock-adapter": "1.21.4",
+    "bip39-web-crypto": "^4.0.1",
     "bootstrap-icons": "1.10.5",
     "chart.js": "4.3.0",
     "cleave.js": "1.6.0",
@@ -44,6 +45,7 @@
     "clsx": "1.2.1",
     "date-fns": "2.30.0",
     "draft-js": "0.11.7",
+    "human-crypto-keys": "^0.1.4",
     "i18next": "22.4.15",
     "i18next-browser-languagedetector": "7.0.1",
     "i18next-http-backend": "2.2.0",
@@ -72,8 +74,10 @@
     "react-popper": "2.3.0",
     "react-redux": "8.0.5",
     "recharts": "2.5.0",
+    "secrets.js": "^0.1.8",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
+    "uuid": "^9.0.1",
     "yup": "1.1.1"
   },
   "devDependencies": {

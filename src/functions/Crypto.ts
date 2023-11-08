@@ -1,4 +1,4 @@
-import { decode, encode } from '@/functions/Encode'
+import { decode, encode } from 'src/functions/Encode'
 
 
 

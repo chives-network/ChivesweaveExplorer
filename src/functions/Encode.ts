@@ -1,4 +1,4 @@
-import Secrets from 'secrets.js-jf'
+import Secrets from 'secrets.js'
 
 export function fromHex (data: string) { return Secrets.hex2str(data, 1) }
 
