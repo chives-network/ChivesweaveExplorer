@@ -1,13 +1,6 @@
 // ** React Imports
 import { useState, useEffect, Fragment, SyntheticEvent } from 'react'
 
-// ** Next Imports
-import Link from 'next/link'
-
-// ** Axios Imports
-import axios from 'axios'
-import authConfig from 'src/configs/auth'
-
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -21,29 +14,25 @@ import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
 
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
-
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { fetchData } from 'src/store/apps/addresstransactions'
+import { fetchData } from 'src/store/apps/files'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatTimestampAge, formatStorageSize } from 'src/configs/functions';
+import Pagination from '@mui/material/Pagination'
 
-// ** Context
-import { useAuth } from 'src/hooks/useAuth'
+import ImageRectangle from 'src/views/portal/ImageRectangle';
 
-import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
+// ** Axios Imports
+import axios from 'axios'
 
 // ** Next Import
 import { useRouter } from 'next/router'
-
-import StringDisplay from 'src/pages/preview/StringDisplay';
 
 import Box from '@mui/material/Box'
 import Tab from '@mui/material/Tab'
@@ -52,132 +41,10 @@ import MuiTabList, { TabListProps } from '@mui/lab/TabList'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import authConfig from 'src/configs/auth'
 
-interface TransactionCellType {
-  row: TxRecordType
-}
-
-const LinkStyled = styled(Link)(({ theme }) => ({
-  fontWeight: 550,
-  fontSize: '1rem',
-  cursor: 'pointer',
-  textDecoration: 'none',
-  color: theme.palette.text.secondary,
-  '&:hover': {
-    color: theme.palette.primary.main
-  }
-}))
-
-const columns: GridColDef[] = [
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'TxId',
-    headerName: 'TxId',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'From',
-    headerName: 'From',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/mywallet/all/`}>{formatHash(row.owner.address, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    headerName: 'Size',
-    field: 'Size',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatStorageSize(row.data.size)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    field: 'Fee',
-    headerName: 'Fee',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatXWE(row.fee.winston, 6)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.3,
-    minWidth: 200,
-    field: 'Info',
-    headerName: 'Info',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <FormatTxInfoInRow TxRecord={row}/>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 110,
-    field: 'Height',
-    headerName: 'Height',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    field: 'Time',
-    minWidth: 220,
-    headerName: 'Time',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatTimestampAge(row.block.timestamp)}
-        </Typography>
-      )
-    }
-  }
-]
-
+import StringDisplay from 'src/pages/preview/StringDisplay';
+import { formatXWE } from 'src/configs/functions';
 
 // ** Styled Tab component
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
@@ -201,21 +68,19 @@ const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
 }))
 
 
-const AddressTransactionListModel = ({ activeTab } : any) => {
+const FileResourceModel = ({ activeTab } : any) => {
 
   const router = useRouter();
 
-  const auth = useAuth()
-
-  const id = auth.currentAddress
+  const { id } = router.query;
 
   // ** State
   const [isLoading, setIsLoading] = useState(false);
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
-
+  const [paginationModel, setPaginationModel] = useState({ page: 1, pageSize: 8 })
+  
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.addresstransactions)
+  const store = useSelector((state: RootState) => state.files)
 
   const [addressBalance, setAddressBalance] = useState<number>(0)
 
@@ -233,25 +98,30 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
   }, [id])
 
   useEffect(() => {
-    if(id!=undefined) {
+    if(true) {
       dispatch(
         fetchData({
           address: String(id),
-          pageId: paginationModel.page,
+          pageId: paginationModel.page - 1,
           pageSize: paginationModel.pageSize,
           type: activeTab
         })
       )
     }
-  }, [dispatch, paginationModel, id, activeTab])
+  }, [dispatch, paginationModel, activeTab])
 
   const handleChange = (event: SyntheticEvent, value: string) => {
     router
       .push({
-        pathname: `/mywallet/${value.toLowerCase()}`
+        pathname: `/myfiles/${value.toLowerCase()}`
       })
       .then(() => setIsLoading(false))
-      console.log("handleChangeEvent", event)
+      console.log("handleChange", event, isLoading)
+  }
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPaginationModel({ ...paginationModel, page });
+    console.log("handlePageChange", event)
   }
 
   useEffect(() => {
@@ -264,7 +134,7 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
     {id != undefined ?
       <Grid item xs={12}>
         <Card>
-          <CardHeader title={`My Wallet`} />
+          <CardHeader title={`My Files`} />
           <CardContent>
             <Grid container spacing={6}>
 
@@ -326,8 +196,8 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
       <Fragment></Fragment>
     }
 
-    
       <Grid item xs={12}>
+        
         <TabContext value={activeTab}>
           <TabList
             variant='scrollable'
@@ -336,69 +206,86 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
             aria-label='forced scroll tabs example'
           >
             <Tab
-              value='all'
+              value='png'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:account-outline' />
-                  All
+                  Png
                 </Box>
               }
             />
             <Tab
-              value='sent'
+              value='jpeg'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:lock-outline' />
-                  Sent
+                  Jpeg
                 </Box>
               }
             />
             <Tab
-              value='received'
+              value='mp4'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:bookmark-outline' />
-                  Received
+                  Mp4
                 </Box>
               }
             />
             <Tab
-              value='files'
+              value='pdf'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:bell-outline' />
-                  Files
+                  Pdf
+                </Box>
+              }
+            />
+            <Tab
+              value='office'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:bell-outline' />
+                  Office
+                </Box>
+              }
+            />
+            <Tab
+              value='stl'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:bell-outline' />
+                  Stl
                 </Box>
               }
             />
           </TabList>
         </TabContext>
-        <Card>
-          <CardHeader title='Transactions' />
-          {store && store.data != undefined ?
-            <DataGrid
-              autoHeight
-              rows={store.data}
-              rowCount={store.total}
-              columns={columns}
-              sortingMode='server'
-              paginationMode='server'
-              filterMode="server"
-              loading={isLoading}
-              disableRowSelectionOnClick
-              pageSizeOptions={[10, 15, 20, 30, 50, 100]}
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              disableColumnMenu={true}
-            />
-          :
+
+        <Card sx={{ padding: '0 8px' }}>
+          <CardHeader title={`${activeTab?.toUpperCase()} Resources`} />
+          {store && store.data !== undefined ? (
+            <Fragment>
+              <Grid container spacing={2}>
+                {store.data.map((item: TxRecordType, index: number) => (
+                  <Grid item key={index} xs={12} sm={6} md={3} lg={3}>
+                    <ImageRectangle item={item} backEndApi={authConfig.backEndApi} FileType={activeTab}/>
+                  </Grid>
+                ))}
+              </Grid>
+              <Grid item key={"Pagination"} xs={12} sm={12} md={12} lg={12} sx={{ padding: '10px 0 10px 0' }}>
+                <Pagination  count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} />
+              </Grid>
+            </Fragment>
+          ) : (
             <Fragment></Fragment>
-          }
+          )}
         </Card>
       </Grid>
     </Grid>
-  )
+  );
+  
 }
 
 
-export default AddressTransactionListModel
+export default FileResourceModel
