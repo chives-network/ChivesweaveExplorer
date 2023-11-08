@@ -110,6 +110,51 @@ export function urlToSettings (url: string) {
     return { protocol, host, port }
 };
 
+
+export function getAllWallets() {
+    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
+    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    
+    return walletExists
+};
+
+export function getCurrentWalletAddress() {
+    const walletKeyPathCurrent = walletKeyPath + "Current"
+    const CurrentWalletAddress = window.localStorage.getItem(walletKeyPathCurrent)
+
+    return String(CurrentWalletAddress)
+};
+
+export function getCurrentWallet() {
+    const walletKeyPathCurrent = walletKeyPath + "Current"
+    const CurrentWalletAddress = window.localStorage.getItem(walletKeyPathCurrent)
+
+    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
+    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    let foundWallet = walletExists.find((wallet: any) => wallet.data.arweave.key === CurrentWalletAddress);
+    
+    if(foundWallet == undefined && walletExists && walletExists[0] && walletExists[0].data && walletExists[0].data.arweave && walletExists[0].data.arweave.key) {
+        foundWallet = walletExists[0]
+        window.localStorage.setItem(walletKeyPathCurrent, walletExists[0].data.arweave.key)
+    }
+
+    return foundWallet
+};
+
+export function setCurrentWallet(Address: string) {
+    const walletKeyPathCurrent = walletKeyPath + "Current"
+
+    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
+    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    const foundWallet = walletExists.find((wallet: any) => wallet.data.arweave.key === Address);
+    
+    if(foundWallet && foundWallet.data && foundWallet.data.arweave && foundWallet.data.arweave.key) {
+        window.localStorage.setItem(walletKeyPathCurrent, Address)
+    }
+
+    return true
+};
+
 export function getWalletById(WalletId: number) {
     const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
     const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
@@ -129,7 +174,7 @@ export function getWalletByUuid(Uuid: string) {
 export function getWalletByAddress(Address: string) {
     const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
     const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
-    const foundWallet = walletExists.find((wallet: any) => wallet.key === Address);
+    const foundWallet = walletExists.find((wallet: any) => wallet.data.arweave.key === Address);
     
     return foundWallet
 };
@@ -187,7 +232,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
 		else {			
 			console.log('Unknow error', txResult);
 		}
-        
+
 		return 
 	}
 

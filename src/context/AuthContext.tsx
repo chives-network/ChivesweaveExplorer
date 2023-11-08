@@ -13,10 +13,16 @@ import authConfig from 'src/configs/auth'
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 
+import { getCurrentWalletAddress, getCurrentWallet } from 'src/functions/ChivesweaveWallets'
+
+
+
 // ** Defaults
 const defaultProvider: AuthValuesType = {
   user: null,
   loading: true,
+  currentWallet: null,
+  currentAddress: '',
   setUser: () => null,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
@@ -33,6 +39,11 @@ const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
   const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
+
+  
+  const [currentWallet, SetCurrentWallet] = useState<null>(defaultProvider.currentWallet)
+  const [currentAddress, SetCurrentAddress] = useState<string>(defaultProvider.currentAddress)
+  
 
   // ** Hooks
   const router = useRouter()
@@ -73,6 +84,16 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
   */
 
+  useEffect(() => {
+    const initAuth = async (): Promise<void> => {
+      console.log("getCurrentWallet From AuthContext", getCurrentWallet())
+      SetCurrentWallet(getCurrentWallet())
+      SetCurrentAddress(getCurrentWalletAddress())
+    }
+    initAuth()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     axios
       .post(authConfig.loginEndpoint, params)
@@ -110,6 +131,8 @@ const AuthProvider = ({ children }: Props) => {
   const values = {
     user,
     loading,
+    currentWallet,
+    currentAddress,
     setUser,
     setLoading,
     login: handleLogin,
