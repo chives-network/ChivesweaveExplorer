@@ -7,11 +7,6 @@ type DisplayMetadata = {
 	disabled?: any
 }
 
-type Action = DisplayMetadata & { // Todo type action in defineProps
-	run?: Function | false | null
-	to?: import('vue-router').RouteLocationRaw
-}
-
 type RefMaybe <T> = import('vue').Ref<T> | T
 
 type TagField = {
