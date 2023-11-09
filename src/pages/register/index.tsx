@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 // ** MUI Components
 import Box from '@mui/material/Box'
@@ -12,6 +12,8 @@ import { getWalletById, sendAmount } from 'src/functions/ChivesweaveWallets'
 
 
 const Register = () => {
+
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
 
   /*
   const walletKeyPath = "Chiveswallets"
@@ -38,8 +40,9 @@ const Register = () => {
     const data = "Chivesweave Drive Data Testing. "
     const repeatedString = data.repeat(30000);
     console.log("data size", repeatedString.length)
-    const currentBalance = await sendAmount(currentWallet, target, amount, tags, repeatedString);
-    console.log("currentBalance", currentBalance)
+    
+    await sendAmount(currentWallet, target, amount, tags, repeatedString, "", setUploadProgress);
+    console.log("uploadProgress", uploadProgress)
 
   };
 

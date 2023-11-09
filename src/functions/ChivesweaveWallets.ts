@@ -198,15 +198,18 @@ export async function getPrice(byteSize: number) {
     return arweave.ar.winstonToAr(await arweave.transactions.getPrice(byteSize))
 }
 
-export async function sendAmount(walletData: any, target: string, amount: string, tags: any, data: string) {
+
+export async function sendAmount(walletData: any, target: string, amount: string, tags: any, data: string | Uint8Array, fileName: string, setUploadProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>) {
     const quantity = arweave.ar.arToWinston(new BigNumber(amount).toString())
 
     //Check Fee and Send Amount must smaller than wallet balance
 
     const txSettings:any = {}
-	txSettings.target = target
-	txSettings.quantity = quantity
-	if (data && data!='') { txSettings.data = data }
+    if(target && target.length == 43) {
+	    txSettings.target = target
+        txSettings.quantity = quantity
+    }
+	if (data && data.length > 0) { txSettings.data = data }
 
     //Make Tx Data
     const tx = await arweave.createTransaction(txSettings)
@@ -225,6 +228,14 @@ export async function sendAmount(walletData: any, target: string, amount: string
 		const txResult = await arweave.transactions.post(tx);
 		if(txResult.status==200) {
 			console.log('Transaction sent', txResult);
+            
+            //Update the upload process
+            setUploadProgress((prevProgress) => {
+                return {
+                ...prevProgress,
+                [fileName]: 100,
+                };
+            });
 		}
 		else if(txResult.status==400) {
 			console.error(txResult.statusText, txResult); 
@@ -243,24 +254,61 @@ export async function sendAmount(walletData: any, target: string, amount: string
 	localStorage.setItem(storageKey, JSON.stringify(uploader))
 	UploadChunksStatus[tx.id] ??= {}
 	UploadChunksStatus[tx.id].upload = 0
-    console.log('uploader0', uploader)
+    console.log('Begin upload data txid', tx.id)
+    console.log('uploader begin: ', uploader)
     let uploadRecords = 0
 	while (!uploader.isComplete) {
 		await uploader.uploadChunk()
 		localStorage.setItem(storageKey, JSON.stringify(uploader))
 		UploadChunksStatus[tx.id].upload = uploader.pctComplete
-		console.log("uploadRecords",uploadRecords)
+        
+        //Update the upload process
+        setUploadProgress((prevProgress) => {
+            return {
+            ...prevProgress,
+            [fileName]: uploader.pctComplete,
+            };
+        });
+		console.log("uploader processing: ",uploadRecords, uploader.pctComplete)
         uploadRecords = uploadRecords + 1
 	}
 	if(uploader.isComplete) {
 		localStorage.removeItem(storageKey)
 		setTimeout(() => delete UploadChunksStatus[tx.id], 1000)
-		console.log('Transaction sent', tx)
+		console.log('Transaction sent: ', tx)
+        
+        //Update the upload process
+        setUploadProgress((prevProgress) => {
+            return {
+            ...prevProgress,
+            [fileName]: uploader.pctComplete,
+            };
+        });
 	}
 	else {
 		console.error('Transaction error', tx)
 	}
-    console.log('uploader1', uploader)
-    console.log('UploadChunksStatus', UploadChunksStatus)
+    console.log('uploader end: ', uploader)
+    console.log('UploadChunksStatus: ', UploadChunksStatus)
 }
 
+
+
+export function encode (text: string) {
+	const encoder = new TextEncoder()
+	
+    return encoder.encode(text)
+}
+
+export function decode (buffer: BufferSource) {
+	const decoder = new TextDecoder()
+	
+    return decoder.decode(buffer)
+}
+
+export async function getHash (data: string | Uint8Array) {
+	const content = typeof data === 'string' ? encode(data) : data
+	const buffer = await window.crypto.subtle.digest('SHA-256', content)
+	
+    return [...new Uint8Array(buffer)].map(x => x.toString(16).padStart(2, '0')).join('')
+}
