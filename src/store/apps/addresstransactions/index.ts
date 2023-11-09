@@ -14,7 +14,7 @@ interface DataParams1 {
 
 // ** Fetch Data
 export const fetchData = createAsyncThunk('appAddressTransactions/fetchData', async (params: DataParams1) => {
-  let addressApiType = "txsrecord";
+  let addressApiType = "";
   switch(params.type) {
     case 'all':
       addressApiType = "txsrecord";
@@ -29,9 +29,13 @@ export const fetchData = createAsyncThunk('appAddressTransactions/fetchData', as
       addressApiType = "datarecord";
       break;
   }
-  const response = await axios.get(authConfig.backEndApi + '/wallet/'+ `${params.address}` + '/'+ `${addressApiType}` + '/'+ `${params.pageId}` + '/'+params.pageSize)
-
-  return response.data
+  if(addressApiType && addressApiType!="")  {
+    const response = await axios.get(authConfig.backEndApi + '/wallet/'+ `${params.address}` + '/'+ `${addressApiType}` + '/'+ `${params.pageId}` + '/'+params.pageSize)
+    return response.data
+  }
+  else {
+    return {data:[], total:0, params}
+  }
 })
 
 export const appAddressTransactionsSlice = createSlice({

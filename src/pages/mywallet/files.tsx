@@ -1,10 +1,10 @@
-import AddressTransactionListModel from 'src/pages/mywallet/model';
+import MyWalletModel from 'src/pages/mywallet/model';
 
 const AddressTransactionList = () => {
 
   const activeTab = "files"; 
 
-  return <AddressTransactionListModel activeTab={activeTab} />
+  return <MyWalletModel activeTab={activeTab} />
 
 }
 

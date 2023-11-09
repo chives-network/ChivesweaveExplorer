@@ -50,6 +50,10 @@ import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import MuiTabList, { TabListProps } from '@mui/lab/TabList'
 
+
+import UploadFiles from 'src/views/form/uploadfiles';
+import SendOut from 'src/views/form/sendout';
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -201,7 +205,7 @@ const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
 }))
 
 
-const AddressTransactionListModel = ({ activeTab } : any) => {
+const MyWalletModel = ({ activeTab } : any) => {
 
   const router = useRouter();
 
@@ -220,7 +224,7 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
   const [addressBalance, setAddressBalance] = useState<number>(0)
 
   useEffect(() => {
-    if(id != undefined) {
+    if(id != undefined && id.length == 43) {
       axios
         .get(authConfig.backEndApi + '/wallet/' + id + "/balance", { headers: { }, params: { } })
         .then(res => {
@@ -233,7 +237,7 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
   }, [id])
 
   useEffect(() => {
-    if(id!=undefined) {
+    if(id!=undefined && id.length == 43) {
       dispatch(
         fetchData({
           address: String(id),
@@ -326,7 +330,6 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
       <Fragment></Fragment>
     }
 
-    
       <Grid item xs={12}>
         <TabContext value={activeTab}>
           <TabList
@@ -335,6 +338,24 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
             onChange={handleChange}
             aria-label='forced scroll tabs example'
           >
+            <Tab
+              value='sendout'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:account-outline' />
+                  Send
+                </Box>
+              }
+            />
+            <Tab
+              value='uploadfiles'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:account-outline' />
+                  Upload Files
+                </Box>
+              }
+            />
             <Tab
               value='all'
               label={
@@ -374,23 +395,39 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
           </TabList>
         </TabContext>
         <Card>
-          <CardHeader title='Transactions' />
-          {store && store.data != undefined ?
-            <DataGrid
-              autoHeight
-              rows={store.data}
-              rowCount={store.total}
-              columns={columns}
-              sortingMode='server'
-              paginationMode='server'
-              filterMode="server"
-              loading={isLoading}
-              disableRowSelectionOnClick
-              pageSizeOptions={[10, 15, 20, 30, 50, 100]}
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-              disableColumnMenu={true}
-            />
+          {store && store.data != undefined && activeTab != "sendout" && activeTab !="uploadfiles" ?
+            <Fragment>
+              <CardHeader title='Transactions' />
+              <DataGrid
+                autoHeight
+                rows={store.data}
+                rowCount={store.total}
+                columns={columns}
+                sortingMode='server'
+                paginationMode='server'
+                filterMode="server"
+                loading={isLoading}
+                disableRowSelectionOnClick
+                pageSizeOptions={[10, 15, 20, 30, 50, 100]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                disableColumnMenu={true}
+              />
+            </Fragment>
+          :
+            <Fragment></Fragment>
+          }
+          {activeTab == "sendout" ?
+            <CardContent>
+              <SendOut />
+            </CardContent>
+          :
+            <Fragment></Fragment>
+          }
+          {activeTab == "uploadfiles" ?
+            <CardContent>
+              <UploadFiles />
+            </CardContent>
           :
             <Fragment></Fragment>
           }
@@ -401,4 +438,4 @@ const AddressTransactionListModel = ({ activeTab } : any) => {
 }
 
 
-export default AddressTransactionListModel
+export default MyWalletModel
