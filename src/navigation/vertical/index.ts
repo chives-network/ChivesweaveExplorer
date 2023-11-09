@@ -120,7 +120,7 @@ const DriveNavMenus = [
   {
     title: 'My Files',
     icon: 'mdi:file-multiple',
-    path: '/myfiles/png'
+    path: '/myfiles'
   },
   {
     title: 'My Subscription',

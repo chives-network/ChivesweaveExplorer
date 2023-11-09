@@ -18,7 +18,7 @@ import TableContainer from '@mui/material/TableContainer'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { fetchData } from 'src/store/apps/files'
+import { fetchData } from 'src/store/apps/myfiles'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
@@ -85,12 +85,12 @@ const FileResourceModel = ({ activeTab } : any) => {
   
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.files)
+  const store = useSelector((state: RootState) => state.myfiles)
 
   const [addressBalance, setAddressBalance] = useState<number>(0)
 
   useEffect(() => {
-    if(id != undefined) {
+    if(id != undefined && id.length == 43) {
       axios
         .get(authConfig.backEndApi + '/wallet/' + id + "/balance", { headers: { }, params: { } })
         .then(res => {
@@ -103,7 +103,7 @@ const FileResourceModel = ({ activeTab } : any) => {
   }, [id])
 
   useEffect(() => {
-    if(true) {
+    if(true && id && id.length == 43) {
       dispatch(
         fetchData({
           address: String(id),
@@ -113,7 +113,7 @@ const FileResourceModel = ({ activeTab } : any) => {
         })
       )
     }
-  }, [dispatch, paginationModel, activeTab])
+  }, [dispatch, paginationModel, activeTab, id])
 
   const handleChange = (event: SyntheticEvent, value: string) => {
     router

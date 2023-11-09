@@ -20,6 +20,9 @@ import Icon from 'src/@core/components/icon'
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
 
+// ** Hooks
+import { useAuth } from 'src/hooks/useAuth'
+
 import { getAllWallets, getCurrentWalletAddress, setCurrentWallet } from 'src/functions/ChivesweaveWallets'
 import { formatHash} from 'src/configs/functions';
 
@@ -45,6 +48,8 @@ const UserDropdown = (props: Props) => {
 
   // ** Hooks
   const router = useRouter()
+  
+  const { setAuthContextCurrentAddress } = useAuth()
 
   // ** Vars
   const { direction } = settings
@@ -62,6 +67,7 @@ const UserDropdown = (props: Props) => {
 
   const handleSwitchWalletAndDropdownClose = (url: string, address: string) => {
     setCurrentWallet(address)
+    setAuthContextCurrentAddress(address)
     if (url) {
       router.push(url)
     }
@@ -137,7 +143,7 @@ const UserDropdown = (props: Props) => {
         {getAllWalletsData && getAllWalletsData.length > 0 && getAllWalletsData.map((wallet: any, index: number)=>{
 
           return (
-            <MenuItem key={index} sx={{ p: 0 }} onClick={() => handleSwitchWalletAndDropdownClose('/blocks/', wallet.data.arweave.key)}>
+            <MenuItem key={index} sx={{ p: 0 }} onClick={() => handleSwitchWalletAndDropdownClose('/myfiles/', wallet.data.arweave.key)}>
               {wallet.data.arweave.key == getCurrentWalletAddressData ?
                 <Box sx={styles}>
                   <Icon icon='mdi:cog-outline' />

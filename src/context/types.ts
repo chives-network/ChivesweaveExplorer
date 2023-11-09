@@ -21,6 +21,7 @@ export type AuthValuesType = {
   logout: () => void  
   currentWallet: any
   currentAddress: string
+  setAuthContextCurrentAddress: (address: string) => void
   user: UserDataType | null
   setLoading: (value: boolean) => void
   setUser: (value: UserDataType | null) => void

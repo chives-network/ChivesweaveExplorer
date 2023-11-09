@@ -23,6 +23,7 @@ const defaultProvider: AuthValuesType = {
   loading: true,
   currentWallet: null,
   currentAddress: '',
+  setAuthContextCurrentAddress: () => Promise.resolve(),
   setUser: () => null,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
@@ -128,11 +129,17 @@ const AuthProvider = ({ children }: Props) => {
     setUser(user as UserDataType)
   }, [])
 
+  const handleCurrentAddress = (Address: string) => {
+    SetCurrentAddress(Address)
+    SetCurrentWallet(getCurrentWallet())
+  }
+
   const values = {
     user,
     loading,
     currentWallet,
     currentAddress,
+    setAuthContextCurrentAddress: handleCurrentAddress,
     setUser,
     setLoading,
     login: handleLogin,
