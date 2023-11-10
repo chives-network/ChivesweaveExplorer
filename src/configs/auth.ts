@@ -6,4 +6,6 @@ export default {
   storageTokenKeyName: 'accessToken',
   onTokenExpiration: 'refreshToken', // logout | refreshToken
   systemType: 'drive',
+  chivesWallets: 'ChivesWallets',
+  chivesCurrentWallet: 'ChivesCurrentWallet'
 }

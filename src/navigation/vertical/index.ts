@@ -110,27 +110,17 @@ const DriveNavMenus = [
     path: '/mempool'
   },
   {
-    sectionTitle: 'My Drive'
-  },
-  {
-    title: 'My Portal',
-    icon: 'clarity:blocks-group-line',
-    path: '/myportal'
-  },
-  {
-    title: 'My Files',
-    icon: 'mdi:file-multiple',
-    path: '/myfiles'
-  },
-  {
-    title: 'My Subscription',
-    icon: 'grommet-icons:transaction',
-    path: '/mysubscription'
+    sectionTitle: 'My Portal'
   },
   {
     title: 'My Wallet',
     icon: 'clarity:wallet-solid',
     path: '/mywallet'
+  },
+  {
+    title: 'My Files',
+    icon: 'mdi:file-multiple',
+    path: '/myfiles'
   }
 ]
 

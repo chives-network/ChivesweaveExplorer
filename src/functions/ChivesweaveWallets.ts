@@ -13,7 +13,10 @@ import Arweave from 'arweave'
 
 const arweave = Arweave.init(urlToSettings("https://api.chivesweave.net:1986"))
 
-const walletKeyPath = "Chiveswallets"
+// ** Config
+import authConfig from 'src/configs/auth'
+const chivesWallets = authConfig.chivesWallets
+const chivesCurrentWallet = authConfig.chivesCurrentWallet
 
 export async function generateNewMnemonicAndGetWalletData (mnemonic: string) {
     try {
@@ -28,8 +31,8 @@ export async function generateNewMnemonicAndGetWalletData (mnemonic: string) {
             console.log("mnemonicToJwkValue:", mnemonicToJwkValue)
             
             //Get Wallet Data From LocalStorage
-            const walletKeyPathList = window.localStorage.getItem(walletKeyPath)      
-            const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+            const chivesWalletsList = window.localStorage.getItem(chivesWallets)      
+            const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
             
             //Get Wallet Max Id
             let walletId = 0
@@ -51,7 +54,7 @@ export async function generateNewMnemonicAndGetWalletData (mnemonic: string) {
             
             //Write New Wallet Data to LocalStorage
             walletExists.push(walletData)
-            window.localStorage.setItem(walletKeyPath, JSON.stringify(walletExists))
+            window.localStorage.setItem(chivesWallets, JSON.stringify(walletExists))
 
             //const addFileToJwkValue = await addFileToJwk('')
             //console.log("addImportDataValue:", addImportDataValue)
@@ -112,78 +115,74 @@ export function urlToSettings (url: string) {
 
 
 export function getAllWallets() {
-    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
-    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    const chivesWalletsList = window.localStorage.getItem(chivesWallets)
+    const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
     
     return walletExists
 };
 
 export function getCurrentWalletAddress() {
-    const walletKeyPathCurrent = walletKeyPath + "Current"
-    const CurrentWalletAddress = window.localStorage.getItem(walletKeyPathCurrent)
+    const CurrentWalletAddress = window.localStorage.getItem(chivesCurrentWallet)
 
     return String(CurrentWalletAddress)
 };
 
 export function getCurrentWallet() {
-    const walletKeyPathCurrent = walletKeyPath + "Current"
-    const CurrentWalletAddress = window.localStorage.getItem(walletKeyPathCurrent)
+    const CurrentWalletAddress = window.localStorage.getItem(chivesCurrentWallet)
 
-    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
-    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    const chivesWalletsList = window.localStorage.getItem(chivesWallets)
+    const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
     let foundWallet = walletExists.find((wallet: any) => wallet.data.arweave.key === CurrentWalletAddress);
     
     if(foundWallet == undefined && walletExists && walletExists[0] && walletExists[0].data && walletExists[0].data.arweave && walletExists[0].data.arweave.key) {
         foundWallet = walletExists[0]
-        window.localStorage.setItem(walletKeyPathCurrent, walletExists[0].data.arweave.key)
+        window.localStorage.setItem(chivesCurrentWallet, walletExists[0].data.arweave.key)
     }
 
     return foundWallet
 };
 
 export function setCurrentWallet(Address: string) {
-    const walletKeyPathCurrent = walletKeyPath + "Current"
-
-    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
-    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    const chivesWalletsList = window.localStorage.getItem(chivesWallets)
+    const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
     const foundWallet = walletExists.find((wallet: any) => wallet.data.arweave.key === Address);
     
     if(foundWallet && foundWallet.data && foundWallet.data.arweave && foundWallet.data.arweave.key) {
-        window.localStorage.setItem(walletKeyPathCurrent, Address)
+        window.localStorage.setItem(chivesCurrentWallet, Address)
     }
 
     return true
 };
 
 export function getWalletById(WalletId: number) {
-    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
-    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    const chivesWalletsList = window.localStorage.getItem(chivesWallets)
+    const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
     const foundWallet = walletExists.find((wallet: any) => Number(wallet.id) === WalletId);
     
     return foundWallet
 };
 
 export function getWalletByUuid(Uuid: string) {
-    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
-    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    const chivesWalletsList = window.localStorage.getItem(chivesWallets)
+    const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
     const foundWallet = walletExists.find((wallet: any) => wallet.uuid === Uuid);
     
     return foundWallet
 };
 
 export function getWalletByAddress(Address: string) {
-    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
-    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    const chivesWalletsList = window.localStorage.getItem(chivesWallets)
+    const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
     const foundWallet = walletExists.find((wallet: any) => wallet.data.arweave.key === Address);
     
     return foundWallet
 };
 
 export function deleteWalletById(WalletId: number) {
-    const walletKeyPathList = window.localStorage.getItem(walletKeyPath)
-    const walletExists = walletKeyPathList ? JSON.parse(walletKeyPathList) : []
+    const chivesWalletsList = window.localStorage.getItem(chivesWallets)
+    const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
     const leftWallets = walletExists.filter((wallet: any) => Number(wallet.id) !== WalletId);
-    window.localStorage.setItem(walletKeyPath, JSON.stringify(leftWallets))
+    window.localStorage.setItem(chivesWallets, JSON.stringify(leftWallets))
     
     return true
 };
