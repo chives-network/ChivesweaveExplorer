@@ -234,9 +234,6 @@ const MyWalletModel = ({ activeTab } : any) => {
           console.log("axios.get editUrl return")
         })
     }
-    else {
-      router.replace('/overview')
-    }
   }, [id])
 
   useEffect(() => {

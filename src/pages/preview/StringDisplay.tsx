@@ -22,7 +22,7 @@ function StringDisplay({ InputString, StringSize } : any) {
     navigator.clipboard.writeText(InputString);
   }
 
-  console.log("isMobile", isMobile())
+  //console.log("isMobile", isMobile())
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>

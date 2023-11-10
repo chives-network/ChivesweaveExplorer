@@ -15,8 +15,8 @@ interface DataParams1 {
 export const fetchData = createAsyncThunk('appBlockTransactions/fetchData', async (params: DataParams1) => {
   const response = await axios.get(authConfig.backEndApi + '/block/txsrecord/'+ `${params.height}` + '/'+ `${params.pageId}` + '/'+params.pageSize)
   
-  const NewData: any[] = response.data.data.filter((record: any) => record.id)
-  response.data.data = NewData
+  const NewData: any[] = response.data.txs.filter((record: any) => record.id)
+  response.data.txs = NewData
   
   return response.data
 })

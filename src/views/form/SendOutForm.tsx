@@ -163,7 +163,15 @@ const FileUploaderMultiple = () => {
     //Send coin out
     setIsDisabledButton(true)
     setUploadingButton("Submitting...")
-    await sendAmount(currentWallet, inputAddress, String(inputAmount), [], inputData, "SubmitStatus", setUploadProgress);
+
+    const TxResult: any = await sendAmount(currentWallet, inputAddress, String(inputAmount), [], inputData, "SubmitStatus", setUploadProgress);
+    console.log("TxResult", TxResult)
+    if(TxResult.status == 800) {
+      //Insufficient balance
+      toast.error(TxResult.statusText, { duration: 4000 })
+      setIsDisabledButton(false)
+      setUploadingButton("Submit")
+    }
 
   }
 

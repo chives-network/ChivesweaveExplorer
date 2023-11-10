@@ -131,7 +131,7 @@ const UserDropdown = (props: Props) => {
             >
               <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
-            { getCurrentWalletAddressData && getCurrentWalletAddressData.length == 43 ?
+            { getAllWalletsData && getAllWalletsData.length > 0 ?
               <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
                 <Typography sx={{ fontWeight: 600 }}>{formatHash(getCurrentWalletAddressData, 5)}</Typography>
                 <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
@@ -167,7 +167,7 @@ const UserDropdown = (props: Props) => {
           )
         })}
         <Divider />
-        { getCurrentWalletAddressData && getCurrentWalletAddressData.length == 43 ?
+        { getAllWalletsData && getAllWalletsData.length > 0 ?
           <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/myprofile')}>
             <Box sx={styles}>
               <Icon icon='mdi:cog-outline' />

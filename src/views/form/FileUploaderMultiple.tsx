@@ -168,6 +168,7 @@ const FileUploaderMultiple = () => {
         if(value != 100) {
             isFinishedAllUploaded = false
         }
+
         console.log("uploadProgress key", key, value)
     })
     if(uploadProgress && Object.entries(uploadProgress) && Object.entries(uploadProgress).length > 0 && isFinishedAllUploaded) {
@@ -199,7 +200,15 @@ const FileUploaderMultiple = () => {
     tags.push({name: "File-Hash", value: fileHash})
     tags.push({name: "File-Name", value: file.name})
 
-    await sendAmount(currentWallet, target, amount, tags, data, file.name, setUploadProgress);
+    const TxResult: any = await sendAmount(currentWallet, target, amount, tags, data, file.name, setUploadProgress);
+    console.log("TxResult", TxResult)
+    if(TxResult.status == 800) {
+      //Insufficient balance
+      toast.error(TxResult.statusText, { duration: 4000 })
+      setIsDisabledButton(false)
+      setIsDisabledRemove(false)
+      setUploadingButton("Upload Files")
+    }
 
   };
 

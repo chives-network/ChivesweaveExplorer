@@ -11,10 +11,10 @@ import BigNumber from 'bignumber.js'
 
 import Arweave from 'arweave'
 
-const arweave = Arweave.init(urlToSettings("https://api.chivesweave.net:1986"))
-
 // ** Config
 import authConfig from 'src/configs/auth'
+const arweave = Arweave.init(urlToSettings(authConfig.backEndApi))
+
 const chivesWallets = authConfig.chivesWallets
 const chivesCurrentWallet = authConfig.chivesCurrentWallet
 
@@ -192,9 +192,30 @@ export async function getWalletAddress(Address: string) {
     return arweave.ar.winstonToAr(await arweave.wallets.getBalance(Address))
 }
 
+export async function getWalletAddressWinston(Address: string) {
+    
+    return await arweave.wallets.getBalance(Address)
+}
+
 export async function getPrice(byteSize: number) {
     
     return arweave.ar.winstonToAr(await arweave.transactions.getPrice(byteSize))
+}
+
+
+export async function getPriceWinston(byteSize: number) {
+    
+    return await arweave.transactions.getPrice(byteSize)
+}
+
+export function winstonToAr(winston: string) {
+    
+    return arweave.ar.winstonToAr(winston)
+}
+
+export function arToWinston(ar: string) {
+    
+    return arweave.ar.arToWinston(ar)
 }
 
 export function isAddress(address: string) {
@@ -203,12 +224,12 @@ export function isAddress(address: string) {
 
 
 export async function sendAmount(walletData: any, target: string, amount: string, tags: any, data: string | Uint8Array, fileName: string, setUploadProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>) {
-    const quantity = arweave.ar.arToWinston(new BigNumber(amount).toString())
+    const quantity = amount && amount.length > 0 && amount != "" ? arweave.ar.arToWinston(new BigNumber(amount).toString()) : '0' ;
 
     //Check Fee and Send Amount must smaller than wallet balance
 
     const txSettings:any = {}
-    if(target && target.length == 43) {
+    if(target && target.length == 43 && Number(quantity) > 0) {
 	    txSettings.target = target
         txSettings.quantity = quantity
     }
@@ -221,10 +242,17 @@ export async function sendAmount(walletData: any, target: string, amount: string
     for (const tag of tags || []) { tx.addTag(tag.name, tag.value) }
     
     await arweave.transactions.sign(tx, walletData.jwk);
-    const sendTxFee = await getPrice(Number(tx.data_size))
+    const currentFee = await getPriceWinston(Number(tx.data_size))
+    const currentBalance = await getWalletAddressWinston(walletData.data.arweave.key)
+
+    if(Number(currentBalance) < (Number(currentFee) + Number(quantity)) )       {
+
+        return { status: 800, statusText: 'Insufficient balance, need: ' + winstonToAr(String(Number(currentFee) + Number(quantity))) }
+    }
     
-    console.log('sendTxFee', sendTxFee);
-    console.log('tx', tx);
+    //console.log('currentBalance', currentBalance);
+    //console.log('currentFee', currentFee);
+    //console.log('quantity', Number(quantity));
 
     if (!tx.chunks?.chunks?.length) { 
 		const txResult = await arweave.transactions.post(tx);
@@ -246,7 +274,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
 			console.log('Unknow error', txResult);
 		}
 
-		return 
+		return txResult; 
 	}
 
     //Upload Data if have Chunks
@@ -257,7 +285,8 @@ export async function sendAmount(walletData: any, target: string, amount: string
 	UploadChunksStatus[tx.id] ??= {}
 	UploadChunksStatus[tx.id].upload = 0
     console.log('Begin upload data txid', tx.id)
-    console.log('uploader begin: ', uploader)
+    
+    //console.log('uploader begin: ', uploader)
     let uploadRecords = 0
 	while (!uploader.isComplete) {
 		await uploader.uploadChunk()
@@ -271,7 +300,8 @@ export async function sendAmount(walletData: any, target: string, amount: string
             [fileName]: uploader.pctComplete,
             };
         });
-		console.log("uploader processing: ",uploadRecords, uploader.pctComplete)
+		
+        //console.log("uploader processing: ",uploadRecords, uploader.pctComplete)
         uploadRecords = uploadRecords + 1
 	}
 	if(uploader.isComplete) {
@@ -290,8 +320,11 @@ export async function sendAmount(walletData: any, target: string, amount: string
 	else {
 		console.error('Transaction error', tx)
 	}
-    console.log('uploader end: ', uploader)
-    console.log('UploadChunksStatus: ', UploadChunksStatus)
+
+    //console.log('uploader end: ', uploader)
+    //console.log('UploadChunksStatus: ', UploadChunksStatus)
+
+    return tx; 
 }
 
 
