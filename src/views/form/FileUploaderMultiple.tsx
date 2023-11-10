@@ -25,6 +25,9 @@ import CircularProgress from '@mui/material/CircularProgress'
 // ** Hooks
 import { sendAmount, getHash } from 'src/functions/ChivesweaveWallets'
 
+// ** Third Party Components
+import toast from 'react-hot-toast'
+
 interface FileProp {
   name: string
   type: string
@@ -59,6 +62,7 @@ const FileUploaderMultiple = () => {
   const [uploadingButton, setUploadingButton] = useState<string>("Upload Files")
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   const [removeAllButton, setRemoveAllButton] = useState<string>("Remove All")
+  const [isDisabledRemove, setIsDisabledRemove] = useState<boolean>(false)
   
   // ** Hooks
   const { getRootProps, getInputProps } = useDropzone({
@@ -136,15 +140,17 @@ const FileUploaderMultiple = () => {
   const handleRemoveAllFiles = () => {
     setFiles([])    
     setIsDisabledButton(false)
+    setIsDisabledRemove(false)
     setUploadingButton("Upload Files")
   }
 
   const auth = useAuth()
 
   const currentWallet = auth.currentWallet
-
+  
   const handleUploadAllFiles = () => {
     setIsDisabledButton(true)
+    setIsDisabledRemove(true)
     setUploadingButton("Uploading...")
     files.map((file: File) => {
         if(uploadProgress[file.name] != 100) {
@@ -166,8 +172,10 @@ const FileUploaderMultiple = () => {
     })
     if(uploadProgress && Object.entries(uploadProgress) && Object.entries(uploadProgress).length > 0 && isFinishedAllUploaded) {
         setIsDisabledButton(true)
+        setIsDisabledRemove(false)
         setUploadingButton("Upload success")
-        setRemoveAllButton("Clean Records")
+        setRemoveAllButton("Clean Records")        
+        toast.success('Successfully submitted to blockchain', { duration: 4000 })
     }
   }, [uploadProgress])
 
@@ -217,7 +225,7 @@ const FileUploaderMultiple = () => {
         <Fragment>
           <List>{fileList}</List>
           <div className='buttons'>
-            <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>{removeAllButton}</Button>
+            <Button color='error' variant='outlined' onClick={handleRemoveAllFiles} disabled={isDisabledRemove}>{removeAllButton}</Button>
             <Button variant='contained' onClick={handleUploadAllFiles} disabled={isDisabledButton}>{uploadingButton}</Button>
           </div>
         </Fragment>

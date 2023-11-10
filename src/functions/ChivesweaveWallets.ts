@@ -198,6 +198,10 @@ export async function getPrice(byteSize: number) {
     return arweave.ar.winstonToAr(await arweave.transactions.getPrice(byteSize))
 }
 
+export function isAddress(address: string) {
+    return !!address?.match(/^[a-z0-9_-]{43}$/i)
+}
+
 
 export async function sendAmount(walletData: any, target: string, amount: string, tags: any, data: string | Uint8Array, fileName: string, setUploadProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>) {
     const quantity = arweave.ar.arToWinston(new BigNumber(amount).toString())
@@ -220,7 +224,6 @@ export async function sendAmount(walletData: any, target: string, amount: string
     await arweave.transactions.sign(tx, walletData.jwk);
     const sendTxFee = await getPrice(Number(tx.data_size))
     
-    //await arweave.transactions.getUploader(transaction);
     console.log('sendTxFee', sendTxFee);
     console.log('tx', tx);
 
@@ -230,7 +233,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
 			console.log('Transaction sent', txResult);
             
             //Update the upload process
-            setUploadProgress((prevProgress) => {
+            fileName && fileName.length > 0 && setUploadProgress((prevProgress) => {
                 return {
                 ...prevProgress,
                 [fileName]: 100,
@@ -263,7 +266,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
 		UploadChunksStatus[tx.id].upload = uploader.pctComplete
         
         //Update the upload process
-        setUploadProgress((prevProgress) => {
+        fileName && fileName.length > 0 && setUploadProgress((prevProgress) => {
             return {
             ...prevProgress,
             [fileName]: uploader.pctComplete,
@@ -278,7 +281,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
 		console.log('Transaction sent: ', tx)
         
         //Update the upload process
-        setUploadProgress((prevProgress) => {
+        fileName && fileName.length > 0 && setUploadProgress((prevProgress) => {
             return {
             ...prevProgress,
             [fileName]: uploader.pctComplete,

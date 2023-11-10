@@ -6,21 +6,23 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
 interface DataParams1 {
-    height: number
+    tx: string
     pageId: number
     pageSize: number
 }
 
 // ** Fetch Data
-export const fetchData = createAsyncThunk('appBlockTransactions/fetchData', async (params: DataParams1) => {
-  const response = await axios.get(authConfig.backEndApi + '/block/txsrecord/'+ `${params.height}` + '/'+ `${params.pageId}` + '/'+params.pageSize)
-  console.log("appBlockTransactions/fetchData", params)
+export const fetchData = createAsyncThunk('appTransactionBundles/fetchData', async (params: DataParams1) => {
+  const response = await axios.get(authConfig.backEndApi + '/tx/'+ `${params.tx}` + '/unbundle/'+ `${params.pageId}` + '/'+params.pageSize)
+  
+  const NewData: any[] = response.data.data.filter((record: any) => record.id)
+  response.data.data = NewData
   
   return response.data
 })
 
-export const appBlockTransactionsSlice = createSlice({
-  name: 'appBlockTransactions',
+export const appTransactionBundlesSlice = createSlice({
+  name: 'appTransactionBundles',
   initialState: {
     data: [],
     total: 1,
@@ -32,10 +34,10 @@ export const appBlockTransactionsSlice = createSlice({
     builder.addCase(fetchData.fulfilled, (state, action) => {
       state.data = action.payload.txs
       state.total = action.payload.total
-      state.params = action.payload.block
+      state.params = action.payload.params
       state.allData = action.payload.data
     })
   }
 })
 
-export default appBlockTransactionsSlice.reducer
+export default appTransactionBundlesSlice.reducer

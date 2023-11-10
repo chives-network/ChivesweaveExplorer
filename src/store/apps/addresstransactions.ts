@@ -31,6 +31,10 @@ export const fetchData = createAsyncThunk('appAddressTransactions/fetchData', as
   }
   if(addressApiType && addressApiType!="")  {
     const response = await axios.get(authConfig.backEndApi + '/wallet/'+ `${params.address}` + '/'+ `${addressApiType}` + '/'+ `${params.pageId}` + '/'+params.pageSize)
+    
+    const NewData: any[] = response.data.data.filter((record: any) => record.id)
+    response.data.data = NewData
+    
     return response.data
   }
   else {

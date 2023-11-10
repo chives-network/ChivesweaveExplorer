@@ -85,13 +85,13 @@ const AnalyticsDashboard = () => {
     //Block List 
     axios.get(authConfig.backEndApi + '/blockpage/1/6', { headers: { }, params: { } })
       .then(res => {
-        setBlockList(res.data.data)
+        setBlockList(res.data.data.filter((record: any) => record.id))
       })
     
     //Transaction List 
     axios.get(authConfig.backEndApi + '/transaction/0/6', { headers: { }, params: { } })
       .then(res => {
-        setTransactionList(res.data.data)
+        setTransactionList(res.data.data.filter((record: any) => record.id))
       })
     
     //Chain Info
@@ -105,13 +105,13 @@ const AnalyticsDashboard = () => {
         //Block List 
         axios.get(authConfig.backEndApi + '/blockpage/1/6', { headers: { }, params: { } })
           .then(res => {
-            setBlockList(res.data.data)
+            setBlockList(res.data.data.filter((record: any) => record.id))
           })
         
         //Transaction List 
         axios.get(authConfig.backEndApi + '/transaction/0/6', { headers: { }, params: { } })
           .then(res => {
-            setTransactionList(res.data.data)
+            setTransactionList(res.data.data.filter((record: any) => record.id))
           })
         
         //Chain Info

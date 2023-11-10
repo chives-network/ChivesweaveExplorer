@@ -11,14 +11,17 @@ interface DataParams {
 }
 
 // ** Fetch Data
-export const fetchData = createAsyncThunk('appBlocks/fetchData', async (params: DataParams) => {
-  const response = await axios.get(authConfig.backEndApi + '/blockpage/'+ `${params.pageId+1}` + '/'+params.pageSize)
+export const fetchData = createAsyncThunk('appAddresses/fetchData', async (params: DataParams) => {
+  const response = await axios.get(authConfig.backEndApi + '/address/'+ `${params.pageId}` + '/'+params.pageSize)
+  
+  const NewData: any[] = response.data.data.filter((record: any) => record.id)
+  response.data.data = NewData
   
   return response.data
 })
 
-export const appBlocksSlice = createSlice({
-  name: 'appBlocks',
+export const appAddressesSlice = createSlice({
+  name: 'appAddresses',
   initialState: {
     data: [],
     total: 1,
@@ -31,9 +34,9 @@ export const appBlocksSlice = createSlice({
       state.data = action.payload.data
       state.total = action.payload.total
       state.params = action.payload.params
-      state.allData = action.payload.data
+      state.allData = action.payload.users
     })
   }
 })
 
-export default appBlocksSlice.reducer
+export default appAddressesSlice.reducer

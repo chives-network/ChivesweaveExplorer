@@ -17,6 +17,9 @@ export const fetchData = createAsyncThunk('appMyFiles/fetchData', async (params:
   
   const response = await axios.get(authConfig.backEndApi + '/file/'+ `${params.type}` + '/'+ `${params.address}` + '/'+ `${params.pageId}` + '/'+params.pageSize)
 
+  const NewData: any[] = response.data.data.filter((record: any) => record.id)
+  response.data.data = NewData
+  
   return response.data
 })
 
