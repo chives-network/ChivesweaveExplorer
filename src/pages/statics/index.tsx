@@ -17,7 +17,6 @@ import authConfig from 'src/configs/auth'
 // ** React Imports
 import { useState, useEffect, Fragment } from 'react'
 
-
 interface ChainInfoType {
   network: string
   version: number
@@ -82,27 +81,49 @@ const AnalyticsDashboard = () => {
       setBlock_Rewards(Block_Rewards.slice(1).slice().reverse().slice(1).slice(-21))
     })
 
+    //Frist Time Api Fetch
     //Block List 
     axios.get(authConfig.backEndApi + '/blockpage/1/6', { headers: { }, params: { } })
-    .then(res => {
-      setBlockList(res.data.data)
-    })
-
+      .then(res => {
+        setBlockList(res.data.data.filter((record: any) => record.id))
+      })
+    
     //Transaction List 
     axios.get(authConfig.backEndApi + '/transaction/0/6', { headers: { }, params: { } })
-    .then(res => {
-      setTransactionList(res.data.data)
-    })
-
+      .then(res => {
+        setTransactionList(res.data.data.filter((record: any) => record.id))
+      })
+    
     //Chain Info
     axios.get(authConfig.backEndApi + '/info', { headers: { }, params: { } })
-        .then(res => {
-          setChainInfo(res.data);
-        })
-        .catch(() => {
-          console.log("axios.get editUrl return")
-        })
-    
+      .then(res => {
+        setChainInfo(res.data);
+      })
+    const intervalId = setInterval(() => {
+        
+        //Interval Time Api Fetch
+        //Block List 
+        axios.get(authConfig.backEndApi + '/blockpage/1/6', { headers: { }, params: { } })
+          .then(res => {
+            setBlockList(res.data.data.filter((record: any) => record.id))
+          })
+        
+        //Transaction List 
+        axios.get(authConfig.backEndApi + '/transaction/0/6', { headers: { }, params: { } })
+          .then(res => {
+            setTransactionList(res.data.data.filter((record: any) => record.id))
+          })
+        
+        //Chain Info
+        axios.get(authConfig.backEndApi + '/info', { headers: { }, params: { } })
+          .then(res => {
+            setChainInfo(res.data);
+          })
+
+    }, 120000);
+
+    return () => clearInterval(intervalId);
+
   }, [])
 
   return (
@@ -123,7 +144,11 @@ const AnalyticsDashboard = () => {
           }
         </Grid>
         <Grid item xs={12} md={4}>
-          <AnalyticsTransactionList data={transactionList}/>
+          {transactionList && transactionList.length > 0 ?
+            <AnalyticsTransactionList data={transactionList}/>
+          :
+            <Fragment></Fragment>
+          }
         </Grid>
         <Grid item xs={12} md={12} lg={8}>
           {blockList && blockList.length > 0 ?

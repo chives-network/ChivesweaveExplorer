@@ -17,11 +17,14 @@ import Typography from '@mui/material/Typography'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Context
-import { useAuth } from 'src/hooks/useAuth'
-
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
+
+// ** Hooks
+import { useAuth } from 'src/hooks/useAuth'
+
+import { getAllWallets, getCurrentWalletAddress, setCurrentWallet } from 'src/functions/ChivesweaveWallets'
+import { formatHash} from 'src/configs/functions';
 
 interface Props {
   settings: Settings
@@ -45,7 +48,8 @@ const UserDropdown = (props: Props) => {
 
   // ** Hooks
   const router = useRouter()
-  const { logout } = useAuth()
+  
+  const { setAuthContextCurrentAddress } = useAuth()
 
   // ** Vars
   const { direction } = settings
@@ -61,6 +65,18 @@ const UserDropdown = (props: Props) => {
     setAnchorEl(null)
   }
 
+  const handleSwitchWalletAndDropdownClose = (url: string, address: string) => {
+    setCurrentWallet(address)
+    setAuthContextCurrentAddress(address)
+    if (url) {
+      router.push(url)
+    }
+    setAnchorEl(null)
+  }
+
+  const getAllWalletsData = getAllWallets()
+  const getCurrentWalletAddressData = getCurrentWalletAddress()
+
   const styles = {
     py: 2,
     px: 4,
@@ -74,11 +90,6 @@ const UserDropdown = (props: Props) => {
       fontSize: '1.375rem',
       color: 'text.primary'
     }
-  }
-
-  const handleLogout = () => {
-    logout()
-    handleDropdownClose()
   }
 
   return (
@@ -120,59 +131,62 @@ const UserDropdown = (props: Props) => {
             >
               <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
-            <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600 }}>John Doe</Typography>
-              <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                Admin
-              </Typography>
-            </Box>
+            { getAllWalletsData && getAllWalletsData.length > 0 ?
+              <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
+                <Typography sx={{ fontWeight: 600 }}>{formatHash(getCurrentWalletAddressData, 5)}</Typography>
+                <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
+                  Current Wallet
+                </Typography>
+              </Box>
+              :
+              <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
+                <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
+                  No Wallet
+                </Typography>
+              </Box>
+            }
           </Box>
         </Box>
         <Divider sx={{ mt: '0 !important' }} />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/user-profile/profile')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:account-outline' />
-            Profile
-          </Box>
-        </MenuItem>
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/apps/email')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:email-outline' />
-            Inbox
-          </Box>
-        </MenuItem>
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/apps/chat')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:message-outline' />
-            Chat
-          </Box>
-        </MenuItem>
+        {getAllWalletsData && getAllWalletsData.length > 0 && getAllWalletsData.map((wallet: any, index: number)=>{
+
+          return (
+            <MenuItem key={index} sx={{ p: 0 }} onClick={() => handleSwitchWalletAndDropdownClose('/myfiles/', wallet.data.arweave.key)}>
+              {wallet.data.arweave.key == getCurrentWalletAddressData ?
+                <Box sx={styles}>
+                  <Icon icon='mdi:cog-outline' />
+                  <Typography sx={{ fontWeight: 600 }}>{formatHash(getCurrentWalletAddressData, 5)}</Typography>
+                </Box>
+                :
+                <Box sx={styles}>
+                  <Icon icon='mdi:currency-usd' />
+                  {formatHash(wallet.data.arweave.key, 5)}
+                </Box>
+              }              
+            </MenuItem>          
+          )
+        })}
         <Divider />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/account-settings/account')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:cog-outline' />
-            Settings
-          </Box>
-        </MenuItem>
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/pricing')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:currency-usd' />
-            Pricing
-          </Box>
-        </MenuItem>
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/faq')}>
+        { getAllWalletsData && getAllWalletsData.length > 0 ?
+          <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/myprofile')}>
+            <Box sx={styles}>
+              <Icon icon='mdi:cog-outline' />
+              Settings
+            </Box>
+          </MenuItem>
+          :
+          <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/newwallet')}>
+            <Box sx={styles}>
+              <Icon icon='mdi:cog-outline' />
+              Create Wallet
+            </Box>
+          </MenuItem>
+          }
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/faq')}>
           <Box sx={styles}>
             <Icon icon='mdi:help-circle-outline' />
             FAQ
           </Box>
-        </MenuItem>
-        <Divider />
-        <MenuItem
-          onClick={handleLogout}
-          sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
-        >
-          <Icon icon='mdi:logout-variant' />
-          Logout
         </MenuItem>
       </Menu>
     </Fragment>

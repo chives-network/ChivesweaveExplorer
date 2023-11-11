@@ -14,7 +14,10 @@ function StringDisplay({ InputString, StringSize } : any) {
   if(StringSize > 0 && IsMobile == true) {
     truncatedString = InputString.slice(0, 4) + '...' + InputString.slice(0-4);
   }
-  if(StringSize > 0 && IsMobile == false) {
+  else if(StringSize >= 20 && IsMobile == false) {
+    truncatedString = InputString;
+  }
+  else if(StringSize > 0 && IsMobile == false) {
     truncatedString = InputString.slice(0, StringSize) + '...' + InputString.slice(0-StringSize);
   }
   const copyToClipboard = () => {
@@ -22,7 +25,7 @@ function StringDisplay({ InputString, StringSize } : any) {
     navigator.clipboard.writeText(InputString);
   }
 
-  console.log("isMobile", isMobile())
+  //console.log("isMobile", isMobile())
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>

@@ -65,6 +65,7 @@ export function formatTimestampMemo(timestamp: number): string {
   const date = new Date(timestamp * 1000);
   const currentDate = new Date();
   const timeDifference = (currentDate.getTime() - date.getTime()) / 1000;
+  if(timestamp == undefined) return ""
   let timeMemo = '';
   if (timeDifference < 60) {
     timeMemo =  ` (${Math.floor(timeDifference)} seconds)`;
@@ -99,6 +100,7 @@ export function formatTimestampAge(timestamp: number): string {
   const date = new Date(timestamp * 1000);
   const currentDate = new Date();
   const timeDifference = (currentDate.getTime() - date.getTime()) / 1000;
+  if(timestamp == undefined) return ""
   let timeMemo = '';
   if (timeDifference < 60) {
     timeMemo =  `${Math.floor(timeDifference)} seconds`;
@@ -118,7 +120,7 @@ export function formatTimestampAge(timestamp: number): string {
 
 export function formatTimestamp(timestamp: number): string {
   const date = new Date(timestamp * 1000);
-
+  if(timestamp == undefined) return ""
   const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -244,3 +246,12 @@ export function isMobile(): boolean {
   
   return false;
 }
+
+
+
+
+
+
+
+
+
