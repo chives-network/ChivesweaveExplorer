@@ -23,7 +23,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Hooks
-import { sendAmount, getHash } from 'src/functions/ChivesweaveWallets'
+import { sendAmount, getHash, getProcessedData } from 'src/functions/ChivesweaveWallets'
 
 // ** Third Party Components
 import toast from 'react-hot-toast'
@@ -147,19 +147,75 @@ const FileUploaderMultiple = () => {
   const auth = useAuth()
 
   const currentWallet = auth.currentWallet
+  const currentAddress = auth.currentAddress
   
   const handleUploadAllFiles = () => {
     setIsDisabledButton(true)
     setIsDisabledRemove(true)
     setUploadingButton("Uploading...")
-    files.map((file: File) => {
-        if(uploadProgress[file.name] != 100) {
-            uploadFiles(currentWallet, file);
-        }
-        else {
-            console.log("[File have uploaded, not upload this time]:", file.name)
-        }
-    })
+    uploadMultiFiles();
+  }
+
+  const uploadMultiFiles = async () => {
+
+    //Make the bundle data
+    const formData = (await Promise.all(files?.map(async file => {
+      const data = file instanceof File ? await readFile(file) : file
+      const tags = [] as Tag[]
+      setBaseTags(tags, {
+        'Content-Type': file.type,
+        'File-Name': file.name,
+        'File-Hash': await getHash(data)
+      })
+
+      return { data, tags, path: file.name }
+    })))
+    const getProcessedDataValue = await getProcessedData(currentWallet, currentAddress, formData);
+
+    const target = ""
+    const amount = ""
+    const data = getProcessedDataValue
+    
+    //Make the tags
+    const tags: any = []
+    tags.push({name: "Bundle-Format", value: 'binary'})
+    tags.push({name: "Bundle-Version", value: '2.0.0'})
+
+    const TxResult: any = await sendAmount(currentWallet, target, amount, tags, data, "UploadBundleFile", setUploadProgress);
+    console.log("TxResult", TxResult)
+    if(TxResult.status == 800) {
+      //Insufficient balance
+      toast.error(TxResult.statusText, { duration: 4000 })
+      setIsDisabledButton(false)
+      setIsDisabledRemove(false)
+      setUploadingButton("Upload Files")
+    }
+
+  };
+
+  function setBaseTags (tags: Tag[], set: { [key: string]: string }) {
+    const baseTags: { [key: string]: string } = {
+      'Content-Type': '',
+      'File-Hash': '',
+      'Bundle-Format': '',
+      'Bundle-Version': '',
+      ...set
+    }
+    for (const name in baseTags) { setTag(tags, name, baseTags[name]) }
+  }
+
+  function setTag (tags: Tag[], name: string, value?: string) {
+    let currentTag = tags.find(tag => tag.name === name)
+    if (value) {
+      if (!currentTag) {
+        currentTag = { name, value: '' }
+        tags.push(currentTag)
+      }
+      currentTag.value = value
+    } else {
+      const index = tags.indexOf(currentTag!)
+      if (index !== -1) { tags.splice(index, 1) }
+    }
   }
 
   useEffect(() => {
@@ -181,15 +237,16 @@ const FileUploaderMultiple = () => {
   }, [uploadProgress])
 
   function readFile (file: File) {
-	return new Promise<Uint8Array>((resolve, reject) => {
-		const fileReader = new FileReader()
-		fileReader.onload = (e) => resolve(new Uint8Array(e.target?.result as any))
-		fileReader.onerror = (e) => reject(e)
-		fileReader.readAsArrayBuffer(file)
-	})
+    return new Promise<Uint8Array>((resolve, reject) => {
+      const fileReader = new FileReader()
+      fileReader.onload = (e) => resolve(new Uint8Array(e.target?.result as any))
+      fileReader.onerror = (e) => reject(e)
+      fileReader.readAsArrayBuffer(file)
+    })
   }
 
-  const uploadFiles = async (currentWallet: any, file: File) => {
+  /*
+  const uploadSingleFile = async (currentWallet: any, file: File) => {
     const target = ""
     const amount = ""
     const data = await readFile(file)
@@ -209,8 +266,8 @@ const FileUploaderMultiple = () => {
       setIsDisabledRemove(false)
       setUploadingButton("Upload Files")
     }
-
   };
+  */
 
   return (
     <Fragment>

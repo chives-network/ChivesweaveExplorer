@@ -3,8 +3,6 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 
 import authConfig from 'src/configs/auth'
 
-console.log("systemTypesystemTypesystemTypesystemType", authConfig.systemType)
-
 const ExplorerNavMenus = [
   {
     title: 'Dashboards',
@@ -123,7 +121,6 @@ const DriveNavMenus = [
     path: '/myfiles'
   }
 ]
-
 
 const navigation = (): VerticalNavItemsType => {
 

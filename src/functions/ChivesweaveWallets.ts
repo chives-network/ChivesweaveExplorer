@@ -5,9 +5,6 @@ import { pkcs8ToJwk } from 'src/functions/Crypto'
 
 import { PromisePool } from '@supercharge/promise-pool'
 
-import Transaction from 'arweave/web/lib/transaction'
-import type { SignatureOptions } from 'arweave/web/lib/crypto/crypto-interface'
-import type { TransactionInterface } from 'arweave/web/lib/transaction'
 import type { JWKInterface } from 'arweave/web/lib/wallet'
 
 // @ts-ignore
@@ -230,7 +227,7 @@ export function isAddress(address: string) {
 }
 
 
-export async function sendAmount(walletData: any, target: string, amount: string, tags: any, data: string | Uint8Array, fileName: string, setUploadProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>) {
+export async function sendAmount(walletData: any, target: string, amount: string, tags: any, data: string | Uint8Array | ArrayBuffer | undefined, fileName: string, setUploadProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>) {
     const quantity = amount && amount.length > 0 && amount != "" ? arweave.ar.arToWinston(new BigNumber(amount).toString()) : '0' ;
 
     //Check Fee and Send Amount must smaller than wallet balance
@@ -240,7 +237,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
 	    txSettings.target = target
         txSettings.quantity = quantity
     }
-	if (data && data.length > 0) { txSettings.data = data }
+	if (data && data != undefined && data != '') { txSettings.data = data }
 
     //Make Tx Data
     const tx = await arweave.createTransaction(txSettings)
@@ -268,6 +265,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
             
             //Update the upload process
             fileName && fileName.length > 0 && setUploadProgress((prevProgress) => {
+                
                 return {
                 ...prevProgress,
                 [fileName]: 100,
@@ -302,6 +300,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
         
         //Update the upload process
         fileName && fileName.length > 0 && setUploadProgress((prevProgress) => {
+            
             return {
             ...prevProgress,
             [fileName]: uploader.pctComplete,
@@ -318,6 +317,7 @@ export async function sendAmount(walletData: any, target: string, amount: string
         
         //Update the upload process
         fileName && fileName.length > 0 && setUploadProgress((prevProgress) => {
+            
             return {
             ...prevProgress,
             [fileName]: uploader.pctComplete,
@@ -355,6 +355,7 @@ export async function getHash (data: string | Uint8Array) {
 
 export async function getProcessedData(walletData: any, walletAddress: string, data: any): Promise<ArTxParams['data']> {
 	if (typeof data === 'string') { return data }
+    console.log("getProcessedData Input File Data:", data)
 	if (data.length > 1) {
 		if (!walletData) { throw 'multiple files unsupported for current account' }
 		if (walletData && walletData.jwk) {
@@ -370,10 +371,12 @@ export async function getProcessedData(walletData: any, walletAddress: string, d
 				const manifest = generateManifest(paths, deduplicatedDataItems, index)
 				bundleItems.push(await createDataItem(walletData, { ...manifest }))
 			} catch (e) { console.warn('manifest generation failed') }
-			return (await createBundle(walletData, bundleItems)).getRaw()
+			
+            return (await createBundle(walletData, bundleItems)).getRaw()
 		}
 		else { throw 'multiple files unsupported for '}
 	}
+
 	return data[0].data
 }
 
@@ -384,13 +387,17 @@ async function deduplicate (transactions: ArDataItemParams[], trustedAddresses?:
 		({ tx, hash: tx.tags?.find(tag => tag.name === 'File-Hash')?.value || await getHash(tx.data) }))).results
 	const chunks = [] as typeof entries[]
 	while (entries.length) { chunks.push(entries.splice(0, 500)) }
-	return (await PromisePool.for(chunks).withConcurrency(3).process(async chunk => {
+	
+    return (await PromisePool.for(chunks).withConcurrency(3).process(async chunk => {
         const checkResultOnMainnet: any[] = await axios.get(authConfig.backEndApi + '/statistics_network', { headers: { }, params: { } })
-                                .then(res => {
-                                    console.log("res.data", res.data)
-                                    return []
+                                .then(() => {
+                                        
+                                        //console.log("deduplicate in lib", res.data)
+                                        
+                                        return []
                                     }
                                 )
+
 		return (await PromisePool.for(chunk).withConcurrency(3).process(async entry => {
             const result = checkResultOnMainnet
 				.filter((tx: any) => tx.tags.find((tag: any) => tag.name === 'File-Hash' && tag.value === entry.hash))
@@ -404,19 +411,23 @@ async function deduplicate (transactions: ArDataItemParams[], trustedAddresses?:
 }
 
 
-export function hasMatchingTags(requiredTags: { name: string; value: string }[], existingTags: { name: string; value: string }[]): Boolean {
-	return !requiredTags.find(requiredTag => !existingTags.find(existingTag =>
+export function hasMatchingTags(requiredTags: { name: string; value: string }[], existingTags: { name: string; value: string }[]): boolean {
+	
+    return !requiredTags.find(requiredTag => !existingTags.find(existingTag =>
 		existingTag.name === requiredTag.name && existingTag.value === requiredTag.value))
 }
 
-async function verifyData (hash: string, id: string) {} // todo store verification results in cache
+async function verifyData (hash: string, id: string) {
+    console.log("verifyData", hash, id)
+} // todo store verification results in cache
 
 export async function getSize (data: any, processedData: any): Promise<number> {
 	if (typeof data === 'string') { return data.length }
 	const processed = processedData
 	if (processed == undefined) { throw 'Error' }
 	if (typeof processed === 'string') { return data.length }
-	return ArrayBuffer.isView(processed) ? processed?.byteLength : new Uint8Array(processed).byteLength
+	
+    return ArrayBuffer.isView(processed) ? processed?.byteLength : new Uint8Array(processed).byteLength
 }
 
 export function generateManifest (localPaths: string[], transactions: Array<{ id: string } | string>, index?: string) {
@@ -430,7 +441,8 @@ export function generateManifest (localPaths: string[], transactions: Array<{ id
 		paths[path] = { id }
 	})
 	const indexParam = index ? { index: { path: index } } : {}
-	return {
+	
+    return {
 		data: JSON.stringify({
 			manifest: 'chivesweave/paths',
 			version: '0.1.0',
@@ -445,27 +457,21 @@ export function generateManifest (localPaths: string[], transactions: Array<{ id
 // ############################################################################################################################################
 
 async function createDataItem (walletData: any, item: ArDataItemParams) {
-    const { createData, signers } = await import('./scripts/arbundles')
+    // @ts-ignore
+    const { createData, signers } = await import('../../scripts/arbundles')
     const { data, tags, target } = item
     const signer = new signers.ArweaveSigner(walletData.jwk)
     const anchor = arweave.utils.bufferTob64(crypto.getRandomValues(new Uint8Array(32))).slice(0, 32)
     const dataItem = createData(data, signer, { tags, target, anchor })
     await dataItem.sign(signer)
+    
     return dataItem
 }
 
 async function createBundle (walletData: any, items: Awaited<ReturnType<typeof createDataItem>>[]) {
-    const { bundleAndSignData, signers } = await import('./scripts/arbundles')
+    // @ts-ignore
+    const { bundleAndSignData, signers } = await import('../../scripts/arbundles')
     const signer = new signers.ArweaveSigner(walletData.jwk)
+    
     return bundleAndSignData(items, signer)
-}
-
-async function signTransactionBundle (walletData: any, tx: Transaction, options?: SignatureOptions) {
-    // todo test balance
-    const verifyTarget = tx.quantity && +tx.quantity > 0 && tx.target
-    const owner = walletData.jwk.n
-    if (owner && tx.owner && tx.owner !== owner) { throw 'Wrong owner' }
-    if (!tx.owner && owner) { tx.setOwner(owner) }
-    await arweave.transactions.sign(tx, walletData.jwk, options)
-    return tx
 }
