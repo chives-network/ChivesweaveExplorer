@@ -1,9 +1,14 @@
 import { generateMnemonic, validateMnemonic } from 'bip39-web-crypto';
 import { getKeyPairFromMnemonic } from 'human-crypto-keys'
 
-import type { JWKInterface } from 'arweave/web/lib/wallet'
-
 import { pkcs8ToJwk } from 'src/functions/Crypto'
+
+import { PromisePool } from '@supercharge/promise-pool'
+
+import Transaction from 'arweave/web/lib/transaction'
+import type { SignatureOptions } from 'arweave/web/lib/crypto/crypto-interface'
+import type { TransactionInterface } from 'arweave/web/lib/transaction'
+import type { JWKInterface } from 'arweave/web/lib/wallet'
 
 // @ts-ignore
 import { v4 } from 'uuid'
@@ -11,8 +16,10 @@ import BigNumber from 'bignumber.js'
 
 import Arweave from 'arweave'
 
-// ** Config
+// ** Third Party Imports
+import axios from 'axios'
 import authConfig from 'src/configs/auth'
+
 const arweave = Arweave.init(urlToSettings(authConfig.backEndApi))
 
 const chivesWallets = authConfig.chivesWallets
@@ -327,8 +334,6 @@ export async function sendAmount(walletData: any, target: string, amount: string
     return tx; 
 }
 
-
-
 export function encode (text: string) {
 	const encoder = new TextEncoder()
 	
@@ -346,4 +351,121 @@ export async function getHash (data: string | Uint8Array) {
 	const buffer = await window.crypto.subtle.digest('SHA-256', content)
 	
     return [...new Uint8Array(buffer)].map(x => x.toString(16).padStart(2, '0')).join('')
+}
+
+export async function getProcessedData(walletData: any, walletAddress: string, data: any): Promise<ArTxParams['data']> {
+	if (typeof data === 'string') { return data }
+	if (data.length > 1) {
+		if (!walletData) { throw 'multiple files unsupported for current account' }
+		if (walletData && walletData.jwk) {
+			const bundleItems: any[] = []
+			const dataItems = await Promise.all(data.map((item: any) => createDataItem(walletData, item)))
+			const trustedAddresses = walletAddress ? [walletAddress] : []
+			const deduplicated = await deduplicate(dataItems, trustedAddresses)
+			const deduplicatedDataItems = dataItems.map((item, i) => deduplicated[i] || item)
+			bundleItems.push(...deduplicatedDataItems.filter((item): item is Exclude<typeof item, string> => typeof item !== 'string'))
+			try {
+				const paths = data.map((item: any) => item.path || '')
+				const index = paths.find((path: any) => path === 'index.html')
+				const manifest = generateManifest(paths, deduplicatedDataItems, index)
+				bundleItems.push(await createDataItem(walletData, { ...manifest }))
+			} catch (e) { console.warn('manifest generation failed') }
+			return (await createBundle(walletData, bundleItems)).getRaw()
+		}
+		else { throw 'multiple files unsupported for '}
+	}
+	return data[0].data
+}
+
+
+//Check File Hash from mainnet, if file have exist on mainnet, should not upload
+async function deduplicate (transactions: ArDataItemParams[], trustedAddresses?: string[]): Promise<Array<string | undefined>> {
+	const entries = (await PromisePool.for(transactions).withConcurrency(5).process(async tx =>
+		({ tx, hash: tx.tags?.find(tag => tag.name === 'File-Hash')?.value || await getHash(tx.data) }))).results
+	const chunks = [] as typeof entries[]
+	while (entries.length) { chunks.push(entries.splice(0, 500)) }
+	return (await PromisePool.for(chunks).withConcurrency(3).process(async chunk => {
+        const checkResultOnMainnet: any[] = await axios.get(authConfig.backEndApi + '/statistics_network', { headers: { }, params: { } })
+                                .then(res => {
+                                    console.log("res.data", res.data)
+                                    return []
+                                    }
+                                )
+		return (await PromisePool.for(chunk).withConcurrency(3).process(async entry => {
+            const result = checkResultOnMainnet
+				.filter((tx: any) => tx.tags.find((tag: any) => tag.name === 'File-Hash' && tag.value === entry.hash))
+				.filter((tx: any) => !entry.tx.tags || hasMatchingTags(entry.tx.tags, tx.tags))
+			for (const tx of result) {
+				const verified = trustedAddresses ? trustedAddresses.includes(tx.owner.address) : await verifyData(entry.hash, tx.id)
+				if (verified) { return tx }
+			}
+		})).results
+	})).results.flat().map(tx => tx?.node.id)
+}
+
+
+export function hasMatchingTags(requiredTags: { name: string; value: string }[], existingTags: { name: string; value: string }[]): Boolean {
+	return !requiredTags.find(requiredTag => !existingTags.find(existingTag =>
+		existingTag.name === requiredTag.name && existingTag.value === requiredTag.value))
+}
+
+async function verifyData (hash: string, id: string) {} // todo store verification results in cache
+
+export async function getSize (data: any, processedData: any): Promise<number> {
+	if (typeof data === 'string') { return data.length }
+	const processed = processedData
+	if (processed == undefined) { throw 'Error' }
+	if (typeof processed === 'string') { return data.length }
+	return ArrayBuffer.isView(processed) ? processed?.byteLength : new Uint8Array(processed).byteLength
+}
+
+export function generateManifest (localPaths: string[], transactions: Array<{ id: string } | string>, index?: string) {
+	if (localPaths.length !== transactions.length) { throw 'Length mismatch' }
+	if (index && !localPaths.includes(index)) { throw 'Unknown index' }
+	const paths = {} as { [key: string]: { id: string } }
+	localPaths.forEach((path, i) => {
+		if (!path) { throw 'Path undefined' }
+		const tx = transactions[i]
+		const id = typeof tx === 'string' ? tx : tx.id
+		paths[path] = { id }
+	})
+	const indexParam = index ? { index: { path: index } } : {}
+	return {
+		data: JSON.stringify({
+			manifest: 'chivesweave/paths',
+			version: '0.1.0',
+			...indexParam,
+			paths,
+		}),
+		tags: [{ name: 'Content-Type', value: 'application/x.chivesweave-manifest+json' }]
+	}
+}
+
+
+// ############################################################################################################################################
+
+async function createDataItem (walletData: any, item: ArDataItemParams) {
+    const { createData, signers } = await import('./scripts/arbundles')
+    const { data, tags, target } = item
+    const signer = new signers.ArweaveSigner(walletData.jwk)
+    const anchor = arweave.utils.bufferTob64(crypto.getRandomValues(new Uint8Array(32))).slice(0, 32)
+    const dataItem = createData(data, signer, { tags, target, anchor })
+    await dataItem.sign(signer)
+    return dataItem
+}
+
+async function createBundle (walletData: any, items: Awaited<ReturnType<typeof createDataItem>>[]) {
+    const { bundleAndSignData, signers } = await import('./scripts/arbundles')
+    const signer = new signers.ArweaveSigner(walletData.jwk)
+    return bundleAndSignData(items, signer)
+}
+
+async function signTransactionBundle (walletData: any, tx: Transaction, options?: SignatureOptions) {
+    // todo test balance
+    const verifyTarget = tx.quantity && +tx.quantity > 0 && tx.target
+    const owner = walletData.jwk.n
+    if (owner && tx.owner && tx.owner !== owner) { throw 'Wrong owner' }
+    if (!tx.owner && owner) { tx.setOwner(owner) }
+    await arweave.transactions.sign(tx, walletData.jwk, options)
+    return tx
 }
