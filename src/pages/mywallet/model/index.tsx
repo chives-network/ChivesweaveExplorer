@@ -50,6 +50,7 @@ import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import MuiTabList, { TabListProps } from '@mui/lab/TabList'
 
+import { winstonToAr } from 'src/functions/ChivesweaveWallets'
 
 import UploadFiles from 'src/views/form/uploadfiles';
 import SendOut from 'src/views/form/sendout';
@@ -221,14 +222,15 @@ const MyWalletModel = ({ activeTab } : any) => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.addresstransactions)
 
-  const [addressBalance, setAddressBalance] = useState<number>(0)
+  const [addressBalance, setAddressBalance] = useState<string>('')
 
   useEffect(() => {
     if(id != undefined && id.length == 43) {
       axios
         .get(authConfig.backEndApi + '/wallet/' + id + "/balance", { headers: { }, params: { } })
         .then(res => {
-          setAddressBalance(res.data);
+          setAddressBalance(winstonToAr(res.data));
+          console.log("==================", winstonToAr(res.data))
         })
         .catch(() => {
           console.log("axios.get editUrl return")
@@ -295,7 +297,13 @@ const MyWalletModel = ({ activeTab } : any) => {
                             Address:
                           </Typography>
                         </TableCell>
-                        <TableCell><StringDisplay InputString={id} StringSize={20}/></TableCell>
+                        <TableCell>
+                          {id && id.length == 43 ?
+                            <StringDisplay InputString={id} StringSize={20}/>
+                            :
+                            <Fragment>No Address</Fragment>
+                          }
+                        </TableCell>
                       </TableRow>
 
                       <TableRow>
@@ -304,7 +312,7 @@ const MyWalletModel = ({ activeTab } : any) => {
                             Balance:
                           </Typography>
                         </TableCell>
-                        <TableCell>{formatXWE(addressBalance, 8)} XWE</TableCell>
+                        <TableCell>{addressBalance} XWE</TableCell>
                       </TableRow>
 
                       <TableRow>
@@ -313,7 +321,7 @@ const MyWalletModel = ({ activeTab } : any) => {
                             Total transactions:
                           </Typography>
                         </TableCell>
-                        <TableCell>{store.total}</TableCell>
+                        <TableCell>{ activeTab != 'uploadfiles' && activeTab != 'sendout' ? store.total : '' }</TableCell>
                       </TableRow>
 
                     </TableBody>

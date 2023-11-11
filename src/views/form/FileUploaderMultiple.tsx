@@ -101,9 +101,9 @@ const FileUploaderMultiple = () => {
           </Typography>
         </div>
       </div>
-      {uploadProgress[file.name] && (
+      {uploadProgress['UploadBundleFile'] && (
             <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                <CircularProgress variant='determinate' {...{value: uploadProgress[file.name]??0}} size={50} />
+                <CircularProgress variant='determinate' {...{value: uploadProgress['UploadBundleFile']??0}} size={50} />
                 <Box
                 sx={{
                     top: 0,
@@ -117,12 +117,12 @@ const FileUploaderMultiple = () => {
                 }}
                 >
                 <Typography variant='caption' component='div' color='text.secondary'>
-                    {uploadProgress[file.name]??0}%
+                    {uploadProgress['UploadBundleFile']??0}%
                 </Typography>
                 </Box>
             </Box>
       )}
-      { uploadProgress[file.name] && uploadProgress[file.name] > 0 ?
+      { uploadProgress['UploadBundleFile'] && uploadProgress['UploadBundleFile'] > 0 ?
             <Fragment></Fragment>
         :
             <IconButton onClick={() => handleRemoveFile(file)}>
@@ -170,6 +170,7 @@ const FileUploaderMultiple = () => {
 
       return { data, tags, path: file.name }
     })))
+    
     const getProcessedDataValue = await getProcessedData(currentWallet, currentAddress, formData);
 
     const target = ""
@@ -182,7 +183,7 @@ const FileUploaderMultiple = () => {
     tags.push({name: "Bundle-Version", value: '2.0.0'})
 
     const TxResult: any = await sendAmount(currentWallet, target, amount, tags, data, "UploadBundleFile", setUploadProgress);
-    console.log("TxResult", TxResult)
+
     if(TxResult.status == 800) {
       //Insufficient balance
       toast.error(TxResult.statusText, { duration: 4000 })
@@ -225,7 +226,7 @@ const FileUploaderMultiple = () => {
             isFinishedAllUploaded = false
         }
 
-        console.log("uploadProgress key", key, value)
+        console.log("uploadProgress key ....", key, value)
     })
     if(uploadProgress && Object.entries(uploadProgress) && Object.entries(uploadProgress).length > 0 && isFinishedAllUploaded) {
         setIsDisabledButton(true)

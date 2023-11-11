@@ -453,9 +453,6 @@ export function generateManifest (localPaths: string[], transactions: Array<{ id
 	}
 }
 
-
-// ############################################################################################################################################
-
 async function createDataItem (walletData: any, item: ArDataItemParams) {
     // @ts-ignore
     const { createData, signers } = await import('../../scripts/arbundles')

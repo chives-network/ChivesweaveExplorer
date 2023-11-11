@@ -165,8 +165,14 @@ const FileResourceModel = ({ activeTab } : any) => {
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
                             Address:
                           </Typography>
+                        </TableCell>                        
+                        <TableCell>
+                          {id && id.length == 43 ?
+                            <StringDisplay InputString={id} StringSize={20}/>
+                            :
+                            <Fragment>No Address</Fragment>
+                          }
                         </TableCell>
-                        <TableCell><StringDisplay InputString={id} StringSize={20}/></TableCell>
                       </TableRow>
 
                       <TableRow>
