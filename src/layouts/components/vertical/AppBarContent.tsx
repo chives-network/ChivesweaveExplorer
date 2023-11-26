@@ -16,6 +16,7 @@ import LanguageDropdown from 'src/@core/layouts/components/shared-components/Lan
 
 // ** Hook Import
 import { useAuth } from 'src/hooks/useAuth'
+import authConfig from 'src/configs/auth'
 
 
 interface Props {
@@ -45,7 +46,7 @@ const AppBarContent = (props: Props) => {
       <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
         <LanguageDropdown settings={settings} saveSettings={saveSettings} />
         <ModeToggler settings={settings} saveSettings={saveSettings} />
-        {auth.user && (
+        {auth.user && authConfig.systemType=="drive" && (
           <>
             <UserDropdown settings={settings} />
           </>

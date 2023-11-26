@@ -16,6 +16,7 @@ import ShortcutsDropdown, { ShortcutsType } from 'src/@core/layouts/components/s
 
 // ** Hook Import
 import { useAuth } from 'src/hooks/useAuth'
+import authConfig from 'src/configs/auth'
 
 interface Props {
   hidden: boolean
@@ -131,7 +132,7 @@ const AppBarContent = (props: Props) => {
       <Autocomplete hidden={hidden} settings={settings} />
       <LanguageDropdown settings={settings} saveSettings={saveSettings} />
       <ModeToggler settings={settings} saveSettings={saveSettings} />
-      {auth.user && false && (
+      {auth.user && authConfig.systemType=="drive" && (
         <>
           <ShortcutsDropdown settings={settings} shortcuts={shortcuts} />
           <NotificationDropdown settings={settings} notifications={notifications} />
