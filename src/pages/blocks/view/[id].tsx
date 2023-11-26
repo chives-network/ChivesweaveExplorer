@@ -34,7 +34,7 @@ import { fetchData } from 'src/store/apps/blocktransactions'
 import { RootState, AppDispatch } from 'src/store'
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatSecondToMinute, formatTimestamp, formatStorageSize, formatTimestampAge } from 'src/configs/functions';
+import { formatHash, formatXWE, formatStorageSize, formatTimestampAge } from 'src/configs/functions';
 
 import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
 

@@ -27,8 +27,7 @@ import { OptionType } from 'src/@core/components/option-menu/types'
 import {
   LabelType,
   FolderType,
-  FileDetailType,
-  MailFoldersArrType
+  FileDetailType
 } from 'src/types/apps/emailTypes'
 
 // ** Third Party Import
@@ -93,10 +92,7 @@ const DriveDetail = (props: FileDetailType) => {
   const {
     currentFile,
     hidden,
-    folders,
-    dispatch,
     direction,
-    foldersObj,
     labelColors,
     folderColors,
     routeParams,
@@ -119,14 +115,16 @@ const DriveDetail = (props: FileDetailType) => {
   // ** Hook
   const { settings } = useSettings()
 
-  const handleMoveToTrash = (currentFile: TxRecordType) => {
+  const handleMoveToTrash = (currentFile: any) => {
     TrashMultiFiles([currentFile]);
     setFileDetailOpen(false)
   }
 
-  const handleMoveToSpam = (currentFile: TxRecordType) => {
+  const handleMoveToSpam = (currentFile: any) => {
     SpamMultiFiles([currentFile]);
     setFileDetailOpen(false)
+
+    console.log("handleFoldersMenu", handleFoldersMenu())
   }
 
   const handleLabelsMenu = () => {
@@ -256,8 +254,8 @@ const DriveDetail = (props: FileDetailType) => {
               <div>
                 <IconButton
                   size='small'
-                  onClick={e => handleStarDrive(e, currentFile.id, !currentFile.isStarred)}
-                  sx={{ ...(currentFile.isStarred ? { color: 'warning.main' } : {}) }}
+                  onClick={e => handleStarDrive(e, currentFile.id, true)}
+                  sx={{ ...(true ? { color: 'warning.main' } : {}) }}
                 >
                   <Icon icon='mdi:star-outline' fontSize='1.375rem' />
                 </IconButton>

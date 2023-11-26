@@ -59,7 +59,7 @@ import { formatTimestamp} from 'src/configs/functions';
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { TrashMultiFiles, SpamMultiFiles, StarMultiFiles, UnStarMultiFiles, ChangeMultiFilesLabel, ChangeMultiFilesFolder, GetFileCacheStatus, GetHaveToDoTask,ResetToDoTask, FolderMultiFiles, ActionsSubmitToBlockchain } from 'src/functions/ChivesweaveWallets'
+import { TrashMultiFiles, SpamMultiFiles, StarMultiFiles, UnStarMultiFiles, ChangeMultiFilesLabel, ChangeMultiFilesFolder, GetFileCacheStatus, GetHaveToDoTask,ResetToDoTask, ActionsSubmitToBlockchain } from 'src/functions/ChivesweaveWallets'
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
 const FileItem = styled(ListItem)<ListItemProps>(({ theme }) => ({
@@ -139,6 +139,7 @@ const DriveList = (props: DriveListType) => {
     const GetHaveToDoTaskData: number = GetHaveToDoTask()
     setHaveTaskToDoNumber(GetHaveToDoTaskData)
     setIsHaveTaskToDoText("Submit to blockchain")
+    console.log("uploadProgress", uploadProgress)
   },[isHaveTaskToDo])
 
   // ** State
@@ -260,25 +261,21 @@ const DriveList = (props: DriveListType) => {
   }
 
   const handleLabelUpdate = (id: string | string[], label: LabelType) => {
-    const selectedFiles = Array.isArray(id) ? [...id] : [id]
     console.log("store.selectedFiles", store)
     if( store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
       setIsHaveTaskToDo(isHaveTaskToDo + 1);
       const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => store.selectedFiles.includes(Item.id));
       ChangeMultiFilesLabel(TargetFiles, label);
-      //FolderMultiFiles(TargetFiles, "Myfiles");
       dispatch(handleSelectAllFile(false))
     }
   }
 
   const handleFolderUpdate = (id: string | string[], folder: FolderType) => {
-    const selectedFiles = Array.isArray(id) ? [...id] : [id]
     console.log("store.selectedFiles", store)
     if( store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
       setIsHaveTaskToDo(isHaveTaskToDo + 1);
       const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => store.selectedFiles.includes(Item.id));
       ChangeMultiFilesFolder(TargetFiles, folder);
-      //FolderMultiFiles(TargetFiles, "Myfiles");
       dispatch(handleSelectAllFile(false))
     }
   }
@@ -294,9 +291,6 @@ const DriveList = (props: DriveListType) => {
     console.log("ActionsSubmitToBlockchainResult", ActionsSubmitToBlockchainResult)
     if(ActionsSubmitToBlockchainResult && ActionsSubmitToBlockchainResult.id) {
       setHaveSubmitTextTip(`${t(`Submitted successfully`)}`)
-      //setOpen(false)
-      //setIsDialog(false)
-      //setIsProgress(false)
 
       const delayExecution = setTimeout(() => {
         setOpen(false);

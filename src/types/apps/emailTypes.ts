@@ -150,6 +150,7 @@ export type FileDetailType = {
   driveFileOpen: boolean
   routeParams: RouteParams
   labelColors: any
+  folderColors: any
   folders: MailFoldersArrType[]
   foldersObj: MailFoldersObjType
   setFileDetailOpen: (val: boolean) => void

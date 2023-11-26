@@ -131,7 +131,6 @@ const SidebarLeft = (props: DriveSidebarType) => {
   type StyledTreeItemProps = TreeItemProps & {
     labelText: string
     labelIcon: string
-    labelInfo?: string
     folder: string
   }
 
@@ -161,7 +160,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
   
   const StyledTreeItem = (props: StyledTreeItemProps) => {
     // ** Props
-    const { labelText, labelIcon, labelInfo, folder, ...other } = props
+    const { labelText, labelIcon, folder, ...other } = props
 
     return (
       <StyledTreeItemRoot

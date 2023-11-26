@@ -1,11 +1,11 @@
 export default {
-  backEndApi: 'http://112.170.68.77:1987',
+  backEndApi: 'https://api.chivesweave.net:1986',
   meEndpoint: '/auth/me',
   loginEndpoint: '/jwt/login',
   registerEndpoint: '/jwt/register',
   storageTokenKeyName: 'accessToken',
   onTokenExpiration: 'refreshToken', // logout | refreshToken
-  systemType: 'drive',
+  systemType: 'explorer',
   chivesWallets: 'ChivesWallets',
   chivesCurrentWallet: 'ChivesCurrentWallet',
   chivesWalletNickname: 'ChivesWalletNickname',

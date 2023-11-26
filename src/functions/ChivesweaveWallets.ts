@@ -711,7 +711,9 @@ export function GetFileCacheStatus(TxId: string) {
     if(ChivesDriveActionsMap && ChivesDriveActionsMap['Folder'] && ChivesDriveActionsMap['Folder'][TxId] )  {
         FileStatus['Folder'] = ChivesDriveActionsMap['Folder'][TxId];
     }
+
     //console.log("FileStatus", FileStatus)
+
     return FileStatus;
 }
 
@@ -719,7 +721,7 @@ export function GetHaveToDoTask() {
     const ChivesDriveActions = authConfig.chivesDriveActions
     const ChivesDriveActionsList = window.localStorage.getItem(ChivesDriveActions)      
     const ChivesDriveActionsMap: any = ChivesDriveActionsList ? JSON.parse(ChivesDriveActionsList) : {}
-    let HaveToDoTask: number = 0
+    let HaveToDoTask = 0
     if(ChivesDriveActionsMap && ChivesDriveActionsMap['Star'])  {
         HaveToDoTask += Object.keys(ChivesDriveActionsMap['Star']).length
     }
@@ -729,6 +731,7 @@ export function GetHaveToDoTask() {
     if(ChivesDriveActionsMap && ChivesDriveActionsMap['Folder'])  {
         HaveToDoTask += Object.keys(ChivesDriveActionsMap['Folder']).length
     }
+
     return HaveToDoTask;
 }
 

@@ -18,9 +18,6 @@ import {OutTable, ExcelRenderer} from 'react-excel-renderer';
 
 import dynamic from 'next/dynamic';
 
-//PPTX
-import { Presentation } from 'react-pptx';
-
 type FileViewerProps = {
   fileType: string
   filePath: string
@@ -109,6 +106,7 @@ function ExcelViewer({ fileUrl }: { fileUrl: string; } ) {
       </div>
   );
 }
+
 /*
 function PPTXViewer({ fileUrl }: { fileUrl: string }) {
   const [presentationData, setPresentationData] = useState<string | null>(null);

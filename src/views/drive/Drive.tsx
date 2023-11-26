@@ -14,7 +14,7 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Types
 import { RootState, AppDispatch } from 'src/store'
-import { DriveLayoutType, DriveLabelColors } from 'src/types/apps/emailTypes'
+import { DriveLayoutType } from 'src/types/apps/emailTypes'
 
 // ** Email App Component Imports
 import DriveList from 'src/views/drive/DriveList'

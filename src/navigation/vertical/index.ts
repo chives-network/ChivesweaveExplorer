@@ -35,16 +35,6 @@ const ExplorerNavMenus = [
     path: '/files/image'
   },
   {
-    title: 'Staticstics',
-    icon: 'mdi:chart-areaspline',
-    path: '/statics'
-  },
-  {
-    title: 'Top Stats',
-    icon: 'mdi:poll',
-    path: '/topstats'
-  },
-  {
     title: 'Nodes',
     icon: 'fa6-solid:share-nodes',
     path: '/nodes'

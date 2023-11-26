@@ -147,7 +147,7 @@ function ImagePreview(ImageSource: string, EntityType: string, EntityAction: str
       {!imageError && !isHovered && (
         <Fragment>
           <Img src={ImageSource} />
-          {EntityAction} -> {EntityTarget}
+          {EntityAction} -{'>'} {EntityTarget}
         </Fragment>
       )}
       {!imageError && isHovered && (
@@ -166,9 +166,6 @@ function parseTxAndGetMemoFileInfoInTags(TxRecord: TxRecordType) {
   });
   const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
   const FileTxId = FileMap['File-TxId'];
-  const EntityType = FileMap['Entity-Type'];
-  const EntityAction = FileMap['Entity-Action'];
-  const EntityTarget = FileMap['Entity-Target'];
   let ImageUrl = ""
   if(FileTxId && FileTxId.length == 43) {
     ImageUrl = FileTxId
