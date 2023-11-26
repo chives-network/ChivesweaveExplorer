@@ -34,6 +34,9 @@ import MuiTabList, { TabListProps } from '@mui/lab/TabList'
 import Icon from 'src/@core/components/icon'
 import authConfig from 'src/configs/auth'
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 // ** Styled Tab component
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
   '& .MuiTabs-indicator': {
@@ -57,7 +60,9 @@ const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
 
 
 const FileResourceModel = ({ activeTab } : any) => {
-
+  // ** Hook
+  const { t } = useTranslation()
+  
   const router = useRouter();
 
   const { id } = router.query;
@@ -113,29 +118,20 @@ const FileResourceModel = ({ activeTab } : any) => {
             aria-label='forced scroll tabs example'
           >
             <Tab
-              value='png'
+              value='image'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
-                  <Icon fontSize={20} icon='mdi:account-outline' />
-                  Png
+                  <Icon fontSize={20} icon='mdi:image-multiple' />
+                  {`${t(`Image`)}`}
                 </Box>
               }
             />
             <Tab
-              value='jpeg'
+              value='video'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
-                  <Icon fontSize={20} icon='mdi:lock-outline' />
-                  Jpeg
-                </Box>
-              }
-            />
-            <Tab
-              value='mp4'
-              label={
-                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
-                  <Icon fontSize={20} icon='mdi:bookmark-outline' />
-                  Mp4
+                  <Icon fontSize={20} icon='mdi:play-box-multiple' />
+                  Video
                 </Box>
               }
             />
@@ -143,17 +139,35 @@ const FileResourceModel = ({ activeTab } : any) => {
               value='pdf'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
-                  <Icon fontSize={20} icon='mdi:bell-outline' />
+                  <Icon fontSize={20} icon='mdi:file-pdf-box' />
                   Pdf
                 </Box>
               }
             />
             <Tab
-              value='office'
+              value='word'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
-                  <Icon fontSize={20} icon='mdi:bell-outline' />
-                  Office
+                  <Icon fontSize={20} icon='mdi:file-word-box' />
+                  Word
+                </Box>
+              }
+            />
+            <Tab
+              value='excel'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:file-excel-box' />
+                  Excel
+                </Box>
+              }
+            />
+            <Tab
+              value='pptx'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='mdi:file-powerpoint-box' />
+                  PPT
                 </Box>
               }
             />
@@ -161,7 +175,7 @@ const FileResourceModel = ({ activeTab } : any) => {
               value='stl'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
-                  <Icon fontSize={20} icon='mdi:bell-outline' />
+                  <Icon fontSize={20} icon='mdi:text-box-multiple-outline' />
                   Stl
                 </Box>
               }
@@ -170,7 +184,7 @@ const FileResourceModel = ({ activeTab } : any) => {
         </TabContext>
 
         <Card sx={{ padding: '0 8px' }}>
-          <CardHeader title={`${activeTab?.toUpperCase()} Resources`} />
+          <CardHeader title={`${activeTab?.toUpperCase()}`} />
           {store && store.data !== undefined ? (
             <Fragment>
               <Grid container spacing={2}>
@@ -181,7 +195,7 @@ const FileResourceModel = ({ activeTab } : any) => {
                 ))}
               </Grid>
               <Grid item key={"Pagination"} xs={12} sm={12} md={12} lg={12} sx={{ padding: '10px 0 10px 0' }}>
-                <Pagination  count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} />
+                <Pagination count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} siblingCount={2} boundaryCount={3} />
               </Grid>
             </Fragment>
           ) : (

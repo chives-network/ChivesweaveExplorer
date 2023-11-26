@@ -26,10 +26,16 @@ import { sendAmount, isAddress } from 'src/functions/ChivesweaveWallets'
 // ** Third Party Components
 import toast from 'react-hot-toast'
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 const SendOutForm = () => {
+  // ** Hook
+  const { t } = useTranslation()
+    
   // ** State
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
-  const [uploadingButton, setUploadingButton] = useState<string>("Submit")
+  const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   
   const auth = useAuth()
@@ -41,13 +47,13 @@ const SendOutForm = () => {
   const handleInputAddressChange = (event: any) => {
     setInputAddress(event.target.value);
     if(event.target.value.length != 43) {
-        setInputAddressError("Address length must be 43")
+        setInputAddressError(`${t('Address length must be 43')}`)
     }
     else if(event.target.value == currentAddress) {
-        setInputAddressError("You cannot send amounts to yourself")
+        setInputAddressError(`${t('You cannot send amounts to yourself')}`)
     }
     else if(!isAddress(event.target.value))  {
-        setInputAddressError("The address you entered is invalid")
+        setInputAddressError(`${t('The address you entered is invalid')}`)
     }
     else {
         setInputAddressError("")
@@ -71,10 +77,10 @@ const SendOutForm = () => {
   const handleInputAmountChange = (event: any) => {
     setInputAmount(event.target.value);
     if(event.target.value <= 0) {
-        setInputAmountError("The amount entered must be greater than 0")
+        setInputAmountError(`${t('The amount entered must be greater than 0')}`)
     }
     else if(event.target.value >= addressBalance) {
-        setInputAmountError("The amount sent cannot exceed the current balance")
+        setInputAmountError(`${t('The amount sent cannot exceed the current balance')}`)
     }
     else {
         setInputAmountError("")
@@ -96,19 +102,19 @@ const SendOutForm = () => {
   
   const handleSubmit = async () => {
     if(!isAddress(inputAddress))  {
-        setInputAddressError("The address you entered is invalid")
+        setInputAddressError(`${t('The address you entered is invalid')}`)
         
         return 
     }
     if(Number(inputAmount) <= 0 || Number(inputAmount) >= addressBalance)  {
-        setInputAddressError("The amount you entered is invalid")
+        setInputAddressError(`${t('The amount you entered is invalid')}`)
         
         return 
     }
     
     //Send coin out
     setIsDisabledButton(true)
-    setUploadingButton("Submitting...")
+    setUploadingButton(`${t('Submitting...')}`)
 
     const TxResult: any = await sendAmount(currentWallet, inputAddress, String(inputAmount), [], inputData, "SubmitStatus", setUploadProgress);
     console.log("TxResult", TxResult)
@@ -116,7 +122,7 @@ const SendOutForm = () => {
       //Insufficient balance
       toast.error(TxResult.statusText, { duration: 4000 })
       setIsDisabledButton(false)
-      setUploadingButton("Submit")
+      setUploadingButton(`${t('Submit')}`)
     }
 
   }
@@ -132,25 +138,25 @@ const SendOutForm = () => {
     })
     if(uploadProgress && Object.entries(uploadProgress) && Object.entries(uploadProgress).length > 0 && isFinishedAllUploaded) {
         setIsDisabledButton(false)
-        setUploadingButton("Submit")
+        setUploadingButton(`${t('Submit')}`)
         setInputAddress("")
         setInputAmount("")
         setInputData("")
-        toast.success('Successfully submitted to blockchain', { duration: 4000 })
+        toast.success(`${t('Successfully submitted to blockchain')}`, { duration: 4000 })
     }
   }, [uploadProgress])
 
   return (
     <Fragment>
         <Card>
-        <CardHeader title='Send Coin Out' />
+        <CardHeader title={`${t('Send Coin Out')}`} />
         <CardContent>
             <Grid container spacing={5}>
                 <Grid item xs={12}>
                     <TextField
                         fullWidth
-                        label='Address'
-                        placeholder='Address'
+                        label={`${t('Address')}`}
+                        placeholder={`${t('Address')}`}
                         value={inputAddress}
                         onChange={handleInputAddressChange}
                         InputProps={{
@@ -168,8 +174,8 @@ const SendOutForm = () => {
                     <TextField
                         fullWidth
                         type='number'
-                        label='Amount'
-                        placeholder='Amount'
+                        label={`${t('Amount')}`}
+                        placeholder={`${t('Amount')}`}
                         value={inputAmount}
                         onChange={handleInputAmountChange}
                         InputProps={{
@@ -188,8 +194,8 @@ const SendOutForm = () => {
                         fullWidth
                         multiline
                         minRows={3}
-                        label='Data'
-                        placeholder='Leave a message to the payee'
+                        label={`${t('Data')}`}
+                        placeholder={`${t('Leave a message to the payee')}`}
                         sx={{ '& .MuiOutlinedInput-root': { alignItems: 'baseline' } }}
                         InputProps={{
                             startAdornment: (

@@ -533,7 +533,7 @@ const data: Data = {
               slug: 'how-to-delete-a-message',
               title: 'How to delete a message?',
               content:
-                "<p>A conversation thread starts when a message is sent to one or more people via app messaging. You can delete conversation threads individually or in bulk.</p><p><strong>Important:</strong>You can’t restore or access deleted messages. <strong>The conversation thread will only be deleted from your inbox and not from the recipient's.</strong></p><p>A conversation thread starts when a message is sent to one or more people via app messaging. You can delete conversation threads individually or in bulk.</p><p><strong>Important:</strong>You can’t restore or access deleted messages. <strong>The conversation thread will only be deleted from your inbox and not from the recipient's.</strong></p>"
+                "<p>A conversation thread starts when a message is sent to one or more people via app messaging. You can delete conversation threads individually or in bulk.</p><p><strong>Important:</strong>You can’t restore or access deleted messages. <strong>The conversation thread will only be deleted from your myfiles and not from the recipient's.</strong></p><p>A conversation thread starts when a message is sent to one or more people via app messaging. You can delete conversation threads individually or in bulk.</p><p><strong>Important:</strong>You can’t restore or access deleted messages. <strong>The conversation thread will only be deleted from your myfiles and not from the recipient's.</strong></p>"
             }
           ]
         },

@@ -29,7 +29,7 @@ const navigation = (): HorizontalNavItemsType => {
     {
       title: 'Resoures',
       icon: 'mdi:file-multiple',
-      path: '/files/png'
+      path: '/files/image'
     },
     {
       title: 'Staticstics',

@@ -18,6 +18,9 @@ import {OutTable, ExcelRenderer} from 'react-excel-renderer';
 
 import dynamic from 'next/dynamic';
 
+//PPTX
+import { Presentation } from 'react-pptx';
+
 type FileViewerProps = {
   fileType: string
   filePath: string
@@ -106,6 +109,32 @@ function ExcelViewer({ fileUrl }: { fileUrl: string; } ) {
       </div>
   );
 }
+/*
+function PPTXViewer({ fileUrl }: { fileUrl: string }) {
+  const [presentationData, setPresentationData] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAndDisplayPresentation = async () => {
+      try {
+        const response = await fetch(fileUrl);
+        const data = await response.arrayBuffer();
+        const base64Data = btoa(new Uint8Array(data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+        setPresentationData(base64Data);
+      } catch (error) {
+        console.error('Error fetching presentation:', error);
+      }
+    };
+
+    fetchAndDisplayPresentation();
+  }, [fileUrl]);
+
+  if (!presentationData) {
+    return <div>Loading...</div>;
+  }
+
+  return <Presentation data={`data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,${presentationData}`} />;
+}
+*/
 
 interface ImagesPreviewType {
     open: boolean
@@ -196,6 +225,7 @@ const ImagesPreview = (props: ImagesPreviewType) => {
                           <FileViewer fileType={'docx'} filePath={Url} className={styles.ExcelTable2007}/>
                         </div>
                       )
+
                     case 'Excel':
                       
                       return <ExcelViewer fileUrl={Url} />

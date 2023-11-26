@@ -1,4 +1,4 @@
-import AddressTransactionListModel from 'src/pages/addresses/model';
+import AddressTransactionListModel from 'src/views/model/addresses';
 
 const AddressTransactionList = () => {
 

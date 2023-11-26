@@ -32,7 +32,7 @@ const ExplorerNavMenus = [
   {
     title: 'Resoures',
     icon: 'mdi:file-multiple',
-    path: '/files/png'
+    path: '/files/image'
   },
   {
     title: 'Staticstics',
@@ -65,7 +65,30 @@ const DriveNavMenus = [
     path: '/overview'
   },
   {
-    sectionTitle: 'Blocks & Txs'
+    sectionTitle: 'My Portal'
+  },
+  {
+    title: 'Resources',
+    icon: 'material-symbols:captive-portal-rounded',
+    path: '/files/image'
+  },
+  {
+    title: 'My Drive',
+    icon: 'streamline:hard-disk-solid',
+    path: '/drive'
+  },
+  {
+    title: 'My Wallet',
+    icon: 'clarity:wallet-solid',
+    path: '/wallet'
+  },
+  {
+    title: 'My Files',
+    icon: 'mdi:file-multiple',
+    path: '/myfiles'
+  },
+  {
+    sectionTitle: 'Blockchain'
   },
   {
     title: 'Blocks',
@@ -83,21 +106,6 @@ const DriveNavMenus = [
     path: '/addresses'
   },
   {
-    title: 'Resoures',
-    icon: 'mdi:file-multiple',
-    path: '/files/png'
-  },
-  {
-    title: 'Staticstics',
-    icon: 'mdi:chart-areaspline',
-    path: '/statics'
-  },
-  {
-    title: 'Top Stats',
-    icon: 'mdi:poll',
-    path: '/topstats'
-  },
-  {
     title: 'Nodes',
     icon: 'fa6-solid:share-nodes',
     path: '/nodes'
@@ -106,19 +114,6 @@ const DriveNavMenus = [
     title: 'Memory Pool',
     icon: 'mdi:pool',
     path: '/mempool'
-  },
-  {
-    sectionTitle: 'My Portal'
-  },
-  {
-    title: 'My Wallet',
-    icon: 'clarity:wallet-solid',
-    path: '/mywallet'
-  },
-  {
-    title: 'My Files',
-    icon: 'mdi:file-multiple',
-    path: '/myfiles'
   }
 ]
 

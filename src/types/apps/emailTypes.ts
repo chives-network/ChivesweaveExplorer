@@ -1,17 +1,19 @@
 // ** Types
 import { Dispatch } from 'redux'
 import { ReactElement, SyntheticEvent } from 'react'
+import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-export type MailLabelType = 'personal' | 'company' | 'important' | 'private'
+export type LabelType = 'personal' | 'company' | 'important' | 'private'
 
-export type MailFolderType = 'inbox' | 'sent' | 'draft' | 'starred' | 'spam' | 'trash'
+export type FolderType = 'inbox' | 'sent' | 'draft' | 'starred' | 'spam' | 'trash' | 'myfiles' | 'uploaded' | 'Root'
 
 export type RouteParams = {
-  label?: string
-  folder?: string
+  label: string
+  folder: string
+  type: string
 }
 
-export type MailLayoutType = RouteParams & {}
+export type DriveLayoutType = RouteParams & {}
 
 export type MailAttachmentType = {
   url: string
@@ -26,18 +28,18 @@ export type FieldMenuItems = {
   value: string
 }
 
-export type FetchMailParamsType = { q: string; folder: MailFolderType; label: MailLabelType }
+export type FetchMailParamsType = { q: string; folder: FolderType; label: LabelType }
 
-export type PaginateMailParamsType = { dir: 'next' | 'previous'; emailId: number }
+export type PaginateMailParamsType = { dir: 'next' | 'previous'; emailId: string }
 
 export type UpdateMailParamsType = {
-  emailIds: number[] | number | []
-  dataToUpdate: { folder?: MailFolderType; isStarred?: boolean; isRead?: boolean; label?: MailLabelType }
+  emailIds: string[] | string | []
+  dataToUpdate: { folder?: FolderType; isStarred?: boolean; isRead?: boolean; label?: LabelType }
 }
 
-export type UpdateMailLabelType = {
-  label: MailLabelType
-  emailIds: number[] | number | []
+export type UpdateLabelType = {
+  label: LabelType
+  emailIds: string[] | string | []
 }
 
 export type MailFromType = {
@@ -70,24 +72,26 @@ export type MailType = {
   time: Date | string
   replies: MailType[]
   hasNextMail?: boolean
-  folder: MailFolderType
-  labels: MailLabelType[]
+  folder: FolderType
+  labels: LabelType[]
   hasPreviousMail?: boolean
   attachments: MailAttachmentType[]
 }
 
 export type MailFoldersArrType = {
   icon: ReactElement
-  name: MailFolderType
+  name: FolderType
 }
+
 export type MailFoldersObjType = {
   [key: string]: any[]
 }
 
 export type MailStore = {
-  mails: MailType[] | null
-  selectedMails: number[]
-  currentMail: null | MailType
+  data: any[] | null
+  files: MailType[] | null
+  selectedFiles: number[]
+  currentFile: null | MailType
   mailMeta: null | MailMetaType
   filter: {
     q: string
@@ -96,7 +100,7 @@ export type MailStore = {
   }
 }
 
-export type MailLabelColors = {
+export type DriveLabelColors = {
   personal: string
   company: string
   private: string
@@ -110,55 +114,53 @@ export type MailSidebarType = {
   dispatch: Dispatch<any>
   leftSidebarOpen: boolean
   leftSidebarWidth: number
-  mailDetailsOpen: boolean
-  toggleComposeOpen: () => void
+  driveFileOpen: boolean
+  toggleUploadFilesOpen: () => void
   handleLeftSidebarToggle: () => void
-  setMailDetailsOpen: (val: boolean) => void
-  handleSelectAllMail: (val: boolean) => void
+  setFileDetailOpen: (val: boolean) => void
+  handleSelectAllFile: (val: boolean) => void
 }
 
-export type MailLogType = {
+export type DriveListType = {
   query: string
   hidden: boolean
-  store: MailStore
+  store: any
   lgAbove: boolean
   dispatch: Dispatch<any>
   direction: 'ltr' | 'rtl'
-  mailDetailsOpen: boolean
+  driveFileOpen: boolean
   routeParams: RouteParams
-  labelColors: MailLabelColors
+  labelColors: any
+  folderColors: any
   setQuery: (val: string) => void
   handleLeftSidebarToggle: () => void
-  getCurrentMail: (id: number) => void
-  handleSelectMail: (id: number) => void
-  setMailDetailsOpen: (val: boolean) => void
-  handleSelectAllMail: (val: boolean) => void
-  updateMail: (data: UpdateMailParamsType) => void
-  updateMailLabel: (data: UpdateMailLabelType) => void
-  paginateMail: (data: PaginateMailParamsType) => void
+  setCurrentFile: (item: TxRecordType) => void
+  handleSelectFile: (id: string) => void
+  setFileDetailOpen: (val: boolean) => void
+  handleSelectAllFile: (val: boolean) => void
+  paginationModel: any
+  handlePageChange: (event: any, page: number) => void
 }
 
-export type MailDetailsType = {
-  mail: MailType
+export type FileDetailType = {
+  currentFile: TxRecordType
   hidden: boolean
   dispatch: Dispatch<any>
   direction: 'ltr' | 'rtl'
-  mailDetailsOpen: boolean
+  driveFileOpen: boolean
   routeParams: RouteParams
-  labelColors: MailLabelColors
+  labelColors: any
   folders: MailFoldersArrType[]
   foldersObj: MailFoldersObjType
-  setMailDetailsOpen: (val: boolean) => void
-  updateMail: (data: UpdateMailParamsType) => void
-  paginateMail: (data: PaginateMailParamsType) => void
-  handleStarMail: (e: SyntheticEvent, id: number, value: boolean) => void
-  handleLabelUpdate: (id: number | number[], label: MailLabelType) => void
-  handleFolderUpdate: (id: number | number[], folder: MailFolderType) => void
+  setFileDetailOpen: (val: boolean) => void
+  handleStarDrive: (e: SyntheticEvent, id: string, value: boolean) => void
+  handleLabelUpdate: (id: string | string[], label: LabelType) => void
+  handleFolderUpdate: (id: string | string[], folder: FolderType) => void
 }
 
 export type MailComposeType = {
   mdAbove: boolean
-  composeOpen: boolean
-  toggleComposeOpen: () => void
-  composePopupWidth: number | string
+  uploadFilesOpen: boolean
+  toggleUploadFilesOpen: () => void
+  composePopupWidth: string
 }

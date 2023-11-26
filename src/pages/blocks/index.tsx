@@ -37,6 +37,9 @@ import { BlockType } from 'src/types/apps/Chivesweave'
 
 import { formatHash, formatXWE, formatSecondToMinute, formatTimestampMemo, formatStorageSize, formatTimestamp } from 'src/configs/functions';
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 interface BlockCellType {
   row: BlockType
 }
@@ -67,132 +70,10 @@ interface ChainInfoType {
   diff: string
 }
 
-const columns: GridColDef[] = [
-  {
-    flex: 0.15,
-    minWidth: 80,
-    field: 'Height',
-    headerName: 'Height',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: BlockCellType) => {
-
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <LinkStyled href={`/blocks/view/${row.height}`}>{row.height}</LinkStyled>
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'Hash',
-    headerName: 'Hash',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: BlockCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/blocks/view/${row.height}`}>{formatHash(row.indep_hash, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.4,
-    field: 'Time',
-    minWidth: 260,
-    headerName: 'Time',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: BlockCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatTimestampMemo(row.timestamp)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 60,
-    headerName: 'Txs',
-    field: 'Txs',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: BlockCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {row.txs_length}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 110,
-    field: 'Miner',
-    headerName: 'Miner',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: BlockCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/all/${row.reward_addr}`}>{formatHash(row.reward_addr, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 110,
-    field: 'Reward',
-    headerName: 'Reward',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: BlockCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatXWE(row.reward, 2)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 100,
-    field: 'Size',
-    headerName: 'Size',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: BlockCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatStorageSize(row.block_size)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 110,
-    field: 'MinedTime',
-    headerName: 'MinedTime',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: BlockCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatSecondToMinute(row.mining_time)}
-        </Typography>
-      )
-    }
-  }
-]
-
 const BlockList = () => {
+  // ** Hook
+  const { t } = useTranslation()
+
   // ** State
   const [isLoading, setIsLoading] = useState(false);
 
@@ -229,6 +110,131 @@ const BlockList = () => {
     setIsLoading(false)
   }, [])
 
+  const columns: GridColDef[] = [
+    {
+      flex: 0.15,
+      minWidth: 80,
+      field: 'Height',
+      headerName: `${t(`Height`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: BlockCellType) => {
+  
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <LinkStyled href={`/blocks/view/${row.height}`}>{row.height}</LinkStyled>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 200,
+      field: 'Hash',
+      headerName: `${t(`Hash`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: BlockCellType) => {
+        
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/blocks/view/${row.height}`}>{formatHash(row.indep_hash, 7)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.4,
+      field: 'Time',
+      minWidth: 260,
+      headerName: `${t(`Time`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: BlockCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatTimestampMemo(row.timestamp)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 60,
+      headerName: `${t(`Txs`)}`,
+      field: 'Txs',
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: BlockCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.txs_length}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 110,
+      field: 'Miner',
+      headerName: `${t(`Miner`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: BlockCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/addresses/all/${row.reward_addr}`}>{formatHash(row.reward_addr, 7)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 110,
+      field: 'Reward',
+      headerName: `${t(`Reward`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: BlockCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatXWE(row.reward, 2)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 100,
+      field: 'Size',
+      headerName: `${t(`Size`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: BlockCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatStorageSize(row.block_size)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 110,
+      field: 'MinedTime',
+      headerName: `${t(`MinedTime`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: BlockCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatSecondToMinute(row.mining_time)}
+          </Typography>
+        )
+      }
+    }
+  ]
+
   return (
     <Grid container spacing={6}>
 
@@ -259,7 +265,7 @@ const BlockList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Network:
+                          {`${t(`Network`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{chainInfo.network}</TableCell>
@@ -267,7 +273,7 @@ const BlockList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Height:
+                          {`${t(`Height`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{chainInfo.height}</TableCell>
@@ -275,7 +281,7 @@ const BlockList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Time:
+                          {`${t(`Time`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{formatTimestamp(chainInfo.time)}</TableCell>
@@ -283,7 +289,7 @@ const BlockList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Peers:
+                          {`${t(`Peers`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{chainInfo.peers}</TableCell>
@@ -291,7 +297,7 @@ const BlockList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Weave Size:
+                          {`${t(`Weave Size`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{formatStorageSize(chainInfo.weave_size)}</TableCell>
@@ -313,12 +319,12 @@ const BlockList = () => {
     
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Blocks' />
+          <CardHeader title={`${t(`Blocks`)}`} />
           <Divider />
           <DataGrid
             autoHeight
             rows={store.data}
-            rowCount={store.total}
+            rowCount={store.total as number}
             columns={columns}
             sortingMode='server'
             paginationMode='server'

@@ -18,6 +18,9 @@ import { ThemeColor } from 'src/@core/layouts/types'
 // ** Custom Components Imports
 import CustomAvatar from 'src/@core/components/mui/avatar'
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 interface DataType {
   stats: string
   title: string
@@ -92,6 +95,8 @@ export type propsType = {
 }
 
 const AnalyticsTransactionsCard = (props: propsType) => {
+  // ** Hook
+  const { t } = useTranslation()
   
   // ** Props
   const { data } = props
@@ -99,7 +104,7 @@ const AnalyticsTransactionsCard = (props: propsType) => {
   return (
     <Card>
       <CardHeader
-        title='Network Info'
+        title={`${t(`Network Info`)}`}
         subheader={
           <Typography variant='body2'>
             <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>

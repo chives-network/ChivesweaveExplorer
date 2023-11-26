@@ -23,6 +23,9 @@ import { formatTimestamp, formatStorageSize } from 'src/configs/functions';
 
 import { ThemeColor } from 'src/@core/layouts/types'
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 interface FileTypeObj {
   [key: string]: {
     icon: string
@@ -74,6 +77,8 @@ interface ChainInfoType {
 }
 
 const PeersInfo = () => {
+  // ** Hook
+  const { t } = useTranslation()
   
   const [peers, setPeers] = useState<NodeInfoType[]>()
 
@@ -87,7 +92,49 @@ const PeersInfo = () => {
         .catch(() => {
           console.log("axios.get editUrl return")
         })
+
+        /*
+        // 示例
+        const plaintext = 'Hello, AES-GCM!Hello!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
+        
+        const getCurrentWalletData = getCurrentWallet();
+        const FileEncrypt = EncryptDataWithKey(plaintext, "FileName001", getCurrentWalletData.jwk);
+        
+        console.log('EncryptDataWithKeyData:', FileEncrypt);
+
+        const FileCipherKey = calculateSHA256(FileEncrypt['Cipher-IV'] + FileEncrypt['Cipher-UUID'] + getCurrentWalletData.jwk.d);
+        console.log('FileCipherKey:', FileCipherKey);
+
+        const FileName = DecryptDataAES256GCM(FileEncrypt['File-Name'], FileEncrypt['Cipher-IV'], FileEncrypt['Cipher-TAG-FileName'], FileCipherKey);
+        console.log('FileName:', FileName);
+
+        const FileEncryptKey = DecryptDataAES256GCM(FileEncrypt['Cipher-KEY'], FileEncrypt['Cipher-IV'], FileEncrypt['Cipher-TAG'], FileCipherKey);
+        console.log('FileEncryptKey:', FileEncryptKey);
+
+        const IV = FileEncryptKey.slice(0,32);
+        const TAG = FileEncryptKey.slice(32,64);
+        const KEY = FileEncryptKey.slice(64);
+        console.log('IV:', IV);
+        console.log('TAG:', TAG);
+        console.log('KEY:', KEY);
+        const FileContent = DecryptDataAES256GCM(FileEncrypt['Cipher-CONTENT'], IV, TAG, KEY);
+        console.log('FileContent:', FileContent);
+
+        const encryptAndDecrypt = async () => {
+          const getCurrentWalletData = getCurrentWallet();      
+          const plaintext = 'Hello, World!!!!!!!!!!!!!!!!!!!!--!!!!0';      
+          const encryptedData = await encryptWithPublicKey(getCurrentWalletData.jwk.n, plaintext);
+          console.log('Encrypted Data:', encryptedData);      
+          const decryptedText = await decryptWithPrivateKey(getCurrentWalletData.jwk, encryptedData);
+          console.log('Decrypted Text:', decryptedText);      
+        }
+        encryptAndDecrypt();
+
+        */
+
   }, [])
+
+
 
   useEffect(() => {
     
@@ -117,7 +164,7 @@ const PeersInfo = () => {
           {chainInfo != undefined ?
             <Grid item xs={12}>
               <Card>
-                <CardHeader title={`Chivesweave Blockchain`} />
+                <CardHeader title={`${t(`Blockchain`)}`} />
                 <CardContent>
                   <Grid container spacing={6}>
 
@@ -141,7 +188,7 @@ const PeersInfo = () => {
                             <TableRow>
                               <TableCell>
                                 <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                  Network:
+                                {`${t(`Network`)}`}:
                                 </Typography>
                               </TableCell>
                               <TableCell>{chainInfo.network}</TableCell>
@@ -149,7 +196,7 @@ const PeersInfo = () => {
                             <TableRow>
                               <TableCell>
                                 <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                  Height:
+                                {`${t(`Height`)}`}:
                                 </Typography>
                               </TableCell>
                               <TableCell>{chainInfo.height}</TableCell>
@@ -157,7 +204,7 @@ const PeersInfo = () => {
                             <TableRow>
                               <TableCell>
                                 <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                  Time:
+                                {`${t(`Time`)}`}:
                                 </Typography>
                               </TableCell>
                               <TableCell>{formatTimestamp(chainInfo.time)}</TableCell>
@@ -165,7 +212,7 @@ const PeersInfo = () => {
                             <TableRow>
                               <TableCell>
                                 <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                  Peers:
+                                {`${t(`Peers`)}`}:
                                 </Typography>
                               </TableCell>
                               <TableCell>{chainInfo.peers}</TableCell>
@@ -173,7 +220,7 @@ const PeersInfo = () => {
                             <TableRow>
                               <TableCell>
                                 <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                  Weave Size:
+                                {`${t(`Weave Size`)}`}:
                                 </Typography>
                               </TableCell>
                               <TableCell>{formatStorageSize(chainInfo.weave_size)}</TableCell>
@@ -195,7 +242,7 @@ const PeersInfo = () => {
           
           <Grid item xs={12}>
             <Card>
-              <CardHeader title='Nodes' />
+              <CardHeader title={`${t(`Nodes`)}`} />
 
               <Divider sx={{ m: '0 !important' }} />
 

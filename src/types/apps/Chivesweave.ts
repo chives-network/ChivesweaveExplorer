@@ -1,3 +1,33 @@
+
+// ** Types
+import { Dispatch } from 'redux'
+
+export type DriveLabelType = 'Png' | 'Jpeg' | 'Mp4' | 'Office' | 'Mp4' | 'Stl'
+
+export type DriveFolderType = 'myfiles' | 'shared' | 'draft' | 'starred' | 'spam' | 'trash'
+
+export type RouteParams = {
+  label?: string
+  folder?: string
+  type?: string
+}
+
+export type DriveSidebarType = {
+  hidden: boolean
+  store: any
+  lgAbove: boolean
+  dispatch: Dispatch<any>
+  routeParams: RouteParams
+  leftSidebarOpen: boolean
+  leftSidebarWidth: number
+  driveFileOpen: boolean
+  uploadFilesTitle: string
+  toggleUploadFilesOpen: () => void
+  handleLeftSidebarToggle: () => void
+  setFileDetailOpen: (val: boolean) => void
+  handleSelectAllFile: (val: boolean) => void
+}
+
 export type BlockType = {
   id: number
   height: number

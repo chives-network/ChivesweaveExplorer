@@ -1,5 +1,8 @@
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 export function formatHash(inputString: string, spliceSize: number): string {
   if(inputString == undefined) {
     return '';
@@ -7,19 +10,23 @@ export function formatHash(inputString: string, spliceSize: number): string {
   if(inputString == "") {
     return '';
   }
-  if (inputString.length <= 12) {
-
-    return inputString; 
-  }
 
   const IsMobile = isMobile();
   if(IsMobile == true) {
+    if (inputString.length <= 12) {
+
+      return inputString; 
+    }
     const firstPart = inputString.substring(0, 6);
     const lastPart = inputString.substring(inputString.length - 6);
     
     return `${firstPart} ... ${lastPart}`;
   }
-  else {
+  else {    
+    if (inputString.length <= spliceSize * 2) {
+
+      return inputString; 
+    }
     const firstPart = inputString.substring(0, spliceSize);
     const lastPart = inputString.substring(inputString.length - spliceSize);
     
@@ -47,43 +54,48 @@ export function formatXWEAddress(dividend: number, precision: number) {
 }
 
 export function formatSecondToMinute(miningTime: number): string {
+ 
+  // ** Hook
+  const { t } = useTranslation()
+
   let timeMemo = '';
   if (miningTime < 60) {
-    timeMemo =  `${Math.floor(miningTime)} seconds`;
+    timeMemo =  `${Math.floor(miningTime)} ${t('seconds')}`;
   } else if (miningTime < 3600) {
     const minutes = Math.floor(miningTime / 60);
-    timeMemo =  `${minutes} minute${minutes > 1 ? "s" : ""}`;
+    timeMemo =  minutes > 1 ? `${minutes} ${t('minutes')}` : `${minutes} ${t('minute')}`;
   } else if (miningTime < 86400) {
     const hours = Math.floor(miningTime / 3600);
-    timeMemo =  `about ${hours} hour${hours > 1 ? "s" : ""}`;
+    timeMemo =  hours > 1 ? `${t('about')} ${hours} ${t('hours')}` : `${t('about')} ${hours} ${t('hour')}`;
   }
 
   return timeMemo;
 }
 
 export function formatTimestampMemo(timestamp: number): string {
+ 
+  // ** Hook
+  const { t } = useTranslation()
+
   const date = new Date(timestamp * 1000);
   const currentDate = new Date();
   const timeDifference = (currentDate.getTime() - date.getTime()) / 1000;
   if(timestamp == undefined) return ""
   let timeMemo = '';
   if (timeDifference < 60) {
-    timeMemo =  ` (${Math.floor(timeDifference)} seconds)`;
+    timeMemo =  ` (${Math.floor(timeDifference)} ${t('seconds')})`;
   } else if (timeDifference < 3600) {
     const minutes = Math.floor(timeDifference / 60);
-    timeMemo =  ` (${minutes} minute${minutes > 1 ? "s" : ""})`;
+    timeMemo =  minutes > 1 ? `(${t('about')} ${minutes} ${t('minutes')})` : `(${t('about')} ${minutes} ${t('minute')})`;
   } else if (timeDifference < 86400) {
     const hours = Math.floor(timeDifference / 3600);
-    timeMemo =  ` (about ${hours} hour${hours > 1 ? "s" : ""})`;
+    timeMemo =  hours > 1 ? `(${t('about')} ${hours} ${t('hours')})` : `(${t('about')} ${hours} ${t('hour')})`;
   } else {
     const days = Math.floor(timeDifference / 86400);
-    timeMemo =  ` (about ${days} day${days > 1 ? "s" : ""})`;
+    timeMemo =  days > 1 ? `(${t('about')} ${days} ${t('days')})` : `(${t('about')} ${days} ${t('day')})`;
   }
 
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const month = months[date.getMonth()];
   const day = date.getDate();
   const year = date.getFullYear();
@@ -97,22 +109,26 @@ export function formatTimestampMemo(timestamp: number): string {
 }
 
 export function formatTimestampAge(timestamp: number): string {
+ 
+  // ** Hook
+  const { t } = useTranslation()
+
   const date = new Date(timestamp * 1000);
   const currentDate = new Date();
   const timeDifference = (currentDate.getTime() - date.getTime()) / 1000;
   if(timestamp == undefined) return ""
   let timeMemo = '';
   if (timeDifference < 60) {
-    timeMemo =  `${Math.floor(timeDifference)} seconds`;
+    timeMemo =  `${Math.floor(timeDifference)} ${t('seconds')}`;
   } else if (timeDifference < 3600) {
     const minutes = Math.floor(timeDifference / 60);
-    timeMemo =  `${minutes} minute${minutes > 1 ? "s" : ""}`;
+    timeMemo =  minutes > 1 ? `${t('about')} ${minutes} ${t('hours')}` : `${t('about')} ${minutes} ${t('hour')}`;
   } else if (timeDifference < 86400) {
     const hours = Math.floor(timeDifference / 3600);
-    timeMemo =  `about ${hours} hour${hours > 1 ? "s" : ""}`;
+    timeMemo =  hours > 1 ? `${t('about')} ${hours} ${t('hours')}` : `${t('about')} ${hours} ${t('hour')}`;
   } else {
     const days = Math.floor(timeDifference / 86400);
-    timeMemo =  `about ${days} day${days > 1 ? "s" : ""}`;
+    timeMemo =  days > 1 ? `${t('about')} ${days} ${t('days')}` : `${t('about')} ${days} ${t('day')}`;
   }
   
   return timeMemo;
@@ -121,10 +137,7 @@ export function formatTimestampAge(timestamp: number): string {
 export function formatTimestamp(timestamp: number): string {
   const date = new Date(timestamp * 1000);
   if(timestamp == undefined) return ""
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const month = months[date.getMonth()];
   const day = date.getDate();
   const year = date.getFullYear();

@@ -1,9 +1,8 @@
 // ** React Imports
-import { Fragment, useState, SyntheticEvent, useEffect } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Link from '@mui/material/Link'
 import List from '@mui/material/List'
 import Button from '@mui/material/Button'
 import ListItem from '@mui/material/ListItem'
@@ -23,10 +22,16 @@ import { useAuth } from 'src/hooks/useAuth'
 import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Hooks
-import { sendAmount, getHash, getProcessedData } from 'src/functions/ChivesweaveWallets'
+import { sendAmount, getCurrentWallet, getHash, getProcessedData } from 'src/functions/ChivesweaveWallets'
+import {EncryptDataWithKey} from 'src/functions/ChivesweaveEncrypt'
 
 // ** Third Party Components
 import toast from 'react-hot-toast'
+
+import authConfig from 'src/configs/auth'
+
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
 
 interface FileProp {
   name: string
@@ -56,21 +61,25 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 }))
 
 const FileUploaderMultiple = () => {
+  // ** Hook
+  const { t } = useTranslation()
+  
   // ** State
   const [files, setFiles] = useState<File[]>([])
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
-  const [uploadingButton, setUploadingButton] = useState<string>("Upload Files")
+  const [uploadingButton, setUploadingButton] = useState<string>(`${t(`Upload Files`)}`)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
-  const [removeAllButton, setRemoveAllButton] = useState<string>("Remove All")
+  const [removeAllButton, setRemoveAllButton] = useState<string>(`${t(`Remove All`)}`)
   const [isDisabledRemove, setIsDisabledRemove] = useState<boolean>(false)
+  const [isEncryptFile, setIsEncryptFile] = useState<boolean>(false)
   
   // ** Hooks
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles: File[]) => {
       setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
       setIsDisabledButton(false)
-      setUploadingButton("Upload Files")      
-      setRemoveAllButton("Remove All")
+      setUploadingButton(`${t(`Upload Files`)}`)      
+      setRemoveAllButton(`${t(`Remove All`)}`)
     }
   })
 
@@ -133,15 +142,11 @@ const FileUploaderMultiple = () => {
     </ListItem>
   ))
 
-  const handleLinkClick = (event: SyntheticEvent) => {
-    event.preventDefault()
-  }
-
   const handleRemoveAllFiles = () => {
     setFiles([])    
     setIsDisabledButton(false)
     setIsDisabledRemove(false)
-    setUploadingButton("Upload Files")
+    setUploadingButton(`${t(`Upload Files`)}`)
   }
 
   const auth = useAuth()
@@ -160,22 +165,63 @@ const FileUploaderMultiple = () => {
 
     //Make the bundle data
     const formData = (await Promise.all(files?.map(async file => {
-      const data = file instanceof File ? await readFile(file) : file
+      let data = file instanceof File ? await readFile(file) : file
       const tags = [] as Tag[]
-      setBaseTags(tags, {
-        'Content-Type': file.type,
-        'File-Name': file.name,
-        'File-Hash': await getHash(data)
-      })
-
+      if(isEncryptFile)    {
+        //Encrypt File Content
+        const getCurrentWalletData = getCurrentWallet();
+        const FileContent = new TextDecoder().decode(data);
+        const FileEncrypt = EncryptDataWithKey(FileContent, file.name, getCurrentWalletData.jwk);
+        console.log("FileEncrypt", FileEncrypt)
+        setBaseTags(tags, {          
+          'App-Name': FileEncrypt['App-Name'],
+          'App-Platform': FileEncrypt['App-Platform'],
+          'App-Version': FileEncrypt['App-Version'],
+          'Content-Type': file.type,
+          'File-Name': FileEncrypt['File-Name'],
+          'File-Hash': FileEncrypt['File-Hash'],
+          'Cipher-ALG': FileEncrypt['Cipher-ALG'],
+          'Cipher-IV': FileEncrypt['Cipher-IV'],
+          'Cipher-TAG': FileEncrypt['Cipher-TAG'],
+          'Cipher-UUID': FileEncrypt['Cipher-UUID'],
+          'Cipher-KEY': FileEncrypt['Cipher-KEY'],
+          'Entity-Type': FileEncrypt['Entity-Type'],
+          'Unix-Time': FileEncrypt['Unix-Time']
+        })
+        data = FileEncrypt['Cipher-CONTENT']
+      }
+      else {
+        //Not Encrypt File Content
+        setBaseTags(tags, {
+          'Content-Type': file.type,
+          'File-Name': file.name,
+          'File-Hash': await getHash(data),
+          'File-Public': 'Public',
+          'File-Summary': '',
+          'Cipher-ALG': '',
+          'File-Parent': 'Root',
+          'File-Language': 'en',
+          'File-Pages': '',
+          'Entity-Type': 'File',
+          'App-Name': authConfig['App-Name'],
+          'App-Platform': authConfig['App-Platform'],
+          'App-Version': authConfig['App-Version'],
+          'Agent-Name': '',
+          'Unix-Time': String(Date.now())
+        })
+      }
+      
       return { data, tags, path: file.name }
     })))
     
-    const getProcessedDataValue = await getProcessedData(currentWallet, currentAddress, formData);
+    const getProcessedDataValue = await getProcessedData(currentWallet, currentAddress, formData, true);
 
     const target = ""
     const amount = ""
     const data = getProcessedDataValue
+
+    console.log("getProcessedDataValue", getProcessedDataValue)
+    setIsEncryptFile(false)
     
     //Make the tags
     const tags: any = []
@@ -189,7 +235,7 @@ const FileUploaderMultiple = () => {
       toast.error(TxResult.statusText, { duration: 4000 })
       setIsDisabledButton(false)
       setIsDisabledRemove(false)
-      setUploadingButton("Upload Files")
+      setUploadingButton(`${t(`Upload Files`)}`)
     }
 
   };
@@ -265,7 +311,7 @@ const FileUploaderMultiple = () => {
       toast.error(TxResult.statusText, { duration: 4000 })
       setIsDisabledButton(false)
       setIsDisabledRemove(false)
-      setUploadingButton("Upload Files")
+      setUploadingButton(`${t(`Upload Files`)}`)
     }
   };
   */
@@ -277,14 +323,7 @@ const FileUploaderMultiple = () => {
         <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
           <Img alt='Upload img' src='/images/misc/upload.png' />
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
-            <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
-            <Typography color='textSecondary'>
-              Drop files here or click{' '}
-              <Link href='/' onClick={handleLinkClick}>
-                browse
-              </Link>{' '}
-              thorough your machine
-            </Typography>
+            <HeadingTypography variant='h5'>{`${t('Drop files here or click to upload.')}`}</HeadingTypography>
           </Box>
         </Box>
       </div>

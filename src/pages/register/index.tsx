@@ -24,7 +24,7 @@ const Register = () => {
       console.log("walletKeyPathList:", walletKeyPathList)
   };
   const getCurrentBalance = async (currentWallet: any) => {
-    const currentBalance = await getWalletAddress(currentWallet.data.arweave.key);
+    const currentBalance = await getWalletBalance(currentWallet.data.arweave.key);
     console.log("currentBalance", currentBalance)
 
   };

@@ -18,6 +18,9 @@ import { TxRecordType } from 'src/types/apps/Chivesweave'
 
 import { formatHash, formatXWE, getContentTypeAbbreviation } from 'src/configs/functions';
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 interface TransactionCellType {
   row: TxRecordType
 }
@@ -149,48 +152,52 @@ function parseTxAndGetMemoFileInfo(TxRecord: TxRecordType) {
 
 }
 
-const columns: GridColDef[] = [
-  {
-    flex: 0.12,
-    minWidth: 150,
-    field: 'TxId',
-    headerName: 'TxId',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 4)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.3,
-    minWidth: 200,
-    field: 'Info',
-    headerName: 'Info',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {parseTxAndGetMemoFileInfo(row)}
-        </Typography>
-      )
-    }
-  }
-]
+
 
 export type propsType = {
   data: any[]
 }
 
 const AnalyticsTransactionList = (props: propsType) => {
+  // ** Hook
+  const { t } = useTranslation()
   
   // ** Props
   const { data } = props
+
+  const columns: GridColDef[] = [
+    {
+      flex: 0.12,
+      minWidth: 150,
+      field: 'TxId',
+      headerName: `${t(`TxId`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 4)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.3,
+      minWidth: 200,
+      field: 'Info',
+      headerName: `${t(`Info`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {parseTxAndGetMemoFileInfo(row)}
+          </Typography>
+        )
+      }
+    }
+  ]
 
   return (
     <Card>

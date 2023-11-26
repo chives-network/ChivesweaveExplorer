@@ -1,4 +1,4 @@
-import FileResources from 'src/pages/myfiles/model';
+import FileResources from 'src/views/model/myfiles';
 
 const FileResourcesList = () => {
 

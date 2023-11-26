@@ -27,6 +27,9 @@ import { formatHash, formatXWE, formatTimestampAge, formatStorageSize } from 'sr
 
 import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 interface TransactionCellType {
   row: TxRecordType
 }
@@ -61,117 +64,11 @@ function parseTxFeeAndBundleId(TxRecord: TxRecordType) {
   return formatXWE(TxRecord.fee.winston, 6);
 }
 
-const columns: GridColDef[] = [
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'TxId',
-    headerName: 'TxId',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'From',
-    headerName: 'From',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    headerName: 'Size',
-    field: 'Size',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatStorageSize(row.data.size)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    field: 'Fee',
-    headerName: 'Fee',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {parseTxFeeAndBundleId(row)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.3,
-    minWidth: 200,
-    field: 'Info',
-    headerName: 'Info',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <FormatTxInfoInRow TxRecord={row}/>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 110,
-    field: 'Height',
-    headerName: 'Height',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    field: 'Time',
-    minWidth: 220,
-    headerName: 'Time',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatTimestampAge(row.block.timestamp)}
-        </Typography>
-      )
-    }
-  }
-]
 
 const TransactionList = () => {
+  // ** Hook
+  const { t } = useTranslation()
+  
   // ** State
   const [isLoading, setIsLoading] = useState(false);
 
@@ -195,16 +92,126 @@ const TransactionList = () => {
     setIsLoading(false)
   }, [])
 
+  const columns: GridColDef[] = [
+    {
+      flex: 0.2,
+      minWidth: 200,
+      field: 'TxId',
+      headerName: `${t(`TxId`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 200,
+      field: 'From',
+      headerName: `${t(`From`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      headerName: `${t(`Size`)}`,
+      field: 'Size',
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatStorageSize(row.data.size)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Fee',
+      headerName: `${t(`Fee`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {parseTxFeeAndBundleId(row)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.3,
+      minWidth: 200,
+      field: 'Info',
+      headerName: `${t(`Info`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            <FormatTxInfoInRow TxRecord={row}/>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 110,
+      field: 'Height',
+      headerName: `${t(`Height`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      field: 'Time',
+      minWidth: 220,
+      headerName: `${t(`Time`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatTimestampAge(row.block.timestamp)}
+          </Typography>
+        )
+      }
+    }
+  ]
+
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Transactions' />
+          <CardHeader title={`${t(`Transactions`)}`} />
           <Divider />
           <DataGrid
             autoHeight
             rows={store.data}
-            rowCount={store.total}
+            rowCount={store.total as number}
             columns={columns}
             sortingMode='server'
             paginationMode='server'

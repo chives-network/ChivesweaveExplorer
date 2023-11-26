@@ -42,6 +42,9 @@ import { ThemeColor } from 'src/@core/layouts/types'
 
 import StringDisplay from 'src/pages/preview/StringDisplay';
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 interface TransactionCellType {
   row: TxRecordType
 }
@@ -114,7 +117,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }))
 
 
-function ImagePreview(ImageSource: string) {
+function ImagePreview(ImageSource: string, EntityType: string, EntityAction: string, EntityTarget: string) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -137,10 +140,15 @@ function ImagePreview(ImageSource: string) {
     };
   }, [ImageSource]);
 
+  console.log("EntityType", EntityType)
+
   return (
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} >
       {!imageError && !isHovered && (
-        <Img src={ImageSource} />
+        <Fragment>
+          <Img src={ImageSource} />
+          {EntityAction} -> {EntityTarget}
+        </Fragment>
       )}
       {!imageError && isHovered && (
         <div className="preview">
@@ -157,6 +165,17 @@ function parseTxAndGetMemoFileInfoInTags(TxRecord: TxRecordType) {
     FileMap[Item.name] = Item.value;
   });
   const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
+  const FileTxId = FileMap['File-TxId'];
+  const EntityType = FileMap['Entity-Type'];
+  const EntityAction = FileMap['Entity-Action'];
+  const EntityTarget = FileMap['Entity-Target'];
+  let ImageUrl = ""
+  if(FileTxId && FileTxId.length == 43) {
+    ImageUrl = FileTxId
+  }
+  else {
+    ImageUrl = TxRecord.id
+  }
   
   //console.log("FileType", `${authConfig.backEndApi}/${TxRecord.id}`)
   switch(FileType) {
@@ -165,14 +184,20 @@ function parseTxAndGetMemoFileInfoInTags(TxRecord: TxRecordType) {
     case 'JPEG':
     case 'JPG':
     case 'WEBM':
-      return <ImgPreview src={`${authConfig.backEndApi}/${TxRecord.id}`}/>
+      return <ImgPreview src={`${authConfig.backEndApi}/${ImageUrl}`}/>
     case 'PDF':
       return <ImagesPreview key={TxRecord.id} open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['pdf']} />;
     case 'JSON':
       return <ImagesPreview key={TxRecord.id} open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['json']} />;
+      case 'DOC':
+      case 'DOCX':
+        return <ImagesPreview key={TxRecord.id} open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['Word']} />;
     case 'XLS':
     case 'XLSX':
       return <ImagesPreview key={TxRecord.id} open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['Excel']} />;
+      case 'PPT':
+      case 'PPTX':
+        return <ImagesPreview key={TxRecord.id} open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['PPTX']} />;
     case 'MP4':
       return <ImagesPreview key={TxRecord.id} open={true} toggleImagesPreviewDrawer={toggleImagesPreviewDrawer} imagesList={[`${authConfig.backEndApi}/${TxRecord.id}`]} imagesType={['Mp4']} />;
     default:
@@ -186,15 +211,24 @@ function parseTxAndGetMemoFileInfoInDataGrid(TxRecord: TxRecordType) {
     FileMap[Item.name] = Item.value;
   });
   const FileType = getContentTypeAbbreviation(FileMap['Content-Type']);
-  
-  //console.log("FileType", FileType)
+  const FileTxId = FileMap['File-TxId'];
+  const EntityType = FileMap['Entity-Type'];
+  const EntityAction = FileMap['Entity-Action'];
+  const EntityTarget = FileMap['Entity-Target'];
+  let ImageUrl = ""
+  if(FileTxId && FileTxId.length == 43) {
+    ImageUrl = FileTxId
+  }
+  else {
+    ImageUrl = TxRecord.id
+  }
   switch(FileType) {
     case 'PNG':
     case 'GIF':
     case 'JPEG':
     case 'JPG':
     case 'WEBM':
-      return ImagePreview(`${authConfig.backEndApi}/${TxRecord.id}/thumbnail`)
+      return ImagePreview(`${authConfig.backEndApi}/${ImageUrl}/thumbnail`, EntityType, EntityAction, EntityTarget)
     case 'PDF':
       return <LinkStyled href={`/txs/view/${TxRecord.id}`}>{FileMap['File-Name']}</LinkStyled>
     case 'XLS':
@@ -238,118 +272,10 @@ function parseTxAndGetMemoFileInfoInDataGrid(TxRecord: TxRecordType) {
 
 }
 
-const columns: GridColDef[] = [
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'TxId',
-    headerName: 'TxId',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'From',
-    headerName: 'From',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    headerName: 'Size',
-    field: 'Size',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatStorageSize(row.data.size)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    field: 'Fee',
-    headerName: 'Fee',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatXWE(row.fee.winston, 6)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.3,
-    minWidth: 200,
-    field: 'Info',
-    headerName: 'Info',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {parseTxAndGetMemoFileInfoInDataGrid(row)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 110,
-    field: 'Height',
-    headerName: 'Height',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    field: 'Time',
-    minWidth: 220,
-    headerName: 'Time',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatTimestampAge(row.block.timestamp)}
-        </Typography>
-      )
-    }
-  }
-]
-
-
 const TxView = () => {
+  // ** Hook
+  const { t } = useTranslation()
+  
   
   const router = useRouter();
   const { id } = router.query;
@@ -359,6 +285,7 @@ const TxView = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isBundleTx, setIsBundleTx] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
+  const [tags, setTags] = useState<any>({})
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -382,6 +309,14 @@ const TxView = () => {
         .get(authConfig.backEndApi + '/wallet/' + id + '/txrecord', { headers: { }, params: { } })
         .then(res => {
           setTxViewInfo(res.data);
+          
+          const tagsMap: any = {}
+          res.data && res.data.tags && res.data.tags.length > 0 && res.data.tags.map( (Tag: any) => {
+            tagsMap[Tag.name] = Tag.value;
+          })
+          setTags(tagsMap);
+          console.log("tagsMap", tagsMap)
+
           let TempFileName = '';
           setIsBundleTx(false);
           res.data && res.data.tags && res.data.tags.map((Item: { [key: string]: string }) => {
@@ -404,13 +339,123 @@ const TxView = () => {
     }
   }, [id])
 
+  const columns: GridColDef[] = [
+    {
+      flex: 0.2,
+      minWidth: 200,
+      field: 'TxId',
+      headerName: `${t(`TxId`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 200,
+      field: 'From',
+      headerName: `${t(`From`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      headerName: `${t(`Size`)}`,
+      field: 'Size',
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatStorageSize(row.data.size)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Fee',
+      headerName: `${t(`Fee`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatXWE(row.fee.winston, 6)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.3,
+      minWidth: 200,
+      field: 'Info',
+      headerName: `${t(`Info`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {parseTxAndGetMemoFileInfoInDataGrid(row)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 110,
+      field: 'Height',
+      headerName: `${t(`Height`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      field: 'Time',
+      minWidth: 220,
+      headerName: `${t(`Time`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatTimestampAge(row.block.timestamp)}
+          </Typography>
+        )
+      }
+    }
+  ]
+
   return (
     <Fragment>
       {txViewInfo ? 
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
-              <CardHeader title={`Transaction`} />
+              <CardHeader title={`${t(`Transactions`)}`} />
               <CardContent>
                 <Grid container spacing={6}>
 
@@ -434,15 +479,15 @@ const TxView = () => {
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                ID:
+                                {`${t(`ID`)}`}:
                               </Typography>
                             </TableCell>
-                            <TableCell><StringDisplay InputString={id} StringSize={20}/></TableCell>
+                            <TableCell><StringDisplay InputString={String(id)} StringSize={20}/></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                              Value:
+                              {`${t(`Value`)}`}:
                               </Typography>
                             </TableCell>
                             <TableCell>{formatXWE(txViewInfo.quantity.winston, 6)}</TableCell>
@@ -450,15 +495,19 @@ const TxView = () => {
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                              From:
+                              {`${t(`From`)}`}:
                               </Typography>
                             </TableCell>
-                            <TableCell><LinkStyled href={`/addresses/all/${txViewInfo.owner.address}`}>{formatHash(txViewInfo.owner.address, 7)}</LinkStyled></TableCell>
+                            <TableCell>
+                              <LinkStyled href={`/addresses/all/${txViewInfo.owner.address}`}>
+                                <StringDisplay InputString={`${txViewInfo.owner.address}`} StringSize={7} />
+                              </LinkStyled>
+                            </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                              To:
+                              {`${t(`To`)}`}:
                               </Typography>
                             </TableCell>
                             <TableCell><LinkStyled href={`/addresses/all/${txViewInfo.recipient}`}>{formatHash(txViewInfo.recipient, 7)}</LinkStyled></TableCell>
@@ -466,7 +515,7 @@ const TxView = () => {
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                              Fee:
+                              {`${t(`Fee`)}`}:
                               </Typography>
                             </TableCell>
                             <TableCell>{formatXWE(txViewInfo.fee.winston, 7)}</TableCell>
@@ -496,7 +545,7 @@ const TxView = () => {
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                Block Height:
+                                {`${t(`Block Height`)}`}:
                               </Typography>
                             </TableCell>
                             <TableCell><LinkStyled href={`/blocks/view/${txViewInfo.block.height}`}>{txViewInfo.block.height}</LinkStyled></TableCell>
@@ -504,15 +553,15 @@ const TxView = () => {
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                              Block Hash:
+                              {`${t(`Block Hash`)}`}:
                               </Typography>
                             </TableCell>
-                            <TableCell>{formatHash(txViewInfo.block.indep_hash, 7)}</TableCell>
+                            <TableCell><StringDisplay InputString={txViewInfo.block.indep_hash} StringSize={7}/></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                              Block Time:
+                              {`${t(`Block Time`)}`}:
                               </Typography>
                             </TableCell>
                             <TableCell>{formatTimestamp(txViewInfo.block.timestamp)}</TableCell>
@@ -522,10 +571,10 @@ const TxView = () => {
                             <TableRow>
                               <TableCell>
                                 <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                                Bundled In:
+                                {`${t(`Bundled In`)}`}:
                                 </Typography>
                               </TableCell>
-                              <TableCell>{formatHash(txViewInfo.bundleid, 7)}</TableCell>
+                              <TableCell><StringDisplay InputString={txViewInfo.bundleid} StringSize={7}/></TableCell>
                             </TableRow>
                           :
                             <Fragment></Fragment>
@@ -534,7 +583,7 @@ const TxView = () => {
                           <TableRow>
                             <TableCell>
                               <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                              Data Size:
+                              {`${t(`Data Size`)}`}:
                               </Typography>
                             </TableCell>
                             <TableCell>{formatStorageSize(txViewInfo.data.size)}</TableCell>
@@ -555,7 +604,7 @@ const TxView = () => {
           {txViewInfo.tags && txViewInfo.tags.length > 0 ?
             <Grid item xs={12}>
               <Card>
-                <CardHeader title={`Tags`} />
+                <CardHeader title={`${t(`Tags`)}`} />
                 <CardContent>
                   <Grid container spacing={6}>
 
@@ -584,7 +633,7 @@ const TxView = () => {
                                           {Item.name}
                                         </Typography>
                                       </TableCell>
-                                      <TableCell>{formatHash(Item.value, 20)}</TableCell>
+                                      <TableCell><StringDisplay InputString={Item.value} StringSize={20}/></TableCell>
                                     </TableRow>
                                     )
                             } )}
@@ -604,10 +653,10 @@ const TxView = () => {
             <Fragment></Fragment>
           }
 
-          {txViewInfo.tags && txViewInfo.tags.length > 0 && isBundleTx == false ?
+          {txViewInfo.tags && txViewInfo.tags.length > 0 && isBundleTx == false && tags["Cipher-ALG"] == undefined  ?
             <Grid item xs={12}>
               <Card>
-                <CardHeader title={fileName} />
+                <CardHeader title={`${t(fileName)}`} />
                 <CardContent>
                   <Grid container spacing={6}>
 
@@ -654,12 +703,12 @@ const TxView = () => {
           {store && store.data != undefined && isBundleTx ?
             <Grid item xs={12}>
               <Card>
-                <CardHeader title='Transactions' />
+                <CardHeader title={`${t(`Transactions`)}`} />
                 <Divider />
                 <DataGrid
                   autoHeight
                   rows={store.data}
-                  rowCount={store.total}
+                  rowCount={store.total as number}
                   columns={columns}
                   sortingMode='server'
                   paginationMode='server'

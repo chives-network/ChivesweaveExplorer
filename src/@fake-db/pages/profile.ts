@@ -254,7 +254,7 @@ const data: DataType = {
     },
     {
       extraMembers: 45,
-      title: 'Figma Resources',
+      title: 'Figma',
       avatar: '/images/icons/project-icons/figma-label.png',
       avatarGroup: [
         { avatar: '/images/avatars/1.png', name: 'Andrew Mostowy' },

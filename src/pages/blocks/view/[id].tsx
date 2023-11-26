@@ -43,6 +43,9 @@ import { useRouter } from 'next/router'
 
 import StringDisplay from 'src/pages/preview/StringDisplay';
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 interface BlockViewInfoType {
   timestamp: number
   mining_time: number
@@ -71,118 +74,11 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   }
 }))
 
-const columns: GridColDef[] = [
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'TxId',
-    headerName: 'TxId',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 200,
-    field: 'From',
-    headerName: 'From',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    headerName: 'Size',
-    field: 'Size',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatStorageSize(row.data.size)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    minWidth: 100,
-    field: 'Fee',
-    headerName: 'Fee',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatXWE(row.fee.winston, 6)}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.3,
-    minWidth: 200,
-    field: 'Info',
-    headerName: 'Info',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <FormatTxInfoInRow TxRecord={row}/>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 110,
-    field: 'Height',
-    headerName: 'Height',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.15,
-    field: 'Time',
-    minWidth: 220,
-    headerName: 'Time',
-    sortable: false,
-    filterable: false,
-    renderCell: ({ row }: TransactionCellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {formatTimestampAge(row.block.timestamp)}
-        </Typography>
-      )
-    }
-  }
-]
 
 const BlockTransactionList = () => {
-
+  // ** Hook
+  const { t } = useTranslation()
+  
   const router = useRouter();
   const { id } = router.query;
   
@@ -229,13 +125,123 @@ const BlockTransactionList = () => {
     setIsLoading(false)
   }, [])
 
+  const columns: GridColDef[] = [
+    {
+      flex: 0.2,
+      minWidth: 200,
+      field: 'TxId',
+      headerName: `${t(`TxId`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 200,
+      field: 'From',
+      headerName: `${t(`From`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Size',
+      headerName: `${t(`Size`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatStorageSize(row.data.size)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Fee',
+      headerName: `${t(`Fee`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatXWE(row.fee.winston, 6)}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.3,
+      minWidth: 200,
+      field: 'Info',
+      headerName: `${t(`Info`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            <FormatTxInfoInRow TxRecord={row}/>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 110,
+      field: 'Height',
+      headerName: `${t(`Height`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            <LinkStyled href={`/blocks/view/${row.block.height}`}>{row.block.height}</LinkStyled>
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      field: 'Time',
+      minWidth: 220,
+      headerName: `${t(`Time`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: TransactionCellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {formatTimestampAge(row.block.timestamp)}
+          </Typography>
+        )
+      }
+    }
+  ]
+
   return (
     <Grid container spacing={6}>
     
     {blockViewInfo && blockViewInfo != undefined  && "timestamp" in blockViewInfo ?
       <Grid item xs={12}>
         <Card>
-          <CardHeader title={`Block ${id}`} />
+          <CardHeader title={`${t(`Block`)} ${id}`} />
           <CardContent>
 
             <Grid container spacing={6}>
@@ -259,7 +265,7 @@ const BlockTransactionList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Block Hash:
+                            {`${t(`Block Hash`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell><StringDisplay InputString={`${blockViewInfo.indep_hash}`} StringSize={20} /></TableCell>
@@ -292,23 +298,21 @@ const BlockTransactionList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Timestamp:
+                            {`${t(`Timestamp`)}`}:
                           </Typography>
                         </TableCell>
-                        <TableCell>{formatTimestamp(blockViewInfo.timestamp)}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                          Mined Time:
+                          {`${t(`Mined Time`)}`}:
                           </Typography>
                         </TableCell>
-                        <TableCell>{formatSecondToMinute(blockViewInfo.mining_time)}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                          Size:
+                          {`${t(`Size`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{formatStorageSize(blockViewInfo.block_size)}</TableCell>
@@ -338,23 +342,26 @@ const BlockTransactionList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            Age:
+                            {`${t(`Age`)}`}:
                           </Typography>
                         </TableCell>
-                        <TableCell>{formatTimestampAge(blockViewInfo.timestamp)}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                          Miner:
+                          {`${t(`Miner`)}`}:
                           </Typography>
                         </TableCell>
-                        <TableCell><LinkStyled href={`/addresses/all/${blockViewInfo.reward_addr}`}>{formatHash(blockViewInfo.reward_addr, 7)}</LinkStyled></TableCell>
+                        <TableCell>
+                          <LinkStyled href={`/addresses/all/${blockViewInfo.reward_addr}`}>
+                            <StringDisplay InputString={`${blockViewInfo.reward_addr}`} StringSize={7} />
+                          </LinkStyled>
+                        </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                          Tx Reward Pool:
+                          {`${t(`Tx Reward Pool`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{formatXWE(blockViewInfo.reward_pool, 2)}</TableCell>
@@ -384,7 +391,7 @@ const BlockTransactionList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                          Transactions:
+                          {`${t(`Transactions`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{blockViewInfo.txs_length}</TableCell>
@@ -392,7 +399,7 @@ const BlockTransactionList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                          Confirmations:
+                          {`${t(`Confirmations`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{blockViewInfo.currentheight - blockViewInfo.height}</TableCell>
@@ -400,7 +407,7 @@ const BlockTransactionList = () => {
                       <TableRow>
                         <TableCell>
                           <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                          Miner Reward:
+                          {`${t(`Miner Reward`)}`}:
                           </Typography>
                         </TableCell>
                         <TableCell>{formatXWE(blockViewInfo.reward, 2)}</TableCell>
@@ -422,12 +429,12 @@ const BlockTransactionList = () => {
     {store && store.data != undefined ?
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Transactions' />
+          <CardHeader title={`${t(`Transactions`)}`} />
           <Divider />
           <DataGrid
             autoHeight
             rows={store.data}
-            rowCount={store.total}
+            rowCount={store.total as number}
             columns={columns}
             sortingMode='server'
             paginationMode='server'

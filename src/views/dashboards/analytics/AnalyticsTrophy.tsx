@@ -21,7 +21,6 @@ const TrophyImg = styled('img')({
   position: 'absolute'
 })
 
-
 interface ChainInfoType {
   network: string
   version: number
@@ -41,7 +40,12 @@ export type propsType = {
   data: ChainInfoType
 }
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 const AnalyticsTrophy = (props: propsType) => {
+  // ** Hook
+  const { t } = useTranslation()
   
   // ** Props
   const { data } = props
@@ -54,9 +58,9 @@ const AnalyticsTrophy = (props: propsType) => {
   return (
     <Card sx={{ position: 'relative' }}>
       <CardContent>
-        <Typography variant='h6'>Welcome to Chivesweave! 🥳</Typography>
+        <Typography variant='h6'>{`${t(`Welcome to Chivesweave!`)}`} 🥳</Typography>
         <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-        A PERMANENT STORAGE PUBLIC CHAIN!
+        {`${t(`A PERMANENT STORAGE PUBLIC CHAIN!`)}`}
         </Typography>
         <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
           {data.height}

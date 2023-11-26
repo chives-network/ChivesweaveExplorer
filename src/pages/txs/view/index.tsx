@@ -42,6 +42,9 @@ import { ThemeColor } from 'src/@core/layouts/types'
 
 import StringDisplay from 'src/pages/preview/StringDisplay';
 
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+
 interface TransactionCellType {
   row: TxRecordType
 }
@@ -350,7 +353,9 @@ const columns: GridColDef[] = [
 
 
 const TxView = () => {
-  
+  // ** Hook
+  const { t } = useTranslation()
+    
   const router = useRouter();
   const { id } = router.query;
   const _GET = router.query;
@@ -413,7 +418,7 @@ const TxView = () => {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
-              <CardHeader title={`Transaction`} />
+              <CardHeader title={`${t(`Transaction`)}`} />
               <CardContent>
                 <Grid container spacing={6}>
 
@@ -440,7 +445,7 @@ const TxView = () => {
                                 ID:
                               </Typography>
                             </TableCell>
-                            <TableCell><StringDisplay InputString={id} StringSize={20}/></TableCell>
+                            <TableCell><StringDisplay InputString={String(id)} StringSize={20}/></TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>
@@ -558,7 +563,7 @@ const TxView = () => {
           {txViewInfo.tags && txViewInfo.tags.length > 0 ?
             <Grid item xs={12}>
               <Card>
-                <CardHeader title={`Tags`} />
+                <CardHeader title={`${t(`Tags`)}`} />
                 <CardContent>
                   <Grid container spacing={6}>
 
@@ -610,7 +615,7 @@ const TxView = () => {
           {txViewInfo.tags && txViewInfo.tags.length > 0 && isBundleTx == false ?
             <Grid item xs={12}>
               <Card>
-                <CardHeader title={fileName} />
+                <CardHeader title={`${t(fileName)}`} />
                 <CardContent>
                   <Grid container spacing={6}>
 
@@ -657,12 +662,12 @@ const TxView = () => {
           {store && store.data != undefined && isBundleTx ?
             <Grid item xs={12}>
               <Card>
-                <CardHeader title='Transactions' />
+                <CardHeader title={`${t(`Transactions`)}`} />
                 <Divider />
                 <DataGrid
                   autoHeight
                   rows={store.data}
-                  rowCount={store.total}
+                  rowCount={store.total as number}
                   columns={columns}
                   sortingMode='server'
                   paginationMode='server'
