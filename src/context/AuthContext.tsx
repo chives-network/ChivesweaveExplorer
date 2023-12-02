@@ -71,9 +71,12 @@ const AuthProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
-      console.log("getCurrentWallet From AuthContext", getCurrentWallet())
-      SetCurrentWallet(getCurrentWallet())
-      SetCurrentAddress(getCurrentWalletAddress())
+      const currentAddress: string = getCurrentWalletAddress();
+      console.log("currentAddress", currentAddress)
+      if(currentAddress != undefined && currentAddress != null) {
+        SetCurrentWallet(getCurrentWallet())
+        SetCurrentAddress(currentAddress)
+      }
     }
     initAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps

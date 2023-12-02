@@ -46,7 +46,7 @@ const AppBarContent = (props: Props) => {
       <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
         <LanguageDropdown settings={settings} saveSettings={saveSettings} />
         <ModeToggler settings={settings} saveSettings={saveSettings} />
-        {auth.user && authConfig.systemType=="drive" && (
+      {auth.user && authConfig.systemType=="drive" && (
           <>
             <UserDropdown settings={settings} />
           </>

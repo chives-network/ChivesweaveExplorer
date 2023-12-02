@@ -131,7 +131,7 @@ const FileResourceModel = ({ activeTab } : any) => {
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:play-box-multiple' />
-                  Video
+                  {`${t(`Video`)}`}
                 </Box>
               }
             />
@@ -140,7 +140,7 @@ const FileResourceModel = ({ activeTab } : any) => {
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:file-pdf-box' />
-                  Pdf
+                  {`${t(`Pdf`)}`}
                 </Box>
               }
             />
@@ -149,7 +149,7 @@ const FileResourceModel = ({ activeTab } : any) => {
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:file-word-box' />
-                  Word
+                  {`${t(`Word`)}`}
                 </Box>
               }
             />
@@ -158,7 +158,7 @@ const FileResourceModel = ({ activeTab } : any) => {
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:file-excel-box' />
-                  Excel
+                  {`${t(`Excel`)}`}
                 </Box>
               }
             />
@@ -167,7 +167,7 @@ const FileResourceModel = ({ activeTab } : any) => {
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:file-powerpoint-box' />
-                  PPT
+                  {`${t(`PPT`)}`}
                 </Box>
               }
             />
@@ -176,7 +176,7 @@ const FileResourceModel = ({ activeTab } : any) => {
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:text-box-multiple-outline' />
-                  Stl
+                  {`${t(`Stl`)}`}
                 </Box>
               }
             />

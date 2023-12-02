@@ -13,6 +13,8 @@ import OptionsMenu from 'src/@core/components/option-menu'
 // ** Type Import
 import { Settings } from 'src/@core/context/settingsContext'
 
+import { getChivesLanguage, setChivesLanguage } from 'src/functions/ChivesweaveWallets'
+
 interface Props {
   settings: Settings
   saveSettings: (values: Settings) => void
@@ -27,10 +29,18 @@ const LanguageDropdown = ({ settings, saveSettings }: Props) => {
 
   const handleLangItemClick = (lang: 'en' | 'zh-CN' | 'zh-TW' | 'Ru' | 'Fr' | 'De' | 'Sp' | 'Kr' ) => {
     i18n.changeLanguage(lang)
+    setChivesLanguage(lang)
   }
+
+  console.log("i18n.language", i18n.language)
 
   // ** Change html `lang` attribute when changing locale
   useEffect(() => {
+    const localLanguage = getChivesLanguage()
+    if(localLanguage!=i18n.language && localLanguage!='') {
+      i18n.changeLanguage(localLanguage)
+      setChivesLanguage(localLanguage)
+    }
     document.documentElement.setAttribute('lang', i18n.language)
   }, [i18n.language])
 
@@ -47,28 +57,6 @@ const LanguageDropdown = ({ settings, saveSettings }: Props) => {
             selected: i18n.language === 'en',
             onClick: () => {
               handleLangItemClick('en')
-              saveSettings({ ...settings, direction: 'ltr' })
-            }
-          }
-        },
-        {
-          text: '简体中文',
-          menuItemProps: {
-            sx: { py: 2 },
-            selected: i18n.language === 'zh-CN',
-            onClick: () => {
-              handleLangItemClick('zh-CN')
-              saveSettings({ ...settings, direction: 'ltr' })
-            }
-          }
-        },
-        {
-          text: '繁體中文',
-          menuItemProps: {
-            sx: { py: 2 },
-            selected: i18n.language === 'zh-TW',
-            onClick: () => {
-              handleLangItemClick('zh-TW')
               saveSettings({ ...settings, direction: 'ltr' })
             }
           }
@@ -124,6 +112,28 @@ const LanguageDropdown = ({ settings, saveSettings }: Props) => {
             selected: i18n.language === 'Ru',
             onClick: () => {
               handleLangItemClick('Ru')
+              saveSettings({ ...settings, direction: 'ltr' })
+            }
+          }
+        },
+        {
+          text: '简体中文',
+          menuItemProps: {
+            sx: { py: 2 },
+            selected: i18n.language === 'zh-CN',
+            onClick: () => {
+              handleLangItemClick('zh-CN')
+              saveSettings({ ...settings, direction: 'ltr' })
+            }
+          }
+        },
+        {
+          text: '繁體中文',
+          menuItemProps: {
+            sx: { py: 2 },
+            selected: i18n.language === 'zh-TW',
+            onClick: () => {
+              handleLangItemClick('zh-TW')
               saveSettings({ ...settings, direction: 'ltr' })
             }
           }

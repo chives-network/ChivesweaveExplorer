@@ -9,7 +9,7 @@ export type FolderType = 'inbox' | 'sent' | 'draft' | 'starred' | 'spam' | 'tras
 
 export type RouteParams = {
   label: string
-  folder: string
+  initFolder: string
   type: string
 }
 
@@ -131,7 +131,7 @@ export type DriveListType = {
   driveFileOpen: boolean
   routeParams: RouteParams
   labelColors: any
-  folderColors: any
+  folder: any
   setQuery: (val: string) => void
   handleLeftSidebarToggle: () => void
   setCurrentFile: (item: TxRecordType) => void
@@ -140,6 +140,9 @@ export type DriveListType = {
   handleSelectAllFile: (val: boolean) => void
   paginationModel: any
   handlePageChange: (event: any, page: number) => void
+  handleFolderChange: (folder: string) => void  
+  folderHeaderList: any[]
+  handleFolderHeaderList: (folderHeader: any) => void  
 }
 
 export type FileDetailType = {

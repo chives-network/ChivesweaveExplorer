@@ -34,7 +34,7 @@ import { fetchData } from 'src/store/apps/blocktransactions'
 import { RootState, AppDispatch } from 'src/store'
 import { TxRecordType } from 'src/types/apps/Chivesweave'
 
-import { formatHash, formatXWE, formatStorageSize, formatTimestampAge } from 'src/configs/functions';
+import { formatHash, formatXWE, formatStorageSize, formatTimestampAge, formatTimestamp, formatSecondToMinute } from 'src/configs/functions';
 
 import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
 
@@ -268,7 +268,7 @@ const BlockTransactionList = () => {
                             {`${t(`Block Hash`)}`}:
                           </Typography>
                         </TableCell>
-                        <TableCell><StringDisplay InputString={`${blockViewInfo.indep_hash}`} StringSize={20} /></TableCell>
+                        <TableCell><StringDisplay InputString={`${blockViewInfo.indep_hash}`} StringSize={20} href={null}/></TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -301,6 +301,7 @@ const BlockTransactionList = () => {
                             {`${t(`Timestamp`)}`}:
                           </Typography>
                         </TableCell>
+                        <TableCell>{formatTimestamp(blockViewInfo.timestamp)}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
@@ -308,6 +309,7 @@ const BlockTransactionList = () => {
                           {`${t(`Mined Time`)}`}:
                           </Typography>
                         </TableCell>
+                        <TableCell>{formatSecondToMinute(blockViewInfo.mining_time)}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
@@ -345,6 +347,7 @@ const BlockTransactionList = () => {
                             {`${t(`Age`)}`}:
                           </Typography>
                         </TableCell>
+                        <TableCell>{formatTimestampAge(blockViewInfo.timestamp)}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
@@ -353,9 +356,7 @@ const BlockTransactionList = () => {
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <LinkStyled href={`/addresses/all/${blockViewInfo.reward_addr}`}>
-                            <StringDisplay InputString={`${blockViewInfo.reward_addr}`} StringSize={7} />
-                          </LinkStyled>
+                          <StringDisplay InputString={`${blockViewInfo.reward_addr}`} StringSize={7} href={`/addresses/all/${blockViewInfo.reward_addr}`}/>
                         </TableCell>
                       </TableRow>
                       <TableRow>

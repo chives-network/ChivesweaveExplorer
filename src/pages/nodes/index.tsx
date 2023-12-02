@@ -250,12 +250,12 @@ const PeersInfo = () => {
                 <Table sx={{ minWidth: 500 }}>
                   <TableHead >
                     <TableRow>
-                      <TableCell>Ip</TableCell>
-                      <TableCell>Location</TableCell>
-                      <TableCell>Isp</TableCell>
-                      <TableCell>Country</TableCell>
-                      <TableCell>Region</TableCell>
-                      <TableCell>City</TableCell>
+                      <TableCell>{`${t(`Ip`)}`}</TableCell>
+                      <TableCell>{`${t(`Location`)}`}</TableCell>
+                      <TableCell>{`${t(`Isp`)}`}</TableCell>
+                      <TableCell>{`${t(`Country`)}`}</TableCell>
+                      <TableCell>{`${t(`Region`)}`}</TableCell>
+                      <TableCell>{`${t(`City`)}`}</TableCell>
                     </TableRow>
                   </TableHead>
 

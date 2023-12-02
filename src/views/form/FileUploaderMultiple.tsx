@@ -22,7 +22,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Hooks
-import { sendAmount, getCurrentWallet, getHash, getProcessedData } from 'src/functions/ChivesweaveWallets'
+import { sendAmount, getCurrentWallet, getHash, getProcessedData, getChivesLanguage } from 'src/functions/ChivesweaveWallets'
 import {EncryptDataWithKey} from 'src/functions/ChivesweaveEncrypt'
 
 // ** Third Party Components
@@ -32,6 +32,7 @@ import authConfig from 'src/configs/auth'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/router'
 
 interface FileProp {
   name: string
@@ -63,6 +64,8 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 const FileUploaderMultiple = () => {
   // ** Hook
   const { t } = useTranslation()
+
+  const router = useRouter();
   
   // ** State
   const [files, setFiles] = useState<File[]>([])
@@ -73,9 +76,21 @@ const FileUploaderMultiple = () => {
   const [isDisabledRemove, setIsDisabledRemove] = useState<boolean>(false)
   const [isEncryptFile, setIsEncryptFile] = useState<boolean>(false)
   
+  const auth = useAuth()
+  const currentWallet = auth.currentWallet
+  const currentAddress = auth.currentAddress
+
   // ** Hooks
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles: File[]) => {
+      if(currentAddress == undefined || currentAddress.length != 43) {
+        toast.success(t(`Please create a wallet first`), {
+          duration: 4000
+        })
+        router.push("/mywallets");
+        
+        return
+      }
       setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
       setIsDisabledButton(false)
       setUploadingButton(`${t(`Upload Files`)}`)      
@@ -147,22 +162,19 @@ const FileUploaderMultiple = () => {
     setIsDisabledButton(false)
     setIsDisabledRemove(false)
     setUploadingButton(`${t(`Upload Files`)}`)
+    setUploadProgress({})
   }
 
-  const auth = useAuth()
-
-  const currentWallet = auth.currentWallet
-  const currentAddress = auth.currentAddress
-  
   const handleUploadAllFiles = () => {
     setIsDisabledButton(true)
     setIsDisabledRemove(true)
-    setUploadingButton("Uploading...")
+    setUploadingButton(`${t(`Uploading`)}...`)
     uploadMultiFiles();
   }
 
   const uploadMultiFiles = async () => {
-
+    const getChivesLanguageData: string = getChivesLanguage();
+    
     //Make the bundle data
     const formData = (await Promise.all(files?.map(async file => {
       let data = file instanceof File ? await readFile(file) : file
@@ -191,6 +203,7 @@ const FileUploaderMultiple = () => {
         data = FileEncrypt['Cipher-CONTENT']
       }
       else {
+
         //Not Encrypt File Content
         setBaseTags(tags, {
           'Content-Type': file.type,
@@ -200,7 +213,7 @@ const FileUploaderMultiple = () => {
           'File-Summary': '',
           'Cipher-ALG': '',
           'File-Parent': 'Root',
-          'File-Language': 'en',
+          'File-Language': getChivesLanguageData,
           'File-Pages': '',
           'Entity-Type': 'File',
           'App-Name': authConfig['App-Name'],
@@ -220,15 +233,27 @@ const FileUploaderMultiple = () => {
     const amount = ""
     const data = getProcessedDataValue
 
-    console.log("getProcessedDataValue", getProcessedDataValue)
+    console.log("getChivesLanguageData", getChivesLanguageData)
     setIsEncryptFile(false)
     
     //Make the tags
     const tags: any = []
     tags.push({name: "Bundle-Format", value: 'binary'})
     tags.push({name: "Bundle-Version", value: '2.0.0'})
+    tags.push({name: "Entity-Type", value: "Bundle"})
+    tags.push({name: "Entity-Number", value: String(files.length)})
 
     const TxResult: any = await sendAmount(currentWallet, target, amount, tags, data, "UploadBundleFile", setUploadProgress);
+
+    //Save Tx Records Into LocalStorage
+    const chivesTxStatus: string = authConfig.chivesTxStatus
+    const ChivesDriveActionsMap: any = {}
+    const chivesTxStatusText = window.localStorage.getItem(chivesTxStatus)      
+    const chivesTxStatusList = chivesTxStatusText ? JSON.parse(chivesTxStatusText) : []
+    const TxResultNew = {...TxResult, data:'', chunks:''}
+    chivesTxStatusList.push({TxResult: TxResultNew, ChivesDriveActionsMap: ChivesDriveActionsMap})
+    console.log("chivesTxStatusList-FileUploaderMultiple", chivesTxStatusList)
+    window.localStorage.setItem(chivesTxStatus, JSON.stringify(chivesTxStatusList))
 
     if(TxResult.status == 800) {
       //Insufficient balance
@@ -277,9 +302,9 @@ const FileUploaderMultiple = () => {
     if(uploadProgress && Object.entries(uploadProgress) && Object.entries(uploadProgress).length > 0 && isFinishedAllUploaded) {
         setIsDisabledButton(true)
         setIsDisabledRemove(false)
-        setUploadingButton("Upload success")
-        setRemoveAllButton("Clean Records")        
-        toast.success('Successfully submitted to blockchain', { duration: 4000 })
+        setUploadingButton(t("Upload success") as string)
+        setRemoveAllButton(t("Clean Records") as string)        
+        toast.success(t('Successfully submitted to blockchain') as string, { duration: 4000 })
     }
   }, [uploadProgress])
 

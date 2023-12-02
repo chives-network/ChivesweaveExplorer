@@ -74,13 +74,14 @@ const SidebarLeft = (props: DriveSidebarType) => {
   const [sideBarBadge, setSideBarBadge] = useState<{ [key: string]: string }>({"folder": ""})
 
   useEffect(() => {
-    if(routeParams && routeParams.folder) {
-      setSideBarActive({"folder": routeParams.folder})
+    if(routeParams && routeParams.initFolder) {
+      setSideBarActive({"folder": routeParams.initFolder})
     }
-    if(store && store.total && routeParams && routeParams.folder) {
-      setSideBarBadge({...sideBarBadge, [routeParams.folder]: store.total})
+    if(store && store.total && routeParams && routeParams.initFolder) {
+      setSideBarBadge({...sideBarBadge, [routeParams.initFolder]: store.total})
     }
-    console.log("sideBarBadge", sideBarBadge)
+    
+    //console.log("sideBarBadge", sideBarBadge)
   }, [routeParams, store])
 
   const RenderBadge = (

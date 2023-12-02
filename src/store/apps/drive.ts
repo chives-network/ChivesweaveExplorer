@@ -69,6 +69,25 @@ export const fetchTotalNumber = createAsyncThunk('appMyFiles/fetchTotalNumber', 
   return TotalNumber
 })
 
+export const fetchAllFolder = createAsyncThunk('appMyFiles/fetchAllFolder', async (params: DataParams) => {  
+
+  const FolderArray: any = {};
+
+  const Url1 = authConfig.backEndApi + '/folder/all/'+ `${params.address}`;
+  const response1 = await axios.get(Url1)
+  console.log("response1.data", response1.data)
+  response1.data && response1.data.map((Item: any) => {
+    if (!FolderArray[Item.item_parent]) {
+      FolderArray[Item.item_parent] = [];
+    }
+    FolderArray[Item.item_parent].push({name: Item.item_name, id: Item.id, timestamp: Item.timestamp});
+  });
+  
+  console.log("FolderArray", FolderArray)
+  
+  return FolderArray
+})
+
 export const setCurrentFile = createAsyncThunk('appDrive/selectFile', async (FileTx: TxRecordType) => {
 
   return FileTx
@@ -95,6 +114,7 @@ export const appDriveSlice = createSlice({
     table: [],
     allPages: 1,
     totalnumber: [],
+    folder:[],
   },
   reducers: {
     handleSelectFile: (state, action) => {
@@ -112,10 +132,20 @@ export const appDriveSlice = createSlice({
         selectAllDrives.length = 0
 
         // @ts-ignore
-        state.data.forEach((drive: TxRecordType) => selectAllDrives.push(drive.id))
+        state.data.forEach((drive: TxRecordType) => {
+          const TagsMap: any = {}
+          drive && drive.tags && drive.tags.length > 0 && drive.tags.map( (Tag: any) => {
+            TagsMap[Tag.name] = Tag.value;
+          })
+          const EntityType = TagsMap['Entity-Type']
+          if(EntityType!="Folder") {
+            selectAllDrives.push(drive.id)
+          }
+        })
       } else {
         selectAllDrives.length = 0
       }
+      console.log("selectAllDrives", selectAllDrives)
       state.selectedFiles = selectAllDrives as any
     }
   },
@@ -142,6 +172,9 @@ export const appDriveSlice = createSlice({
     })
     builder.addCase(fetchTotalNumber.fulfilled, (state, action) => {
       state.totalnumber = action.payload
+    })
+    builder.addCase(fetchAllFolder.fulfilled, (state, action) => {
+      state.folder = action.payload
     })
   }
 })

@@ -8,7 +8,7 @@ export type DriveFolderType = 'myfiles' | 'shared' | 'draft' | 'starred' | 'spam
 
 export type RouteParams = {
   label?: string
-  folder?: string
+  initFolder?: string
   type?: string
 }
 

@@ -10,6 +10,7 @@ import authConfig from 'src/configs/auth'
 // ** MUI Imports
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import Tooltip from '@mui/material/Tooltip'
 
 import { formatHash, formatXWE, getContentTypeAbbreviation } from 'src/configs/functions';
 
@@ -97,28 +98,28 @@ function FormatTxInfoInRow({ TxRecord }: any) {
         case 'WEBM':
             return ImagePreview(`${authConfig.backEndApi}/${TxRecord?.id}/thumbnail`)
         case 'PDF':
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled></Tooltip>
         case 'XLS':
         case 'XLSX':
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled></Tooltip>
         case 'DOC':
         case 'DOCX':
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled></Tooltip>
         case 'PPT':
         case 'PPTX':
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled></Tooltip>
         case 'MP4':
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled></Tooltip>
         case 'MP3':
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled></Tooltip>
         case 'WAV':
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled></Tooltip>
         case 'JSON':
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']?FileMap['File-Name']:FileType}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']?FileMap['File-Name']:FileType}</LinkStyled></Tooltip>
         case 'EXE':
         case 'TEXT': 
         case 'CSV':  
-            return <LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled>
+            return <Tooltip title={FileMap['File-Name']}><LinkStyled href={`/txs/view/${TxRecord?.id}`}>{FileMap['File-Name']}</LinkStyled></Tooltip>
     }
 
     switch(FileMap['File-Name']?.slice(-4)) {
@@ -127,10 +128,11 @@ function FormatTxInfoInRow({ TxRecord }: any) {
     }
   
     //Bundle Support
-    const BundleFormat = getContentTypeAbbreviation(FileMap['Bundle-Format']);
-    const BundleVersion = getContentTypeAbbreviation(FileMap['Bundle-Version']);
+    const BundleFormat = FileMap['Bundle-Format'];
+    const BundleVersion = FileMap['Bundle-Version'];
+    const BundleNumber = FileMap['Entity-Number'];
     if(BundleFormat == "binary") {
-      return <div>Bundle: { BundleVersion} </div>;
+      return <Tooltip title={"Bundle Number: "+BundleNumber}><div>Bundle: { BundleVersion} ({BundleNumber})</div></Tooltip>;
     }
   
     //Video Format
@@ -140,7 +142,9 @@ function FormatTxInfoInRow({ TxRecord }: any) {
       return (
           <Typography noWrap variant='body2'>
             {formatXWE(TxRecord?.quantity.winston, 4) + " -> "}
-            <LinkStyled href={`/addresses/all/${TxRecord?.recipient}`}>{formatHash(TxRecord?.recipient, 5)}</LinkStyled>
+            <Tooltip title={`${TxRecord?.recipient}`}>
+              <LinkStyled href={`/addresses/all/${TxRecord?.recipient}`}>{formatHash(TxRecord?.recipient, 5)}</LinkStyled>
+            </Tooltip>
           </Typography>  
       )
     }

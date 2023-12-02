@@ -29,9 +29,13 @@ import toast from 'react-hot-toast'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
+import { useRouter } from 'next/router'
+
 const SendOutForm = () => {
   // ** Hook
   const { t } = useTranslation()
+
+  const router = useRouter();
     
   // ** State
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
@@ -95,12 +99,17 @@ const SendOutForm = () => {
   const handleInputDataChange = (event: any) => {
     setInputData(event.target.value);
     setInputDataError("")
-    
-    //console.log("inputData", inputData)
   };
 
-  
   const handleSubmit = async () => {
+    if(currentAddress == undefined || currentAddress.length != 43) {
+        toast.success(t(`Please create a wallet first`), {
+          duration: 4000
+        })
+        router.push("/mywallets");
+        
+        return
+    }
     if(!isAddress(inputAddress))  {
         setInputAddressError(`${t('The address you entered is invalid')}`)
         
@@ -117,7 +126,16 @@ const SendOutForm = () => {
     setUploadingButton(`${t('Submitting...')}`)
 
     const TxResult: any = await sendAmount(currentWallet, inputAddress, String(inputAmount), [], inputData, "SubmitStatus", setUploadProgress);
-    console.log("TxResult", TxResult)
+
+    //Save Tx Records Into LocalStorage
+    const chivesTxStatus: string = authConfig.chivesTxStatus
+    const ChivesDriveActionsMap: any = {}
+    const chivesTxStatusText = window.localStorage.getItem(chivesTxStatus)      
+    const chivesTxStatusList = chivesTxStatusText ? JSON.parse(chivesTxStatusText) : []
+    chivesTxStatusList.push({TxResult,ChivesDriveActionsMap})
+    console.log("chivesTxStatusList-SendOutForm", chivesTxStatusList)
+    window.localStorage.setItem(chivesTxStatus, JSON.stringify(chivesTxStatusList))
+    
     if(TxResult.status == 800) {
       //Insufficient balance
       toast.error(TxResult.statusText, { duration: 4000 })

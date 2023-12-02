@@ -97,11 +97,11 @@ const Mempool = () => {
             <Table sx={{ minWidth: 500 }}>
             <TableHead >
                 <TableRow>
-                <TableCell>Hash</TableCell>
-                <TableCell>From</TableCell>
-                <TableCell>Size</TableCell>
-                <TableCell>Fee</TableCell>
-                <TableCell>Info</TableCell>
+                <TableCell>{`${t(`Hash`)}`}</TableCell>
+                <TableCell>{`${t(`From`)}`}</TableCell>
+                <TableCell>{`${t(`Size`)}`}</TableCell>
+                <TableCell>{`${t(`Fee`)}`}</TableCell>
+                <TableCell>{`${t(`Info`)}`}</TableCell>
                 </TableRow>
             </TableHead>
 

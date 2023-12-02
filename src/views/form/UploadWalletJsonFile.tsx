@@ -149,14 +149,14 @@ const UploadWalletJsonFile = ( { handleRefreshWalletData }: any ) => {
                     }
                 }}
                 >
-                <DialogTitle id='alert-dialog-title'>Wallet created successfully</DialogTitle>
+                <DialogTitle id='alert-dialog-title'>{`${t(`Wallet created successfully`)}`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id='alert-dialog-description'>
-                    Wallet Address: {walletAddress}
+                    {`${t(`Wallet Address`)}`}: {walletAddress}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions className='dialog-actions-dense'>
-                    <Button onClick={handleClose}>Close</Button>
+                    <Button onClick={handleClose}>{`${t(`Close`)}`}</Button>
                 </DialogActions>
             </Dialog>
         </Fragment>
@@ -166,13 +166,13 @@ const UploadWalletJsonFile = ( { handleRefreshWalletData }: any ) => {
 
         {isLoading == true ? 
         <Fragment>
-            <CardHeader title={`${t('Create a new wallet ...')}`} />
+            <CardHeader title={`${t('Create a new wallet')}...`} />
             <CardContent>
                 <Grid container spacing={5}>
                     <Grid item xs={12}>
                         <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                             <CircularProgress sx={{ mb: 4 }} />
-                            <Typography>Processing...</Typography>
+                            <Typography>{`${t(`Processing`)}`}...</Typography>
                         </Box>
                     </Grid>
                 </Grid>
@@ -185,7 +185,7 @@ const UploadWalletJsonFile = ( { handleRefreshWalletData }: any ) => {
                 <Grid container spacing={5}>
                     <Grid item xs={12}>
                         <Button size='large' type='submit' variant='contained' onClick={(event) => generateNewWallet(event)}>
-                            Create a new wallet
+                        {`${t(`Create Wallet`)}`}
                         </Button>
                     </Grid>
                 </Grid>
@@ -200,7 +200,7 @@ const UploadWalletJsonFile = ( { handleRefreshWalletData }: any ) => {
                     <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
                         <Img alt='Upload img' src='/images/misc/upload.png' />
                         <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
-                            <HeadingTypography variant='h5'>Drop wallet json file here or click to upload.</HeadingTypography>
+                            <HeadingTypography variant='h5'>{`${t(`Drop wallet json file here or click to upload.`)}`}</HeadingTypography>
                         </Box>
                     </Box>
                 </Box>
@@ -213,7 +213,7 @@ const UploadWalletJsonFile = ( { handleRefreshWalletData }: any ) => {
                 <Grid container spacing={5}>
                     <Grid item xs={12}>
                         <TextField  id="Input your 12 mnemonic words" 
-                                    label='Input your 12 mnemonic words' 
+                                    label={`${t(`Input your 12 mnemonic words`)}`}
                                     color={inputMnemonicColor}
                                     style={{ width: '100%' }}
                                     helperText={helperText}

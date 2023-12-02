@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment } from 'react'
+import { useState, SyntheticEvent, Fragment, useEffect } from 'react'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -23,8 +23,11 @@ import { Settings } from 'src/@core/context/settingsContext'
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
-import { getAllWallets, getCurrentWalletAddress, setCurrentWallet, getWalletNicknames } from 'src/functions/ChivesweaveWallets'
+import { getAllWallets, getCurrentWalletAddress, setCurrentWallet, getWalletNicknames, CheckBundleTxStatus } from 'src/functions/ChivesweaveWallets'
 import { formatHash} from 'src/configs/functions';
+
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   settings: Settings
@@ -42,6 +45,9 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 const UserDropdown = (props: Props) => {
   // ** Props
   const { settings } = props
+  
+  // ** Hook
+  const { t } = useTranslation()
 
   // ** States
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
@@ -73,6 +79,14 @@ const UserDropdown = (props: Props) => {
     }
     setAnchorEl(null)
   }
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      CheckBundleTxStatus();
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const getAllWalletsData = getAllWallets()
   const getCurrentWalletAddressData = getCurrentWalletAddress()
@@ -136,13 +150,13 @@ const UserDropdown = (props: Props) => {
               <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
                 <Typography sx={{ fontWeight: 600 }}>{formatHash(getCurrentWalletAddressData, 5)}</Typography>
                 <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                  Current Wallet
+                  {`${t(`Current Wallet`)}`}
                 </Typography>
               </Box>
               :
               <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
                 <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                  No Wallet
+                  {`${t(`No Wallet`)}`}
                 </Typography>
               </Box>
             }
@@ -156,7 +170,7 @@ const UserDropdown = (props: Props) => {
               {wallet.data.arweave.key == getCurrentWalletAddressData ?
                 <Box sx={styles}>
                   <Icon icon='mdi:cog-outline' />
-                  <Typography sx={{ fontWeight: 600 }}>{formatHash(getCurrentWalletAddressData, 5)}</Typography>
+                  <Typography sx={{ fontWeight: 600 }}>{getWalletNicknamesData[wallet.data.arweave.key] ? getWalletNicknamesData[wallet.data.arweave.key] : formatHash(wallet.data.arweave.key, 5)}</Typography>
                 </Box>
                 :
                 <Box sx={styles}>
@@ -172,26 +186,28 @@ const UserDropdown = (props: Props) => {
           <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/mywallets')}>
             <Box sx={styles}>
               <Icon icon='mdi:cog-outline' />
-              Settings
+              {`${t(`Settings`)}`}
             </Box>
           </MenuItem>
           :
-          <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/newwallet')}>
+          <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/mywallets')}>
             <Box sx={styles}>
               <Icon icon='mdi:cog-outline' />
-              Create Wallet
+              {`${t(`Create Wallet`)}`}
             </Box>
           </MenuItem>
           }
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/faq')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:help-circle-outline' />
-            FAQ
-          </Box>
-        </MenuItem>
       </Menu>
     </Fragment>
   )
 }
 
+/*
+<MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/faq')}>
+  <Box sx={styles}>
+    <Icon icon='mdi:help-circle-outline' />
+    {`${t(`FAQ`)}`}
+  </Box>
+</MenuItem>
+*/
 export default UserDropdown

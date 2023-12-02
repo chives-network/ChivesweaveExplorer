@@ -19,9 +19,11 @@ import authConfig from 'src/configs/auth'
 
 const arweave = Arweave.init(urlToSettings(authConfig.backEndApi))
 
-const chivesWallets = authConfig.chivesWallets
-const chivesCurrentWallet = authConfig.chivesCurrentWallet
-const chivesWalletNickname = authConfig.chivesWalletNickname
+const chivesWallets: string = authConfig.chivesWallets
+const chivesCurrentWallet: string = authConfig.chivesCurrentWallet
+const chivesWalletNickname: string = authConfig.chivesWalletNickname
+const chivesTxStatus: string = authConfig.chivesTxStatus
+const chivesLanguage: string = authConfig.chivesLanguage
 
 export async function generateNewMnemonicAndGetWalletData (mnemonic: string) {
     try {
@@ -174,7 +176,14 @@ export function getAllWallets() {
 
 export function getCurrentWalletAddress() {
     const CurrentWalletAddress = window.localStorage.getItem(chivesCurrentWallet)
-
+    if(CurrentWalletAddress == undefined) {
+        const chivesWalletsList = window.localStorage.getItem(chivesWallets)
+        const walletExists = chivesWalletsList ? JSON.parse(chivesWalletsList) : []
+        if(walletExists && walletExists[0] && walletExists[0].data && walletExists[0].data.arweave && walletExists[0].data.arweave.key) {
+            window.localStorage.setItem(chivesCurrentWallet, walletExists[0].data.arweave.key)
+        }
+    }
+    
     return String(CurrentWalletAddress)
 };
 
@@ -301,10 +310,25 @@ export function downloadTextFile(content: string, fileName: string, mimeType: st
     document.body.removeChild(link);
 }
 
-export function removePunctuation(text: string) {
-    return text.replace(/[^\w\s\u4e00-\u9fa5]/g, '');
+export async function downloadUrlFile(url: string, fileName: string, mimeType: string) {
+    const response = await axios.get(url, { responseType: 'blob' });
+    const blob = new Blob([response.data], { type: mimeType });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
+export function removePunctuation(text: string) {
+    if(text) {
+        return text.replace(/[^\w\s\u4e00-\u9fa5]/g, '');
+    }
+    else {
+        return "";
+    }
+}
 
 export async function readFile (file: File) {
     return new Promise<Uint8Array>((resolve, reject) => {
@@ -638,15 +662,15 @@ export async function decryptWithPrivateKey(privateKeyJwk: any, encryptedData: s
 
 //#########################################################################################################################################
 export async function TrashMultiFiles(FileTxList: TxRecordType[]) {
-    return await ChangeMultiFilesFolder(FileTxList, "Trash");
+    return await ChangeMultiFilesFolder(FileTxList, "Trash", "");
 }
 
 export async function FolderMultiFiles(FileTxList: TxRecordType[], Target: string) {
-    return await ChangeMultiFilesFolder(FileTxList, Target);
+    return await ChangeMultiFilesFolder(FileTxList, Target, "");
 }
 
 export async function SpamMultiFiles(FileTxList: TxRecordType[]) {
-    return await ChangeMultiFilesFolder(FileTxList, "Spam");
+    return await ChangeMultiFilesFolder(FileTxList, "Spam", "");
 }
 
 export async function StarMultiFiles(FileTxList: TxRecordType[]) {
@@ -673,7 +697,7 @@ export async function UnStarMultiFiles(FileTxList: TxRecordType[]) {
     console.log("ChivesDriveActionsMap", ChivesDriveActionsMap)
 }
 
-export async function ChangeMultiFilesFolder(FileTxList: TxRecordType[], EntityType: string) {
+export async function ChangeMultiFilesFolder(FileTxList: TxRecordType[], EntityType: string, folder: any) {
     const ChivesDriveActions = authConfig.chivesDriveActions
     const ChivesDriveActionsList = window.localStorage.getItem(ChivesDriveActions)      
     const ChivesDriveActionsMap: any = ChivesDriveActionsList ? JSON.parse(ChivesDriveActionsList) : {}
@@ -681,6 +705,7 @@ export async function ChangeMultiFilesFolder(FileTxList: TxRecordType[], EntityT
         ChivesDriveActionsMap['Folder'] = {...ChivesDriveActionsMap['Folder'], [FileTx.id] : EntityType}
         ChivesDriveActionsMap['Data'] = {...ChivesDriveActionsMap['Data'], [FileTx.id] : FileTx}
     })
+    ChivesDriveActionsMap['FolderList'] = {...ChivesDriveActionsMap['FolderList'], [folder.id] : folder}
     window.localStorage.setItem(ChivesDriveActions, JSON.stringify(ChivesDriveActionsMap))
     console.log("ChivesDriveActionsMap", ChivesDriveActionsMap)
 }
@@ -697,6 +722,48 @@ export async function ChangeMultiFilesLabel(FileTxList: TxRecordType[], EntityTy
     console.log("ChivesDriveActionsMap", ChivesDriveActionsMap)
 }
 
+export async function CreateFolder(folderName: string, folderNameParent: string) {
+    const ChivesDriveActions = authConfig.chivesDriveActions
+    const ChivesDriveActionsList = window.localStorage.getItem(ChivesDriveActions)      
+    const ChivesDriveActionsMap: any = ChivesDriveActionsList ? JSON.parse(ChivesDriveActionsList) : {}
+    const FolderMap: any = {}
+    FolderMap['parent'] = folderNameParent
+    FolderMap['name'] = folderName
+    ChivesDriveActionsMap['CreateFolder'] = {...ChivesDriveActionsMap['CreateFolder'], [folderNameParent+"____"+folderName] : FolderMap}
+    window.localStorage.setItem(ChivesDriveActions, JSON.stringify(ChivesDriveActionsMap))
+    console.log("ChivesDriveActionsMap", ChivesDriveActionsMap)
+}
+
+export async function CheckBundleTxStatus() {
+    //Get the bundle tx status
+    const chivesTxStatusText = window.localStorage.getItem(chivesTxStatus)      
+    const chivesTxStatusList = chivesTxStatusText ? JSON.parse(chivesTxStatusText) : []
+    console.log("CheckBundleTxStatus", chivesTxStatusList, (new Date()).toLocaleTimeString())
+    const chivesTxStatusListNew: any[] = []
+    if(chivesTxStatusList && chivesTxStatusList.length > 0)  {
+        await Promise.all(
+            chivesTxStatusList.map(async (Item: any) => {
+                const TxId = Item.TxResult.id;
+                try {
+                    const response = await axios.get(authConfig.backEndApi + '/tx/' + TxId + '/unbundle/0/9');
+                    if(response && response.data && response.data.txs && response.data.txs.length > 0) {
+                        console.log("response.data", response.data)
+                    }
+                    else {
+                        chivesTxStatusListNew.push(Item)
+                    }
+                } 
+                catch (error) {
+                    console.error(`Error fetching data for TxId ${TxId}:`, error);
+                }
+            })
+        );    
+        console.log("chivesTxStatusList___________________chivesTxStatusListNew", chivesTxStatusListNew)
+        window.localStorage.setItem(chivesTxStatus, JSON.stringify(chivesTxStatusListNew))
+        console.log("CheckBundleTxStatus", chivesTxStatusList, chivesTxStatusListNew)
+    }
+}
+
 export function GetFileCacheStatus(TxId: string) {
     const ChivesDriveActions = authConfig.chivesDriveActions
     const ChivesDriveActionsList = window.localStorage.getItem(ChivesDriveActions)      
@@ -710,6 +777,24 @@ export function GetFileCacheStatus(TxId: string) {
     }
     if(ChivesDriveActionsMap && ChivesDriveActionsMap['Folder'] && ChivesDriveActionsMap['Folder'][TxId] )  {
         FileStatus['Folder'] = ChivesDriveActionsMap['Folder'][TxId];
+    }
+
+    const chivesTxStatusText = window.localStorage.getItem(chivesTxStatus)      
+    const chivesTxStatusList = chivesTxStatusText ? JSON.parse(chivesTxStatusText) : []
+
+    if(chivesTxStatusList && chivesTxStatusList.length > 0)  {
+        chivesTxStatusList.map(async (Item: any) => {
+            const ChivesDriveActionsMaTx = Item.ChivesDriveActionsMap;
+            if(ChivesDriveActionsMaTx && ChivesDriveActionsMaTx['Star'] && ChivesDriveActionsMaTx['Star'][TxId] )  {
+                FileStatus['Star'] = ChivesDriveActionsMaTx['Star'][TxId];
+            }
+            if(ChivesDriveActionsMaTx && ChivesDriveActionsMaTx['Label'] && ChivesDriveActionsMaTx['Label'][TxId] )  {
+                FileStatus['Label'] = ChivesDriveActionsMaTx['Label'][TxId];
+            }
+            if(ChivesDriveActionsMaTx && ChivesDriveActionsMaTx['Folder'] && ChivesDriveActionsMaTx['Folder'][TxId] )  {
+                FileStatus['Folder'] = ChivesDriveActionsMaTx['Folder'][TxId];
+            }            
+        })
     }
 
     //console.log("FileStatus", FileStatus)
@@ -731,6 +816,9 @@ export function GetHaveToDoTask() {
     if(ChivesDriveActionsMap && ChivesDriveActionsMap['Folder'])  {
         HaveToDoTask += Object.keys(ChivesDriveActionsMap['Folder']).length
     }
+    if(ChivesDriveActionsMap && ChivesDriveActionsMap['CreateFolder'])  {
+        HaveToDoTask += Object.keys(ChivesDriveActionsMap['CreateFolder']).length
+    }
 
     return HaveToDoTask;
 }
@@ -750,7 +838,9 @@ export async function ActionsSubmitToBlockchain(setUploadProgress: React.Dispatc
     const FileTxLabel: any = ChivesDriveActionsMap['Label']
     const FileTxStar: any = ChivesDriveActionsMap['Star']
     const FileTxFolder: any = ChivesDriveActionsMap['Folder']
-
+    const CreateFolder: any = ChivesDriveActionsMap['CreateFolder']
+    const FolderList: any = ChivesDriveActionsMap['FolderList']
+    
     const FileTxList: any = []
     FileTxLabel && Object.keys(FileTxLabel).forEach(TxId => {
         if (FileTxLabel[TxId] != undefined) {
@@ -770,6 +860,15 @@ export async function ActionsSubmitToBlockchain(setUploadProgress: React.Dispatc
             FileTxList.push({TxId: TxId, Action: "Folder", Target: FileTxFolder[TxId], TxRecord: FileTxData[TxId]})
         }
     })
+    CreateFolder && Object.values(CreateFolder).forEach((Item: any) => {
+        if (Item.name != undefined && Item.parent != undefined && Item.name != "" && Item.parent != "") {
+            FileTxList.push({TxId: null, Action: "CreateFolder", Target: Item.name, Parent: Item.parent})
+        }
+    })
+
+    
+    const currentWallet = getCurrentWallet()
+    const currentAddress = getCurrentWalletAddress()
     
     //Make Tx List
     const formData = (await Promise.all(FileTxList?.map(async (FileTx: any) => {
@@ -820,6 +919,7 @@ export async function ActionsSubmitToBlockchain(setUploadProgress: React.Dispatc
             'Entity-Type': "Action",
             'Entity-Action': FileTx.Action,
             'Entity-Target': FileTx.Target,
+            'Entity-Target-Text': FolderList[FileTx.Target]['name'],
             'Unix-Time': String(Date.now())
           })
       }
@@ -845,16 +945,37 @@ export async function ActionsSubmitToBlockchain(setUploadProgress: React.Dispatc
             'Unix-Time': String(Date.now())
           })
       }
+      if(FileTx.Action=="CreateFolder") {
+        setBaseTags(tags, {          
+            'App-Name': authConfig['App-Name'],
+            'App-Platform': authConfig['App-Platform'],
+            'App-Version': authConfig['App-Version'],
+            'Agent-Name': "",
+            'Content-Type': "text/plain",
+            'File-Name': FileTx.Target,
+            'File-Hash': await getHash(currentAddress + FileTx.Parent + FileTx.Target),
+            'File-Parent': FileTx.Parent,
+            'Cipher-ALG': "",
+            'File-Public': "Public",
+            'File-TxId': "",
+            'File-Language': "en",
+            'File-Pages': "",
+            'File-BundleId': "",
+            'Entity-Type': "Folder",
+            'Entity-Action': FileTx.Action,
+            'Entity-Target': FileTx.Target,
+            'Unix-Time': String(Date.now())
+          })
+      }
 
-      const data = String(TxRecord.id)
+      const data = TxRecord?.id ? String(TxRecord.id) : FileTx.Action
+      console.log("tags", tags)
 
-      return { data, tags, path: String(TxRecord.id) }
+      return { data, tags, path: data }
     })))
 
     console.log("formData", formData)
     
-    const currentWallet = getCurrentWallet()
-    const currentAddress = getCurrentWalletAddress()
     const getProcessedDataValue = await getProcessedData(currentWallet, currentAddress, formData, false)
 
     const target = ""
@@ -869,12 +990,19 @@ export async function ActionsSubmitToBlockchain(setUploadProgress: React.Dispatc
     tags.push({name: "Bundle-Version", value: '2.0.0'})
     tags.push({name: "Entity-Type", value: "Action"})
     tags.push({name: "Entity-Number", value: String(FileTxList.length)})
-    console.log("getProcessedDataValue tags", tags)
+    
+    //console.log("getProcessedDataValue tags", tags)
 
     const TxResult: any = await sendAmount(currentWallet, target, amount, tags, data, "UploadBundleFile", setUploadProgress);
     
+    //Save Tx Records Into LocalStorage
+    const chivesTxStatusText = window.localStorage.getItem(chivesTxStatus)      
+    const chivesTxStatusList = chivesTxStatusText ? JSON.parse(chivesTxStatusText) : []
+    chivesTxStatusList.push({TxResult,ChivesDriveActionsMap})
+    console.log("chivesTxStatusList", chivesTxStatusList)
+    window.localStorage.setItem(chivesTxStatus, JSON.stringify(chivesTxStatusList))
+       
     return TxResult;
-
   };
 
   function setBaseTags (tags: Tag[], set: { [key: string]: string }) {
@@ -902,3 +1030,15 @@ export async function ActionsSubmitToBlockchain(setUploadProgress: React.Dispatc
     }
   }
 
+
+    export function getChivesLanguage() {
+        const ChivesLanguage = window.localStorage.getItem(chivesLanguage) || "en"
+
+        return ChivesLanguage
+    };
+
+    export function setChivesLanguage(Language: string) {
+        window.localStorage.setItem(chivesLanguage, Language)
+
+        return true
+    };

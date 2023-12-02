@@ -22,9 +22,13 @@ import SidebarLeft from 'src/views/drive/SidebarLeft'
 import UploadFiles from 'src/views/form/uploadfiles';
 
 import CardContent from '@mui/material/CardContent'
+import { useRouter } from 'next/router'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+
+// ** Third Party Components
+import toast from 'react-hot-toast'
 
 // ** Actions
 import {
@@ -32,7 +36,8 @@ import {
   setCurrentFile,
   handleSelectFile,
   handleSelectAllFile,
-  fetchTotalNumber
+  fetchTotalNumber,
+  fetchAllFolder
 } from 'src/store/apps/drive'
 
 // ** Context
@@ -46,17 +51,11 @@ const labelColors: any = {
   important: 'warning'
 }
 
-// ** Variables
-const folderColors: any = {
-  Root: 'error',
-  Work: 'success',
-  Home: 'primary',
-  Blockchain: 'warning'
-}
-
-const DriveAppLayout = ({ folder, label, type }: DriveLayoutType) => {
+const DriveAppLayout = ({ initFolder, label, type }: DriveLayoutType) => {
   // ** Hook
   const { t } = useTranslation()
+
+  const router = useRouter();
   
   // ** States
   const [query, setQuery] = useState<string>('')
@@ -64,6 +63,8 @@ const DriveAppLayout = ({ folder, label, type }: DriveLayoutType) => {
   const [uploadFilesTitle, setUploadFilesTitle] = useState<string>(`${t(`Upload Files`)}`)
   const [driveFileOpen, setFileDetailOpen] = useState<boolean>(false)
   const [leftSidebarOpen, setLeftSidebarOpen] = useState<boolean>(false)
+  const [folder, setFolder] = useState<string>(initFolder)
+  const [folderHeaderList, setFolderHeaderList] = useState<any[]>([{'name': t(initFolder) as string, 'value': initFolder}])
 
   // ** Hooks
   const theme = useTheme()
@@ -79,14 +80,15 @@ const DriveAppLayout = ({ folder, label, type }: DriveLayoutType) => {
   const routeParams = {
     label: label || 'Personal',
     type: type || 'image',
-    folder: folder || 'Root'
+    initFolder: folder || 'Root'
   }
 
   const auth = useAuth()
-
   const id = auth.currentAddress
+  const currentAddress = auth.currentAddress
 
   // ** State
+  const paginationModelDefaultValue = { page: 1, pageSize: 9 }
   const [paginationModel, setPaginationModel] = useState({ page: 1, pageSize: 9 })
   
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
@@ -94,6 +96,33 @@ const DriveAppLayout = ({ folder, label, type }: DriveLayoutType) => {
     console.log("handlePageChange", event)
   }
 
+  const handleFolderChange = (folder: string) => {
+    setFolder(folder);
+    console.log("handleFolderChange", folder)
+  }
+
+  const handleFolderHeaderList = (folderHeader: any) => {
+    console.log("handleFolderHeaderList", folderHeader)
+    console.log("folderHeaderList", folderHeaderList)
+    const folderHeaderListNew: any = []
+    let isContinue = 1
+    folderHeaderList.forEach((Item: any)=>{
+      if(isContinue == 1) {
+        folderHeaderListNew.push(Item)
+        if(Item.value == folderHeader.value) {
+          isContinue = 2 
+        }
+      }
+    })
+    if(isContinue == 1) {
+      folderHeaderListNew.push(folderHeader)
+    }
+    setFolder(folderHeader.value);
+    setFolderHeaderList(folderHeaderListNew);
+    setPaginationModel(paginationModelDefaultValue)
+    console.log("folderHeaderListNew", folderHeaderListNew)
+  }
+  
   useEffect(() => {
     if(true && id && id.length == 43) {
       dispatch(
@@ -116,12 +145,31 @@ const DriveAppLayout = ({ folder, label, type }: DriveLayoutType) => {
           label: label
         })
       )
+      dispatch(
+        fetchAllFolder({
+          address: String(id),
+          pageId: paginationModel.page - 1,
+          pageSize: paginationModel.pageSize,
+          type: type,
+          folder: folder,
+          label: label
+        })
+      )
+      dispatch(handleSelectAllFile(false))
       setUploadFilesOpen(false)
       setUploadFilesTitle(`${t(`Upload Files`)}`)
     }
   }, [dispatch, paginationModel, type, folder, label, id])
 
   const toggleUploadFilesOpen = () => {
+    if(currentAddress == undefined || currentAddress.length != 43) {
+      toast.success(t(`Please create a wallet first`), {
+        duration: 4000
+      })
+      router.push("/mywallets");
+      
+      return
+    }
     setUploadFilesOpen(!uploadFilesOpen)
     if(uploadFilesOpen) {
       setUploadFilesTitle(`${t(`Upload Files`)}`)
@@ -131,8 +179,6 @@ const DriveAppLayout = ({ folder, label, type }: DriveLayoutType) => {
     }
   }
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
-
-  console.log("store", store);
 
   return (
     <Box
@@ -172,7 +218,7 @@ const DriveAppLayout = ({ folder, label, type }: DriveLayoutType) => {
           direction={direction}
           routeParams={routeParams}
           labelColors={labelColors}
-          folderColors={folderColors}
+          folder={folder}
           setCurrentFile={setCurrentFile}
           driveFileOpen={driveFileOpen}
           handleSelectFile={handleSelectFile}
@@ -181,6 +227,9 @@ const DriveAppLayout = ({ folder, label, type }: DriveLayoutType) => {
           handleLeftSidebarToggle={handleLeftSidebarToggle}        
           paginationModel={paginationModel}
           handlePageChange={handlePageChange}
+          handleFolderChange={handleFolderChange}
+          folderHeaderList={folderHeaderList}
+          handleFolderHeaderList={handleFolderHeaderList}
         />
         :
         <CardContent>

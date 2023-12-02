@@ -11,6 +11,7 @@ import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
+import Tooltip from '@mui/material/Tooltip'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 // ** Store Imports
@@ -54,17 +55,6 @@ const LinkStyledNormal = styled(Link)(({ theme }) => ({
 }))
 
 
-
-function parseTxFeeAndBundleId(TxRecord: TxRecordType) {
-  if(TxRecord.bundleid && TxRecord.bundleid!="") {
-  
-    return <LinkStyledNormal href={`/txs/view/${TxRecord.bundleid}`}>{formatHash(TxRecord.bundleid, 5)}</LinkStyledNormal>
-  }
-
-  return formatXWE(TxRecord.fee.winston, 6);
-}
-
-
 const TransactionList = () => {
   // ** Hook
   const { t } = useTranslation()
@@ -92,6 +82,19 @@ const TransactionList = () => {
     setIsLoading(false)
   }, [])
 
+  function parseTxFeeAndBundleId(TxRecord: TxRecordType) {
+    if(TxRecord.bundleid && TxRecord.bundleid!="") {
+    
+      return (
+        <Tooltip title={`BundleId: ${TxRecord.bundleid}`}>
+          <LinkStyledNormal href={`/txs/view/${TxRecord.bundleid}`}>{formatHash(TxRecord.bundleid, 5)}</LinkStyledNormal>
+        </Tooltip>
+      )
+    }
+  
+    return formatXWE(TxRecord.fee.winston, 6);
+  }
+
   const columns: GridColDef[] = [
     {
       flex: 0.2,
@@ -104,7 +107,9 @@ const TransactionList = () => {
         
         return (
           <Typography noWrap variant='body2'>
-            <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
+            <Tooltip title={`${row.id}`}>
+              <LinkStyled href={`/txs/view/${row.id}`}>{formatHash(row.id, 7)}</LinkStyled>
+            </Tooltip>
           </Typography>
         )
       }
@@ -120,7 +125,9 @@ const TransactionList = () => {
         
         return (
           <Typography noWrap variant='body2'>
-            <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
+            <Tooltip title={`${row.owner.address}`}>
+              <LinkStyled href={`/addresses/all/${row.owner.address}`}>{formatHash(row.owner.address, 7)}</LinkStyled>
+            </Tooltip>
           </Typography>
         )
       }
