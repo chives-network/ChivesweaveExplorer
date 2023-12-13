@@ -172,7 +172,7 @@ const UploadWalletJsonFile = ( { handleRefreshWalletData }: any ) => {
                     <Grid item xs={12}>
                         <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                             <CircularProgress sx={{ mb: 4 }} />
-                            <Typography>{`${t(`Processing`)}`}...</Typography>
+                            <Typography>{`${t(`Executing your command, please wait a moment`)}`}...</Typography>
                         </Box>
                     </Grid>
                 </Grid>

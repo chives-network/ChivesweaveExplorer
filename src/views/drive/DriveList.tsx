@@ -108,7 +108,7 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
 const DriveList = (props: DriveListType) => {
   // ** Hook
   const { t } = useTranslation()
-  const router = useRouter();
+  const router = useRouter()
   
   // ** Props
   const {
@@ -169,7 +169,7 @@ const DriveList = (props: DriveListType) => {
   useEffect(()=>{
     const GetHaveToDoTaskData: number = GetHaveToDoTask()
     setHaveTaskToDoNumber(GetHaveToDoTaskData)
-    setIsHaveTaskToDoText("Submit to blockchain")
+    setIsHaveTaskToDoText(`${t(`Submit to Blockchain`)}`)
     console.log("uploadProgress", uploadProgress)
   },[isHaveTaskToDo])
 
@@ -270,21 +270,32 @@ const DriveList = (props: DriveListType) => {
     trash: [foldersConfig.myfiles, foldersConfig.spam]
   }
 
-  const handleMoveToTrash = () => {
+  const handleMoveToTrash = (id: string | null) => {
     console.log("store.selectedFiles", store)
-    if( store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
+    if( id == null && store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
       setIsHaveTaskToDo(isHaveTaskToDo + 1);
       const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => store.selectedFiles.includes(Item.id));
       TrashMultiFiles(TargetFiles);
       dispatch(handleSelectAllFile(false))
     }
+    if( id && id.length > 0 && store.data && store.data.length > 0) {
+      setIsHaveTaskToDo(isHaveTaskToDo + 1);
+      const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => id == Item.id);
+      TrashMultiFiles(TargetFiles);
+      dispatch(handleSelectAllFile(false))
+    }
   }
 
-  const handleMoveToSpam = () => {
-    console.log("store.selectedFiles", store)
-    if( store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
+  const handleMoveToSpam = (id: string | null) => {
+    if( id == null && store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
       setIsHaveTaskToDo(isHaveTaskToDo + 1);
       const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => store.selectedFiles.includes(Item.id));
+      SpamMultiFiles(TargetFiles);
+      dispatch(handleSelectAllFile(false))
+    }
+    if( id && id.length > 0 && store.data && store.data.length > 0) {
+      setIsHaveTaskToDo(isHaveTaskToDo + 1);
+      const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => id == Item.id);
       SpamMultiFiles(TargetFiles);
       dispatch(handleSelectAllFile(false))
     }
@@ -306,21 +317,31 @@ const DriveList = (props: DriveListType) => {
     }
   }
 
-  const handleLabelUpdate = (id: string | string[], label: LabelType) => {
-    console.log("store.selectedFiles", store)
-    if( store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
+  const handleLabelUpdate = (id: string | null, label: LabelType) => {
+    if( id == null && store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
       setIsHaveTaskToDo(isHaveTaskToDo + 1);
       const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => store.selectedFiles.includes(Item.id));
       ChangeMultiFilesLabel(TargetFiles, label);
       dispatch(handleSelectAllFile(false))
     }
+    if( id && id.length > 0 && store.data && store.data.length > 0) {
+      setIsHaveTaskToDo(isHaveTaskToDo + 1);
+      const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => id == Item.id);
+      ChangeMultiFilesLabel(TargetFiles, label);
+      dispatch(handleSelectAllFile(false))
+    }
   }
 
-  const handleFolderUpdate = (id: string | string[], folder: any) => {
-    console.log("store.selectedFiles", store)
-    if( store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
+  const handleFolderUpdate = (id: string | null, folder: any) => {
+    if( id == null && store.selectedFiles && store.selectedFiles.length > 0 && store.data && store.data.length > 0) {
       setIsHaveTaskToDo(isHaveTaskToDo + 1);
       const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => store.selectedFiles.includes(Item.id));
+      ChangeMultiFilesFolder(TargetFiles, folder.id, folder);
+      dispatch(handleSelectAllFile(false))
+    }
+    if( id && id.length > 0 && store.data && store.data.length > 0) {
+      setIsHaveTaskToDo(isHaveTaskToDo + 1);
+      const TargetFiles: TxRecordType[] = store.data.filter((Item: TxRecordType)  => id == Item.id);
       ChangeMultiFilesFolder(TargetFiles, folder.id, folder);
       dispatch(handleSelectAllFile(false))
     }
@@ -331,7 +352,7 @@ const DriveList = (props: DriveListType) => {
     setOpen(true);
   }
 
-  const handleActionsSubmitToBlockchainYes = async () => {
+  const handleActionsSubmitToBlockchainYes: any = async () => {
     setIsProgress(true)
     const ActionsSubmitToBlockchainResult = await ActionsSubmitToBlockchain(setUploadProgress);
     console.log("ActionsSubmitToBlockchainResult", ActionsSubmitToBlockchainResult)
@@ -342,7 +363,6 @@ const DriveList = (props: DriveListType) => {
         setOpen(false);
         setIsSubmitBlockchainDialog(false);
         setIsProgress(false);
-        ResetToDoTask();
         setIsHaveTaskToDo(isHaveTaskToDo + 1);
         toast.success(t(`Submitted successfully`), {
           duration: 2000
@@ -412,7 +432,7 @@ const DriveList = (props: DriveListType) => {
         ),
         menuItemProps: {
           onClick: () => {
-            handleLabelUpdate(store.selectedFiles, key as LabelType)
+            handleLabelUpdate(null, key as LabelType)
             dispatch(handleSelectAllFile(false))
           }
         }
@@ -434,7 +454,7 @@ const DriveList = (props: DriveListType) => {
         ),
         menuItemProps: {
           onClick: () => {
-            handleFolderUpdate(store.selectedFiles, Item)
+            handleFolderUpdate(null, Item)
             dispatch(handleSelectAllFile(false))
           }
         }
@@ -457,10 +477,10 @@ const DriveList = (props: DriveListType) => {
     handleLabelUpdate,
     handleFolderUpdate,
     setFileDetailOpen,
-    currentFile: store && store.currentFile ? store.currentFile : null
+    currentFile: store && store.currentFile ? store.currentFile : null,
+    handleMoveToTrash,
+    handleMoveToSpam
   }
-
-  console.log("folderHeaderList", folderHeaderList)
 
   return (
     <Box sx={{ width: '100%', overflow: 'hidden', position: 'relative', '& .ps__rail-y': { zIndex: 5 } }}>
@@ -547,7 +567,7 @@ const DriveList = (props: DriveListType) => {
                         helperText={folderNameError}
                     />
                   </DialogContentText>
-                  {`${t('After creating the folder, you need to manually submit it to the blockchain network.')}`}
+                  {`${t('After creating the folder, you need to manually submit it to the blockchain network')}`}
               </DialogContent>
               <DialogActions className='dialog-actions-dense'>
                   {isProgress == true && haveSubmitTextTip == "" ? 
@@ -638,7 +658,7 @@ const DriveList = (props: DriveListType) => {
                     dispatch(handleSelectAllFile(e.target.checked))
                     updateFileCounter()
                   }}
-                  checked={(store.data.length && fileCounter === store.selectedFiles.length && fileCounter > 0) }
+                  checked={(store.data.length > 0 && fileCounter === store.selectedFiles.length && fileCounter > 0) }
                   indeterminate={
                     !!(
                       store.data.length &&
@@ -655,14 +675,14 @@ const DriveList = (props: DriveListType) => {
                   <OptionsMenu leftAlignMenu options={handleLabelsMenu()} icon={<Icon icon='mdi:label-outline' />} />
                   {routeParams && routeParams.initFolder !== 'Trash' && routeParams.initFolder !== 'Spam' ? (
                     <Tooltip title={`${t(`Move to Trash`)}`} arrow>
-                      <IconButton onClick={handleMoveToTrash}>
+                      <IconButton onClick={()=>handleMoveToTrash(null)}>
                         <Icon icon='mdi:delete-outline' />
                       </IconButton>
                     </Tooltip>
                   ) : null}
                   {routeParams && routeParams.initFolder !== 'Trash' && routeParams.initFolder !== 'Spam' ? (
                     <Tooltip title={`${t(`Move to Spam`)}`} arrow>
-                      <IconButton onClick={handleMoveToSpam}>
+                      <IconButton onClick={()=>handleMoveToSpam(null)}>
                         <Icon icon='mdi:alert-octagon-outline' />
                       </IconButton>
                     </Tooltip>
@@ -718,12 +738,14 @@ const DriveList = (props: DriveListType) => {
                   })
                   const EntityType = TagsMap['Entity-Type']
                   const EntityTarget = TagsMap['Entity-Target']
-                  const FileCacheStatus = GetFileCacheStatus(drive.id)
+                  const FullStatusRS: any = GetFileCacheStatus(drive)
+                  const FileCacheStatus: any = FullStatusRS['CacheStatus']
+                  const FileFullStatus: any = FullStatusRS['FullStatus']
                   let IsFileDisabled = false
                   if(FileCacheStatus.Folder == "Trash" || FileCacheStatus.Folder == "Spam" || (FileCacheStatus.Folder!=undefined && FileCacheStatus.Folder!="") ) {
                     IsFileDisabled = true
                   }
-                  
+
                   return (
                     <FileItem
                       key={drive.id}
@@ -752,7 +774,7 @@ const DriveList = (props: DriveListType) => {
                         
                       }}
                     >
-                      <Tooltip title={(FileCacheStatus.Folder == "Trash" || FileCacheStatus.Folder == "Spam") ? `${t(`You cannot perform operations on files in the Trash or Spam`)}` :''} arrow>
+                      <Tooltip title={(FileFullStatus.Folder == "Trash" || FileFullStatus.Folder == "Spam") ? `${t(`You cannot perform operations on files in the Trash or Spam`)}` :''} arrow>
                         <Box sx={{ mr: 4, display: 'flex', overflow: 'hidden', alignItems: 'center' }}>
                           
                           <Checkbox
@@ -763,21 +785,21 @@ const DriveList = (props: DriveListType) => {
                           />
                           <IconButton
                             size='small'
-                            onClick={e => handleStarDrive(e, drive.id, !FileCacheStatus['Star'])}
+                            onClick={e => handleStarDrive(e, drive.id, !FileFullStatus['Star'])}
                             disabled={IsFileDisabled}
                             sx={{
                               mr: { xs: 0, sm: 3 },
-                              color: FileCacheStatus['Star'] ? 'warning.main' : 'text.secondary',
+                              color: FileFullStatus['Star'] ? 'warning.main' : 'text.secondary',
                               '& svg': {
                                 display: { xs: 'none', sm: 'block' }
                               }
                             }}
                           >
-                            <Icon icon={FileCacheStatus['Star'] ? 'mdi:star' : 'mdi:star-outline'} />
+                            <Icon icon={FileFullStatus['Star'] ? 'mdi:star' : 'mdi:star-outline'} />
                           </IconButton>
-                          {store.table[drive.id] && store.table[drive.id]['item_label'] && labelColors[store.table[drive.id]['item_label']] ?
-                            <Tooltip title={store.table[drive.id]['item_label']} arrow>
-                              <Box component='span' sx={{ mr: 2, ml: -2, color: `${labelColors[store.table[drive.id]['item_label']]}.main` }}>
+                          {FileFullStatus && FileFullStatus['Label'] && labelColors[FileFullStatus['Label']] ?
+                            <Tooltip title={FileFullStatus['Label']} arrow>
+                              <Box component='span' sx={{ mr: 2, ml: -2, color: `${labelColors[FileFullStatus['Label']]}.main` }}>
                                 <Icon icon='mdi:circle' fontSize='0.75rem' />
                               </Box>
                             </Tooltip>
@@ -865,7 +887,7 @@ const DriveList = (props: DriveListType) => {
         <Box sx={{ px: 5, py: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
             <Grid item key={"Pagination"} xs={12} sm={12} md={12} lg={12} sx={{ padding: '10px 0 10px 0' }}>
-              <Pagination  count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} siblingCount={2} boundaryCount={3} />
+              <Pagination count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} siblingCount={2} boundaryCount={3} />
             </Grid>
           </Box>
         </Box>

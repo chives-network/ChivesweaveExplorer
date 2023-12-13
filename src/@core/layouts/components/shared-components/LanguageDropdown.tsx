@@ -27,12 +27,10 @@ const LanguageDropdown = ({ settings, saveSettings }: Props) => {
   // ** Vars
   const { layout } = settings
 
-  const handleLangItemClick = (lang: 'en' | 'zh-CN' | 'zh-TW' | 'Ru' | 'Fr' | 'De' | 'Sp' | 'Kr' ) => {
+  const handleLangItemClick = (lang: 'en' | 'zh' | 'zh-TW' | 'Ru' | 'Fr' | 'De' | 'Sp' | 'Kr' ) => {
     i18n.changeLanguage(lang)
     setChivesLanguage(lang)
   }
-
-  console.log("i18n.language", i18n.language)
 
   // ** Change html `lang` attribute when changing locale
   useEffect(() => {
@@ -120,9 +118,9 @@ const LanguageDropdown = ({ settings, saveSettings }: Props) => {
           text: '简体中文',
           menuItemProps: {
             sx: { py: 2 },
-            selected: i18n.language === 'zh-CN',
+            selected: i18n.language === 'zh',
             onClick: () => {
-              handleLangItemClick('zh-CN')
+              handleLangItemClick('zh')
               saveSettings({ ...settings, direction: 'ltr' })
             }
           }

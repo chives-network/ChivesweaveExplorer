@@ -66,7 +66,6 @@ export function EncryptDataWithKey(FileContent: string, FileName: string, wallet
     FileEncrypt['Entity-Type']  = "File";
     FileEncrypt['Unix-Time']    = String(Date.now());
     FileEncrypt['App-Name']     = authConfig['App-Name'];
-    FileEncrypt['App-Platform'] = authConfig['App-Platform'];
     FileEncrypt['App-Version']  = authConfig['App-Version'];
 
     return FileEncrypt;

@@ -43,7 +43,7 @@ import FormatTxInfoInRow from 'src/pages/preview/FormatTxInfoInRow';
 // ** Next Import
 import { useRouter } from 'next/router'
 
-import StringDisplay from 'src/pages/preview/StringDisplay';
+import StringDisplay from 'src/pages/preview/StringDisplay'
 
 import Box from '@mui/material/Box'
 import Tab from '@mui/material/Tab'
@@ -54,12 +54,15 @@ import { winstonToAr } from 'src/functions/ChivesweaveWallets'
 
 import UploadFiles from 'src/views/form/uploadfiles';
 import SendOut from 'src/views/form/sendout';
+import Tooltip from '@mui/material/Tooltip'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+import { isMobile } from 'src/configs/functions'
+import Pagination from '@mui/material/Pagination'
 
 interface TransactionCellType {
   row: TxRecordType
@@ -76,7 +79,14 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   }
 }))
 
-
+const LinkStyledNormal = styled(Link)(({ theme }) => ({
+  cursor: 'pointer',
+  textDecoration: 'none',
+  color: theme.palette.text.secondary,
+  '&:hover': {
+    color: theme.palette.primary.main
+  }
+}))
 
 // ** Styled Tab component
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
@@ -104,15 +114,22 @@ const MyWalletModel = ({ activeTab } : any) => {
   // ** Hook
   const { t } = useTranslation()
 
-  const router = useRouter();
+  const router = useRouter()
 
   const auth = useAuth()
 
   const id = auth.currentAddress
 
+  const paginationModelDefaultValue = { page: 0, pageSize: 15 }
+  const [paginationModel, setPaginationModel] = useState(paginationModelDefaultValue)  
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPaginationModel({ ...paginationModel, page:page-1 });
+    console.log("handlePageChange", event)
+  }  
+  const isMobileData = isMobile()
+
   // ** State
   const [isLoading, setIsLoading] = useState(false);
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -159,6 +176,18 @@ const MyWalletModel = ({ activeTab } : any) => {
     setIsLoading(false)
   }, [])
 
+  function parseTxFeeAndBundleId(TxRecord: TxRecordType) {
+    if(TxRecord.bundleid && TxRecord.bundleid!="") {
+    
+      return (
+        <Tooltip title={`BundleId: ${TxRecord.bundleid}`}>
+          <LinkStyledNormal href={`/txs/view/${TxRecord.bundleid}`}>{formatHash(TxRecord.bundleid, 5)}</LinkStyledNormal>
+        </Tooltip>
+      )
+    }
+  
+    return formatXWE(TxRecord.fee.winston, 6);
+  }
   
   const columns: GridColDef[] = [
     {
@@ -306,7 +335,13 @@ const MyWalletModel = ({ activeTab } : any) => {
                         </TableCell>
                         <TableCell>
                           {id && id.length == 43 ?
-                            <StringDisplay InputString={String(id)} StringSize={25} href={null}/>
+                            <Fragment>                              
+                              {isMobileData == true ?
+                                <StringDisplay InputString={String(id)} StringSize={10} href={null}/>
+                                :
+                                <StringDisplay InputString={String(id)} StringSize={25} href={null}/>
+                              }
+                            </Fragment>
                             :
                             <Fragment>{`${t(`No Address`)}`}</Fragment>
                           }
@@ -409,44 +444,138 @@ const MyWalletModel = ({ activeTab } : any) => {
             />
           </TabList>
         </TabContext>
-        <Card>
           {store && store.data != undefined && activeTab != "sendout" && activeTab !="uploadfiles" ?
             <Fragment>
-              <CardHeader title={`${t(`Transactions`)}`} />
-              <DataGrid
-                autoHeight
-                rows={store.data}
-                rowCount={store.total as number}
-                columns={columns}
-                sortingMode='server'
-                paginationMode='server'
-                filterMode="server"
-                loading={isLoading}
-                disableRowSelectionOnClick
-                pageSizeOptions={[10, 15, 20, 30, 50, 100]}
-                paginationModel={paginationModel}
-                onPaginationModelChange={setPaginationModel}
-                disableColumnMenu={true}
-              />
+              {isMobileData ? 
+              <Fragment>
+                {store.data.map((row: any, index: number) => {
+                  return (
+                      <Grid item xs={12} sx={{ py: 0, mt: 5 }} key={index}>
+                        <Card>
+                          <CardContent>      
+                            <TableContainer>
+                              <Table size='small' sx={{ width: '95%' }}>
+                                <TableBody
+                                  sx={{
+                                    '& .MuiTableCell-root': {
+                                      border: 0,
+                                      pb: 1.5,
+                                      pl: '0 !important',
+                                      pr: '0 !important',
+                                      '&:first-of-type': {
+                                        width: 148
+                                      }
+                                    }
+                                  }}
+                                >
+                                  <TableRow>
+                                    <TableCell>
+                                      <Typography variant='body2' sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}>
+                                      {`${t(`TxId`)}`}：<StringDisplay InputString={`${row.id}`} StringSize={7} href={`/txs/view/${row.id}`}/>
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>
+                                      <Typography variant='body2' sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}>
+                                      {`${t(`From`)}`}：<StringDisplay InputString={`${row.owner.address}`} StringSize={7} href={`/addresses/all/${row.owner.address}`}/>
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>
+                                      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                      {`${t(`Size`)}`}：{formatStorageSize(row.data.size)}
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>
+                                      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                      {`${t(`Fee`)}`}：{parseTxFeeAndBundleId(row)}
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>
+                                      <Typography variant='body2' sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}>
+                                      {`${t(`Info`)}`}：<FormatTxInfoInRow TxRecord={row}/>
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>
+                                      <Typography variant='body2' sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}>
+                                      {`${t(`Height`)}`}：<StringDisplay InputString={`${row.block.height}`} StringSize={7} href={`/blocks/view/${row.block.height}`}/>
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>
+                                      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                      {`${t(`Time`)}`}：{formatTimestampAge(row.block.timestamp)}
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
+
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </CardContent>      
+                        </Card>
+                      </Grid>
+                  )
+                })}
+                <Box sx={{ pl: 5, py: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <Grid item key={"Pagination"} xs={12} sm={12} md={12} lg={12} sx={{ padding: '10px 0 10px 0' }}>
+                      <Pagination count={Math.ceil(store.total/paginationModel.pageSize)} variant='outlined' color='primary' page={paginationModel.page+1} onChange={handlePageChange} siblingCount={1} boundaryCount={1} />
+                    </Grid>
+                  </Box>
+                </Box>
+              </Fragment>
+              :
+              <Card>
+                <CardHeader title={`${t(`Transactions`)}`} />
+                <DataGrid
+                  autoHeight
+                  rows={store.data}
+                  rowCount={store.total as number}
+                  columns={columns}
+                  sortingMode='server'
+                  paginationMode='server'
+                  filterMode="server"
+                  loading={isLoading}
+                  disableRowSelectionOnClick
+                  pageSizeOptions={[10, 15, 20, 30, 50, 100]}
+                  paginationModel={paginationModel}
+                  onPaginationModelChange={setPaginationModel}
+                  disableColumnMenu={true}
+                />
+              </Card>              
+              }
             </Fragment>
           :
             <Fragment></Fragment>
           }
           {activeTab == "sendout" ?
-            <CardContent>
-              <SendOut />
-            </CardContent>
+            <Card>
+              <CardContent>
+                <SendOut />
+              </CardContent>
+            </Card>
           :
             <Fragment></Fragment>
           }
           {activeTab == "uploadfiles" ?
-            <CardContent>
-              <UploadFiles />
-            </CardContent>
+            <Card>
+              <CardContent>
+                <UploadFiles />
+              </CardContent>
+            </Card>
           :
             <Fragment></Fragment>
           }
-        </Card>
       </Grid>
     </Grid>
   )

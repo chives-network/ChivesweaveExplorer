@@ -26,7 +26,6 @@ import OptionsMenu from 'src/@core/components/option-menu'
 import { OptionType } from 'src/@core/components/option-menu/types'
 import {
   LabelType,
-  FolderType,
   FileDetailType
 } from 'src/types/apps/emailTypes'
 
@@ -41,7 +40,8 @@ import { TxRecordType } from 'src/types/apps/Chivesweave'
 
 import { getContentTypeAbbreviation, formatTimestampMemo } from 'src/configs/functions';
 
-import { TrashMultiFiles, SpamMultiFiles } from 'src/functions/ChivesweaveWallets'
+import { GetFileCacheStatus } from 'src/functions/ChivesweaveWallets'
+
 
 const toggleImagesPreviewDrawer = () => {
   console.log("toggleImagesPreviewDrawer")
@@ -93,14 +93,17 @@ const DriveDetail = (props: FileDetailType) => {
     hidden,
     direction,
     labelColors,
-    folderColors,
     routeParams,
     handleStarDrive,
     driveFileOpen,
     handleLabelUpdate,
-    handleFolderUpdate,
-    setFileDetailOpen
+    setFileDetailOpen,
+    handleMoveToTrash,
+    handleMoveToSpam
   } = props
+
+  const FullStatusRS: any = GetFileCacheStatus(currentFile)
+  const FileFullStatus: any = FullStatusRS['FullStatus']
 
   const [tags, setTags] = useState<any>({})
   useEffect(() => {
@@ -114,16 +117,14 @@ const DriveDetail = (props: FileDetailType) => {
   // ** Hook
   const { settings } = useSettings()
 
-  const handleMoveToTrash = (currentFile: any) => {
-    TrashMultiFiles([currentFile]);
+  const handleMoveToTrashCurrentFile = () => {
+    handleMoveToTrash(currentFile.id)
     setFileDetailOpen(false)
   }
 
-  const handleMoveToSpam = (currentFile: any) => {
-    SpamMultiFiles([currentFile]);
+  const handleMoveToSpamCurrentFile = () => {
+    handleMoveToSpam(currentFile.id)
     setFileDetailOpen(false)
-
-    console.log("handleFoldersMenu", handleFoldersMenu())
   }
 
   const handleLabelsMenu = () => {
@@ -138,8 +139,7 @@ const DriveDetail = (props: FileDetailType) => {
         ),
         menuItemProps: {
           onClick: () => {
-            handleLabelUpdate([currentFile.id], key as LabelType)
-            setFileDetailOpen(false)
+            handleLabelUpdate(currentFile.id, key as LabelType)
           }
         }
       })
@@ -147,7 +147,8 @@ const DriveDetail = (props: FileDetailType) => {
 
     return array
   }
-
+  
+  /*
   const handleFoldersMenu = () => {
     const array: OptionType[] = []
     Object.entries(folderColors).map(([key, value]: any) => {
@@ -161,7 +162,6 @@ const DriveDetail = (props: FileDetailType) => {
         menuItemProps: {
           onClick: () => {
             handleFolderUpdate([currentFile.id], key as FolderType)
-            setFileDetailOpen(false)
           }
         }
       })
@@ -169,6 +169,7 @@ const DriveDetail = (props: FileDetailType) => {
 
     return array
   }
+  */
 
   const prevMailIcon = direction === 'rtl' ? 'mdi:chevron-right' : 'mdi:chevron-left'
   const goBackIcon = prevMailIcon
@@ -236,11 +237,11 @@ const DriveDetail = (props: FileDetailType) => {
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {routeParams && routeParams.initFolder !== 'trash' ? (
-                    <IconButton size='small' onClick={(currentFile)=>handleMoveToTrash(currentFile)}>
+                    <IconButton size='small' onClick={handleMoveToTrashCurrentFile}>
                       <Icon icon='mdi:delete-outline' fontSize='1.375rem' />
                     </IconButton>
                   ) : null}
-                  <IconButton size='small' onClick={(currentFile)=>handleMoveToSpam(currentFile)}>
+                  <IconButton size='small' onClick={handleMoveToSpamCurrentFile}>
                     <Icon icon='mdi:alert-circle-outline' fontSize='1.375rem' />
                   </IconButton>
                   <OptionsMenu
@@ -253,10 +254,10 @@ const DriveDetail = (props: FileDetailType) => {
               <div>
                 <IconButton
                   size='small'
-                  onClick={e => handleStarDrive(e, currentFile.id, true)}
-                  sx={{ ...(true ? { color: 'warning.main' } : {}) }}
+                  onClick={e => handleStarDrive(e, currentFile.id, !FileFullStatus['Star'])}
+                  sx={{ ...(true ? { color: FileFullStatus['Star'] ? 'warning.main' : 'text.secondary' } : {}) }}
                 >
-                  <Icon icon='mdi:star-outline' fontSize='1.375rem' />
+                  <Icon icon={FileFullStatus['Star'] ? 'mdi:star' : 'mdi:star-outline'} fontSize='1.375rem'/>
                 </IconButton>
               </div>
               </Box>

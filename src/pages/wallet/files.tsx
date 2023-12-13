@@ -1,6 +1,6 @@
 import MyWalletModel from 'src/views/model/wallet';
 
-const AddressTransactionList = () => {
+const FilesApp = () => {
 
   const activeTab = "files"; 
 
@@ -8,5 +8,5 @@ const AddressTransactionList = () => {
 
 }
 
-export default AddressTransactionList
+export default FilesApp
 

@@ -15,6 +15,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Custom Components Imports
 import CustomAvatar from 'src/@core/components/mui/avatar'
+import ReactAudioPlayer from 'react-audio-player';
 
 import { formatHash } from 'src/configs/functions';
 import { Fragment } from 'react'
@@ -66,6 +67,13 @@ const ImageRectangle = ( {item, backEndApi, FileType} : any) => {
       {FileType && FileType=="video" ?
         <Link href={`/txs/view/${ImageUrl}`}>
           <CardMedia image={`${backEndApi}/${ImageUrl}/thumbnail`} sx={{ height: '11.25rem', objectFit: 'contain' }}/>
+        </Link>
+        :
+        <Fragment></Fragment>
+      }
+      {FileType && FileType=="audio" ?
+        <Link href={`/txs/view/${ImageUrl}`}>
+          <ReactAudioPlayer src={`${backEndApi}/${ImageUrl}`} controls style={{width: '100%'}}/>
         </Link>
         :
         <Fragment></Fragment>

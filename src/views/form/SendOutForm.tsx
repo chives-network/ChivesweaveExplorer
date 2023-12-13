@@ -35,7 +35,7 @@ const SendOutForm = () => {
   // ** Hook
   const { t } = useTranslation()
 
-  const router = useRouter();
+  const router = useRouter()
     
   // ** State
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})

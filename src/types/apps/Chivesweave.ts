@@ -16,6 +16,7 @@ export type DriveSidebarType = {
   hidden: boolean
   store: any
   lgAbove: boolean
+  handleFolderHeaderList: (val: any) => void
   dispatch: Dispatch<any>
   routeParams: RouteParams
   leftSidebarOpen: boolean
@@ -79,4 +80,5 @@ export type TxRecordType = {
   recipient: string
   block: {[key: string]: any}
   bundleid: string
+  table: any
 }

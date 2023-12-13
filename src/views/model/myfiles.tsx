@@ -26,7 +26,7 @@ import { TxRecordType } from 'src/types/apps/Chivesweave'
 
 import Pagination from '@mui/material/Pagination'
 
-import ImageRectangle from 'src/views/portal/ImageRectangle';
+import ImageRectangle from 'src/views/portal/ImageRectangle'
 
 // ** Context
 import { useAuth } from 'src/hooks/useAuth'
@@ -46,12 +46,13 @@ import MuiTabList, { TabListProps } from '@mui/lab/TabList'
 import Icon from 'src/@core/components/icon'
 import authConfig from 'src/configs/auth'
 
-import StringDisplay from 'src/pages/preview/StringDisplay';
+import StringDisplay from 'src/pages/preview/StringDisplay'
 
 import { winstonToAr } from 'src/functions/ChivesweaveWallets'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+import { isMobile } from 'src/configs/functions'
 
 // ** Styled Tab component
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
@@ -79,11 +80,13 @@ const FileResourceModel = ({ activeTab } : any) => {
   // ** Hook
   const { t } = useTranslation()
   
-  const router = useRouter();
+  const router = useRouter()
 
   const auth = useAuth()
 
   const id = auth.currentAddress
+
+  const isMobileData = isMobile()
 
   // ** State
   const [isLoading, setIsLoading] = useState(false);
@@ -174,7 +177,13 @@ const FileResourceModel = ({ activeTab } : any) => {
                         </TableCell>
                         <TableCell>
                           {id && id.length == 43 ?
-                            <StringDisplay InputString={String(id)} StringSize={25} href={null}/>
+                            <Fragment>                              
+                              {isMobileData == true ?
+                                <StringDisplay InputString={String(id)} StringSize={10} href={null}/>
+                                :
+                                <StringDisplay InputString={String(id)} StringSize={25} href={null}/>
+                              }
+                            </Fragment>
                             :
                             <Fragment>{`${t(`No Address`)}`}</Fragment>
                           }
@@ -237,6 +246,15 @@ const FileResourceModel = ({ activeTab } : any) => {
                 <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
                   <Icon fontSize={20} icon='mdi:play-box-multiple' />
                   Video
+                </Box>
+              }
+            />
+            <Tab
+              value='audio'
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 2 } }}>
+                  <Icon fontSize={20} icon='ic:baseline-audio-file' />
+                  {`${t(`audio`)}`}
                 </Box>
               }
             />

@@ -8,27 +8,14 @@ export function formatHash(inputString: string, spliceSize: number): string {
     return '';
   }
 
-  const IsMobile = isMobile();
-  if(IsMobile == true) {
-    if (inputString.length <= 12) {
+  if (inputString.length <= spliceSize * 2) {
 
-      return inputString; 
-    }
-    const firstPart = inputString.substring(0, 6);
-    const lastPart = inputString.substring(inputString.length - 6);
-    
-    return `${firstPart} ... ${lastPart}`;
+    return inputString; 
   }
-  else {    
-    if (inputString.length <= spliceSize * 2) {
-
-      return inputString; 
-    }
-    const firstPart = inputString.substring(0, spliceSize);
-    const lastPart = inputString.substring(inputString.length - spliceSize);
-    
-    return `${firstPart} ... ${lastPart}`;
-  }
+  const firstPart = inputString.substring(0, spliceSize);
+  const lastPart = inputString.substring(inputString.length - spliceSize);
+  
+  return `${firstPart} ... ${lastPart}`;
 
 }
 
@@ -163,24 +150,32 @@ export function getContentTypeAbbreviation(contentType: string): string {
     'application/zip': 'ZIP',
     'image/jpeg': 'JPEG',
     'image/png': 'PNG',
+    'image/gif': 'GIF',
+    'image/bmp': 'BMP',
     'application/msword': 'DOC',
     'application/vnd.ms-excel': 'XLS',
-    'video/mp4': 'MP4',
+    'video/mp4': 'Video',
     'video/webm': 'WEBM',
+    'video/ogg': 'OGG',
+    'video/mpeg': 'Video',
+    'video/quicktime': 'quicktime',
+    'video/x-msvideo': 'x-msvideo',
     'application/vnd.ms-powerpoint': 'PPT',
     'application/pdf': 'PDF',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX',
     'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PPTX',
-    'image/gif': 'GIF',
-    'image/bmp': 'BMP',
-    'audio/mpeg': 'MP3',
-    'audio/wav': 'WAV',
+    'audio/mpeg': 'Audio',
+    'audio/wav': 'Audio',
+    'audio/midi': 'Audio',
+    'audio/ogg': 'Audio',
+    'audio/aac': 'Audio',
+    'audio/x-ms-wma': 'Audio',
     'application/x.chivesweave-manifest+json': 'JSON',
     'application/x-msdownload': 'EXE',
     'text/csv':'CSV',
   };
-
+  
   return contentTypeMap[contentType] || contentType; // 未知类型
 }
 

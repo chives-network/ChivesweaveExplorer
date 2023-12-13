@@ -158,8 +158,10 @@ export type FileDetailType = {
   foldersObj: MailFoldersObjType
   setFileDetailOpen: (val: boolean) => void
   handleStarDrive: (e: SyntheticEvent, id: string, value: boolean) => void
-  handleLabelUpdate: (id: string | string[], label: LabelType) => void
-  handleFolderUpdate: (id: string | string[], folder: FolderType) => void
+  handleLabelUpdate: (id: string | null, label: LabelType) => void
+  handleFolderUpdate: (id: string | null, folder: FolderType) => void
+  handleMoveToTrash: (id: string | null) => void
+  handleMoveToSpam: (id: string | null) => void
 }
 
 export type MailComposeType = {

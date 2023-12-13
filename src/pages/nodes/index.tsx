@@ -22,6 +22,7 @@ import TableContainer from '@mui/material/TableContainer'
 import { formatTimestamp, formatStorageSize } from 'src/configs/functions';
 
 import { ThemeColor } from 'src/@core/layouts/types'
+import { isMobile } from 'src/configs/functions'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -83,6 +84,8 @@ const PeersInfo = () => {
   const [peers, setPeers] = useState<NodeInfoType[]>()
 
   const [chainInfo, setChainInfo] = useState<ChainInfoType>()
+
+  const isMobileData = isMobile()
 
   useEffect(() => {
     axios.get(authConfig.backEndApi + '/info', { headers: { }, params: { } })
@@ -175,8 +178,8 @@ const PeersInfo = () => {
                             sx={{
                               '& .MuiTableCell-root': {
                                 border: 0,
-                                pt: 2,
-                                pb: 2.5,
+                                pt: 1.5,
+                                pb: 1.5,
                                 pl: '0 !important',
                                 pr: '0 !important',
                                 '&:first-of-type': {
@@ -187,7 +190,7 @@ const PeersInfo = () => {
                           >
                             <TableRow>
                               <TableCell>
-                                <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
                                 {`${t(`Network`)}`}:
                                 </Typography>
                               </TableCell>
@@ -195,7 +198,7 @@ const PeersInfo = () => {
                             </TableRow>
                             <TableRow>
                               <TableCell>
-                                <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
                                 {`${t(`Height`)}`}:
                                 </Typography>
                               </TableCell>
@@ -203,7 +206,7 @@ const PeersInfo = () => {
                             </TableRow>
                             <TableRow>
                               <TableCell>
-                                <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
                                 {`${t(`Time`)}`}:
                                 </Typography>
                               </TableCell>
@@ -211,7 +214,7 @@ const PeersInfo = () => {
                             </TableRow>
                             <TableRow>
                               <TableCell>
-                                <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
                                 {`${t(`Peers`)}`}:
                                 </Typography>
                               </TableCell>
@@ -219,7 +222,7 @@ const PeersInfo = () => {
                             </TableRow>
                             <TableRow>
                               <TableCell>
-                                <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
                                 {`${t(`Weave Size`)}`}:
                                 </Typography>
                               </TableCell>
@@ -240,6 +243,80 @@ const PeersInfo = () => {
             <Fragment></Fragment>
           }
           
+          {isMobileData ?
+            <Fragment>
+              {peers.map((item: NodeInfoType, index: number) => (
+                <Grid item xs={12} sx={{ py: 1 }} key={index}>
+                  <Card>
+                    <CardContent> 
+                      <TableContainer>
+                        <Table size='small' sx={{ width: '95%' }}>
+                          <TableBody
+                            sx={{
+                              '& .MuiTableCell-root': {
+                                border: 0,
+                                pt: 1.5,
+                                pb: 1.5,
+                                pl: '0 !important',
+                                pr: '0 !important',
+                                '&:first-of-type': {
+                                  width: 148
+                                }
+                              }
+                            }}
+                          >
+                            <TableRow>
+                              <TableCell>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                {`${t(`Ip`)}`}：{item.ip}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                {`${t(`Location`)}`}：{item.result.location}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                {`${t(`Isp`)}`}：{item.result.isp}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                {`${t(`Country`)}`}：{item.result.country}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                {`${t(`Region`)}`}：{item.result.region}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>
+                                <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                                {`${t(`City`)}`}：{item.result.city}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </CardContent>    
+                  </Card>
+                </Grid>
+              ))}              
+            </Fragment>
+          :
           <Grid item xs={12}>
             <Card>
               <CardHeader title={`${t(`Nodes`)}`} />
@@ -276,6 +353,8 @@ const PeersInfo = () => {
               
             </Card>
           </Grid>
+          }
+          
         </Grid>
       :
         <Fragment></Fragment>

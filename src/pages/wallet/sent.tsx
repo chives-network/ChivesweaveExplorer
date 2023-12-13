@@ -1,6 +1,6 @@
 import MyWalletModel from 'src/views/model/wallet';
 
-const AddressTransactionList = () => {
+const SentApp = () => {
 
   const activeTab = "sent"; 
 
@@ -8,5 +8,5 @@ const AddressTransactionList = () => {
 
 }
 
-export default AddressTransactionList
+export default SentApp
 

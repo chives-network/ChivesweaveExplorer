@@ -11,6 +11,7 @@ import addresses from 'src/store/apps/addresses'
 import files from 'src/store/apps/files'
 import myfiles from 'src/store/apps/myfiles'
 import drive from 'src/store/apps/drive'
+import agent from 'src/store/apps/agent'
 
 export const store = configureStore({
   reducer: {
@@ -22,7 +23,8 @@ export const store = configureStore({
     addresses,
     files,
     myfiles,
-    drive
+    drive,
+    agent
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

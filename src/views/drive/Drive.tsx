@@ -55,7 +55,7 @@ const DriveAppLayout = ({ initFolder, label, type }: DriveLayoutType) => {
   // ** Hook
   const { t } = useTranslation()
 
-  const router = useRouter();
+  const router = useRouter()
   
   // ** States
   const [query, setQuery] = useState<string>('')
@@ -71,8 +71,11 @@ const DriveAppLayout = ({ initFolder, label, type }: DriveLayoutType) => {
   const { settings } = useSettings()
   const dispatch = useDispatch<AppDispatch>()
   const lgAbove = useMediaQuery(theme.breakpoints.up('lg'))
-  const hidden = useMediaQuery(theme.breakpoints.down('lg'))
+  
+  //const hidden = useMediaQuery(theme.breakpoints.down('lg'))
+  const hidden = true
   const store = useSelector((state: RootState) => state.drive)
+
 
   // ** Vars
   const leftSidebarWidth = 260
@@ -102,8 +105,6 @@ const DriveAppLayout = ({ initFolder, label, type }: DriveLayoutType) => {
   }
 
   const handleFolderHeaderList = (folderHeader: any) => {
-    console.log("handleFolderHeaderList", folderHeader)
-    console.log("folderHeaderList", folderHeaderList)
     const folderHeaderListNew: any = []
     let isContinue = 1
     folderHeaderList.forEach((Item: any)=>{
@@ -197,6 +198,7 @@ const DriveAppLayout = ({ initFolder, label, type }: DriveLayoutType) => {
         hidden={hidden}
         lgAbove={lgAbove}
         dispatch={dispatch}
+        handleFolderHeaderList={handleFolderHeaderList}
         routeParams={routeParams}
         driveFileOpen={driveFileOpen}
         leftSidebarOpen={leftSidebarOpen}

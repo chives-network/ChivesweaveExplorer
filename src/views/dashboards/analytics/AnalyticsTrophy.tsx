@@ -1,5 +1,6 @@
 // ** MUI Imports
 import Card from '@mui/material/Card'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import { styled, useTheme } from '@mui/material/styles'
@@ -62,9 +63,17 @@ const AnalyticsTrophy = (props: propsType) => {
         <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
         {`${t(`A PERMANENT STORAGE PUBLIC CHAIN!`)}`}
         </Typography>
+        {data.height > data.blocks ? 
+        <Tooltip title={`${t(`Blockchain is currently syncing data. Please wait for a few hours before trying again`)}`} placement='bottom'>
+          <Typography variant='h5' sx={{ my: 4, color: 'error.main' }}>
+            {`${t(`Syncing`)}`} {Math.ceil(data.blocks*100/data.height)}%
+          </Typography>
+        </Tooltip>
+        : 
         <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
-          {data.height}
-        </Typography>
+            {data.height}
+          </Typography>
+        }
         <TriangleImg alt='triangle background' src={`/images/misc/${imageSrc}`} />
         <TrophyImg alt='trophy' src='/images/misc/trophy.png' />
       </CardContent>

@@ -179,6 +179,8 @@ const ImagesPreview = (props: ImagesPreviewType) => {
     }
   }, [imagesList, imagesType]);
 
+  console.log("imagesList", imagesList)
+
   return (
           <Fragment>
             <Box className='navigation-wrapper'>
@@ -205,6 +207,18 @@ const ImagesPreview = (props: ImagesPreviewType) => {
                               </Document>
                           </Fragment>
                       );
+                      case 'DocToPdf':
+                        
+                        return (
+                            <Fragment key={UrlIndex}>
+                                <Document file={Url} onLoadSuccess={onDocumentLoadSuccess} >
+                                    {Array.from(new Array(numPages), (element, index) => {
+                                        
+                                        return (<Page key={`page_${index + 1}`} pageNumber={index + 1} width={820}/>)
+                                    })}
+                                </Document>
+                            </Fragment>
+                        );
                     case 'json':
 
                       return (
@@ -228,10 +242,16 @@ const ImagesPreview = (props: ImagesPreviewType) => {
                       
                       return <ExcelViewer fileUrl={Url} />
                     
-                    case 'Mp4':
+                    case 'Video':
 
                       return (
                         <CardMedia component="video" controls src={`${Url}`} sx={{ width:'100%', height:'100%', objectFit: 'contain' }}/>
+                      )
+                    
+                    case 'Audio':
+
+                      return (
+                        <CardMedia component="video" controls src={`${Url}`} sx={{ width:'100%', height:'55px', objectFit: 'contain' }}/>
                       )
 
                     default:

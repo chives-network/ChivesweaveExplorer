@@ -31,10 +31,16 @@ export const fetchData = createAsyncThunk('appMyFiles/fetchData', async (params:
     Url = authConfig.backEndApi + '/file/star/Star/'+ `${params.address}` + '/'+ `${params.pageId}` + '/'+params.pageSize;
   }
   
-
   const response = await axios.get(Url)
   const NewData: any[] = response.data.data.filter((record: any) => record.id)
-  response.data.data = NewData
+  const TableData: any = {}
+  response.data.table.map((Item: any)=>{
+    TableData[Item.id] = Item
+  })
+  const NewDataTable: TxRecordType[] = NewData.map((Item: TxRecordType)  => {
+    return {...Item, ['table']:TableData[Item.id]}
+  } );
+  response.data.data = NewDataTable
   
   return { ...response.data, filter: params }
 })

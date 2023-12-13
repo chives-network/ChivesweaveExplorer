@@ -59,6 +59,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
     hidden,
     lgAbove,
     dispatch,
+    handleFolderHeaderList,
     routeParams,
     leftSidebarOpen,
     leftSidebarWidth,
@@ -107,7 +108,10 @@ const SidebarLeft = (props: DriveSidebarType) => {
     }
   }
 
-  const handleListItemClick = () => {
+  const handleListItemClick = (Folder: string | null) => {
+    if(Folder) {
+      handleFolderHeaderList({name: Folder, value: Folder})
+    }
     setFileDetailOpen(false)
     setTimeout(() => dispatch(handleSelectAllFile(false)), 50)
     handleLeftSidebarToggle()
@@ -159,7 +163,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/myfiles'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick("Root")}
               sx={{ borderLeftColor: activemyfilesCondition ? 'primary.main' : 'transparent' }}
             >
               <ListItemIcon sx={{ color: activemyfilesCondition ? 'primary.main' : 'text.secondary' }}>
@@ -174,10 +178,11 @@ const SidebarLeft = (props: DriveSidebarType) => {
               />
               {RenderBadge('Root', 'primary')}
             </ListItemStyled>
+            {/* 
             <ListItemStyled
               component={Link}
               href='/drive/sharedfiles'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('folder', 'sharedfiles') ? 'primary.main' : 'transparent'
               }}
@@ -201,7 +206,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/uploaded'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('folder', 'uploaded') ? 'primary.main' : 'transparent'
               }}
@@ -222,10 +227,11 @@ const SidebarLeft = (props: DriveSidebarType) => {
               />
               {RenderBadge('uploaded', 'secondary')}
             </ListItemStyled>
+            */}
             <ListItemStyled
               component={Link}
               href='/drive/starred'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('folder', 'starred') ? 'primary.main' : 'transparent'
               }}
@@ -249,7 +255,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/spam'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('folder', 'spam') ? 'primary.main' : 'transparent'
               }}
@@ -273,7 +279,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/trash'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('folder', 'trash') ? 'primary.main' : 'transparent'
               }}
@@ -306,7 +312,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/personal'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'image') ? 'primary.main' : 'transparent'
               }}
@@ -326,7 +332,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/company'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'word') ? 'primary.main' : 'transparent'
               }}
@@ -346,7 +352,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/important'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'excel') ? 'warning.main' : 'transparent'
               }}
@@ -366,7 +372,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/private'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'pptx') ? 'primary.main' : 'transparent'
               }}
@@ -397,7 +403,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/image'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'image') ? 'primary.main' : 'transparent'
               }}
@@ -416,7 +422,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/word'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'word') ? 'primary.main' : 'transparent'
               }}
@@ -435,7 +441,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/excel'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'excel') ? 'warning.main' : 'transparent'
               }}
@@ -454,7 +460,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/pptx'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'pptx') ? 'primary.main' : 'transparent'
               }}
@@ -473,7 +479,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/video'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'video') ? 'primary.main' : 'transparent'
               }}
@@ -492,7 +498,7 @@ const SidebarLeft = (props: DriveSidebarType) => {
             <ListItemStyled
               component={Link}
               href='/drive/pdf'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'pdf') ? 'primary.main' : 'transparent'
               }}
@@ -510,8 +516,27 @@ const SidebarLeft = (props: DriveSidebarType) => {
             </ListItemStyled>
             <ListItemStyled
               component={Link}
+              href='/drive/audio'
+              onClick={()=>handleListItemClick(null)}
+              sx={{
+                borderLeftColor: handleActiveItem('type', 'audio') ? 'primary.main' : 'transparent'
+              }}
+            >
+              <ListItemIcon sx={{ mr: 3.5, '& svg': { color: 'warning.main' } }}>
+                <Icon icon='mdi:circle' fontSize='0.75rem' />
+              </ListItemIcon>
+              <ListItemText
+                primary={`${t(`Audio`)}`}
+                primaryTypographyProps={{
+                  noWrap: true,
+                  sx: { fontWeight: 500, ...(handleActiveItem('type', 'audio') && { color: 'primary.main' }) }
+                }}
+              />
+            </ListItemStyled>
+            <ListItemStyled
+              component={Link}
               href='/drive/stl'
-              onClick={handleListItemClick}
+              onClick={()=>handleListItemClick(null)}
               sx={{
                 borderLeftColor: handleActiveItem('type', 'stl') ? 'info.main' : 'transparent'
               }}

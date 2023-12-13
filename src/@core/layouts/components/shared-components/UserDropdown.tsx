@@ -183,20 +183,41 @@ const UserDropdown = (props: Props) => {
         })}
         <Divider />
         { getAllWalletsData && getAllWalletsData.length > 0 ?
-          <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/mywallets')}>
-            <Box sx={styles}>
-              <Icon icon='mdi:cog-outline' />
-              {`${t(`Settings`)}`}
-            </Box>
-          </MenuItem>
-          :
-          <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/mywallets')}>
-            <Box sx={styles}>
-              <Icon icon='mdi:cog-outline' />
-              {`${t(`Create Wallet`)}`}
-            </Box>
-          </MenuItem>
-          }
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/mywallets')}>
+          <Box sx={styles}>
+            <Icon icon='mdi:cog-outline' />
+            {`${t(`Settings`)}`}
+          </Box>
+        </MenuItem>
+        :
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/mywallets')}>
+          <Box sx={styles}>
+            <Icon icon='mdi:cog-outline' />
+            {`${t(`Create Wallet`)}`}
+          </Box>
+        </MenuItem>
+        }
+        <Divider />
+        { getAllWalletsData && getAllWalletsData.length > 0 ?
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/profile')}>
+          <Box sx={styles}>
+            <Icon icon='mdi:cog-outline' />
+            {`${t(`Profile`)}`}
+          </Box>
+        </MenuItem>
+        :
+        null
+        }
+        { getAllWalletsData && getAllWalletsData.length > 0 ?
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/agent/register')}>
+          <Box sx={styles}>
+            <Icon icon='mdi:cog-outline' />
+            {`${t(`Register Agent`)}`}
+          </Box>
+        </MenuItem>
+        :
+        null
+        }
       </Menu>
     </Fragment>
   )

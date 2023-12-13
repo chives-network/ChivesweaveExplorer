@@ -69,6 +69,13 @@ const DropzoneWrapper = styled(Box)<BoxProps>(({ theme }) => ({
       width: 'calc(100% - 1rem)',
       height: 'calc(100% - 1rem)',
       borderRadius: theme.shape.borderRadius
+    },
+    '& img.single-avatar-image': {
+      objectFit: 'cover',
+      position: 'absolute',
+      width: 'calc(180px)',
+      height: 'calc(180px)',
+      borderRadius: theme.shape.borderRadius
     }
   }
 }))

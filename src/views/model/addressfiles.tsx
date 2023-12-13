@@ -26,7 +26,7 @@ import { TxRecordType } from 'src/types/apps/Chivesweave'
 
 import Pagination from '@mui/material/Pagination'
 
-import ImageRectangle from 'src/views/portal/ImageRectangle';
+import ImageRectangle from 'src/views/portal/ImageRectangle'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -43,11 +43,12 @@ import MuiTabList, { TabListProps } from '@mui/lab/TabList'
 import Icon from 'src/@core/components/icon'
 import authConfig from 'src/configs/auth'
 
-import StringDisplay from 'src/pages/preview/StringDisplay';
+import StringDisplay from 'src/pages/preview/StringDisplay'
 import { formatXWE } from 'src/configs/functions';
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+import { isMobile } from 'src/configs/functions'
 
 // ** Styled Tab component
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
@@ -75,9 +76,11 @@ const FileResourceModel = ({ activeTab } : any) => {
   // ** Hook
   const { t } = useTranslation()
   
-  const router = useRouter();
+  const router = useRouter()
 
-  const { id } = router.query;
+  const { id } = router.query
+
+  const isMobileData = isMobile()
 
   // ** State
   const [isLoading, setIsLoading] = useState(false);
@@ -168,7 +171,13 @@ const FileResourceModel = ({ activeTab } : any) => {
                         </TableCell>
                         <TableCell>
                           {id && id.length == 43 ?
-                            <StringDisplay InputString={String(id)} StringSize={20} href={null}/>
+                            <Fragment>                              
+                              {isMobileData == true ?
+                                <StringDisplay InputString={String(id)} StringSize={10} href={null}/>
+                                :
+                                <StringDisplay InputString={String(id)} StringSize={25} href={null}/>
+                              }
+                            </Fragment>
                             :
                             <Fragment>{`${t(`No Address`)}`}</Fragment>
                           }
@@ -294,7 +303,7 @@ const FileResourceModel = ({ activeTab } : any) => {
                 ))}
               </Grid>
               <Grid item key={"Pagination"} xs={12} sm={12} md={12} lg={12} sx={{ padding: '10px 0 10px 0' }}>
-                <Pagination  count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page} onChange={handlePageChange} siblingCount={2} boundaryCount={3} />
+                <Pagination  count={Number(store.allPages)} variant='outlined' color='primary' page={paginationModel.page+1} onChange={handlePageChange} siblingCount={2} boundaryCount={3} />
               </Grid>
             </Fragment>
           ) : (
