@@ -26,7 +26,7 @@ const FooterContent = () => {
         </Box>
         {` by `}
         <LinkStyled target='_blank' href='https://chivesweave.org/'>
-          Chivesweave
+          ChivesDrive
         </LinkStyled>
       </Typography>
       {hidden ? null : (
